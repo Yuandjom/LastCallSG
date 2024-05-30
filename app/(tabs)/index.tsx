@@ -1,6 +1,9 @@
 import React from 'react';
 import { Image, StyleSheet, Text, View, ScrollView, StatusBar, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import CategoryScrollView from '@/components/category/Category';
+
+
 
 export default function HomeScreen() {
   return (
@@ -17,21 +20,7 @@ export default function HomeScreen() {
       </View>
 
       <ScrollView style={styles.scrollView}>
-        <View style={styles.categoryScroll}>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {['Hawker Store', 'Cafe', 'Mini Mart', 'Super Market', 'Grocery Store', 'Bakery'].map(
-              (category, index) => (
-                <View key={index} style={styles.categoryContainer}>
-                  <Image
-                    source={require('@/assets/images/minibun.jpg')} // Placeholder image, replace with actual category images
-                    style={styles.categoryImage}
-                  />
-                  <Text style={styles.categoryText}>{category}</Text>
-                </View>
-              )
-            )}
-          </ScrollView>
-        </View>
+        <CategoryScrollView></CategoryScrollView>
 
         <View style={styles.storeContainer}>
           <Text style={styles.storeTitle}>Starbucks Coffee</Text>
