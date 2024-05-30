@@ -3,11 +3,11 @@ import { View, ScrollView, Image, Text, StyleSheet } from 'react-native';
 
 //move to components folder
 const categories = [
-    { name: 'Hawker Store', image: require('@/assets/images/minibun.jpg') },
-    { name: 'Cafe', image: require('@/assets/images/minibun.jpg') },
-    { name: 'Mini Mart', image: require('@/assets/images/minibun.jpg') },
-    { name: 'Super Market', image: require('@/assets/images/minibun.jpg') },
-    { name: 'Grocery Store', image: require('@/assets/images/minibun.jpg') },
+    { name: 'Hawker Store', image: require('@/assets/category/hawkerstore.png') },
+    { name: 'Cafe', image: require('@/assets/category/cafe.png') },
+    { name: 'Mini Mart', image: require('@/assets/category/minimart.png') },
+    { name: 'Super Market', image: require('@/assets/category/supermarket.png') },
+    { name: 'Grocery Store', image: require('@/assets/category/grocerystore.png') },
     { name: 'Bakery', image: require('@/assets/images/minibun.jpg') },
 ];
 
@@ -61,12 +61,13 @@ const styles = StyleSheet.create({
         height: '100%',
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: 'rgba(0, 0, 0, 0.5)',
+        backgroundColor: 'rgba(0, 0, 0, 0.1)',
     },
     categoryText: {
-        fontSize: 10,
+        fontSize: 12,
         color: '#fff',
         textAlign: 'center',
+        fontWeight: 'bold',
     },
 });
 

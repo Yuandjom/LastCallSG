@@ -2,6 +2,7 @@ import React from 'react';
 import { Image, StyleSheet, Text, View, ScrollView, StatusBar, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import CategoryScrollView from '@/components/category/Category';
+import StoreComponent from '@/components/store/StoreComponent';
 
 
 
@@ -21,29 +22,8 @@ export default function HomeScreen() {
 
       <ScrollView style={styles.scrollView}>
         <CategoryScrollView></CategoryScrollView>
-
-        <View style={styles.storeContainer}>
-          <Text style={styles.storeTitle}>Starbucks Coffee</Text>
-          <Text style={styles.storeSubtitle}>2.5km • Grocery Store</Text>
-          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-            {[
-              { name: 'Barbeque Smoked Beef Steak', price: '$1.99', wasPrice: '$4.50', left: 2 },
-              { name: 'Baked Cheese and Veggie', price: '$4.99', wasPrice: '$5.80', left: 1 },
-              { name: 'Honey Glazed Salmon', price: '$4.50', wasPrice: '$4.50', left: 6 },
-            ].map((item, index) => (
-              <View key={index} style={styles.itemContainer}>
-                <Image
-                  source={require('@/assets/images/minibun.jpg')} // Placeholder image, replace with actual item images
-                  style={styles.itemImage}
-                />
-                <Text style={styles.itemName}>{item.name}</Text>
-                <Text style={styles.itemPrice}>{item.price}</Text>
-                <Text style={styles.itemWasPrice}>was {item.wasPrice}</Text>
-                <Text style={styles.itemLeft}>{item.left} left</Text>
-              </View>
-            ))}
-          </ScrollView>
-        </View>
+        <StoreComponent></StoreComponent>
+        <StoreComponent></StoreComponent>
       </ScrollView>
     </View>
   );
@@ -89,24 +69,6 @@ const styles = StyleSheet.create({
   },
   chevronIcon: {
     marginLeft: 4,
-  },
-  categoryScroll: {
-    flexDirection: 'row',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-  },
-  categoryContainer: {
-    alignItems: 'center',
-    marginRight: 16,
-  },
-  categoryImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    marginBottom: 8,
-  },
-  categoryText: {
-    fontSize: 12,
   },
   storeContainer: {
     paddingHorizontal: 16,
