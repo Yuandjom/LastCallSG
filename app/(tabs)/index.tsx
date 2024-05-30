@@ -1,5 +1,5 @@
-import React from 'react';
-import { Image, StyleSheet, Text, View, ScrollView, StatusBar, Platform } from 'react-native';
+import React, { useState } from 'react';
+import { Image, StyleSheet, Text, View, ScrollView, StatusBar, Platform, RefreshControl } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import CategoryScrollView from '@/components/category/Category';
 import StoreComponent from '@/components/store/StoreComponent';
@@ -7,6 +7,15 @@ import StoreComponent from '@/components/store/StoreComponent';
 
 
 export default function HomeScreen() {
+  const [refreshing, setRefreshing] = useState(false);
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    // Simulate a network request or any asynchronous task
+    setTimeout(() => {
+      setRefreshing(false);
+    }, 2000);
+  };
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
@@ -19,11 +28,16 @@ export default function HomeScreen() {
         <Text style={styles.locationSubText}>Current location · 50 km</Text>
         <Ionicons name="information-circle-outline" size={30} style={styles.infoIcon} />
       </View>
+      <CategoryScrollView />
 
-      <ScrollView style={styles.scrollView}>
-        <CategoryScrollView></CategoryScrollView>
-        <StoreComponent></StoreComponent>
-        <StoreComponent></StoreComponent>
+      <ScrollView
+        style={styles.scrollView}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+      >
+        <StoreComponent />
+        <StoreComponent />
       </ScrollView>
     </View>
   );
