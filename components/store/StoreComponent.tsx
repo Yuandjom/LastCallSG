@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, Image, Text, StyleSheet } from 'react-native';
+import { View, ScrollView, Image, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 
 const items = [
@@ -7,21 +7,30 @@ const items = [
     { name: 'Baked Cheese and Veggie', price: '$4.99', wasPrice: '$5.80', left: 1, image: require('@/assets/store/cheese.png') },
     { name: 'Honey Glazed Salmon', price: '$4.50', wasPrice: '$4.50', left: 6, image: require('@/assets/store/salmon.png') },
 ];
-
 const StoreComponent = () => {
+    const handleStorePress = () => {
+        Alert.alert('Store clicked', 'You clicked the store header!');
+    };
+
+    const handleItemPress = (item: { name: any; price?: string; wasPrice?: string; left?: number; image?: any; }) => {
+        Alert.alert('Item clicked', `You clicked on ${item.name}`);
+    };
+
     return (
         <View style={styles.storeContainer}>
-            <View style={styles.storeHeader}>
-                <Image source={require('@/assets/icons/starbucks.png')} style={styles.storeLogo} />
-                <View style={styles.storeInfo}>
-                    <Text style={styles.storeTitle}>Starbucks Coffee</Text>
-                    <Text style={styles.storeSubtitle}>2.5km • Grocery Store</Text>
+            <TouchableOpacity onPress={handleStorePress} activeOpacity={0.6} delayPressIn={100}>
+                <View style={styles.storeHeader}>
+                    <Image source={require('@/assets/icons/starbucks.png')} style={styles.storeLogo} />
+                    <View style={styles.storeInfo}>
+                        <Text style={styles.storeTitle}>Starbucks Coffee</Text>
+                        <Text style={styles.storeSubtitle}>2.5km • Grocery Store</Text>
+                    </View>
+                    <View style={styles.storeStatus}>
+                        <Text style={styles.statusText}>16</Text>
+                    </View>
+                    <Ionicons name="chevron-forward" size={18} style={styles.arrowIcon} />
                 </View>
-                <View style={styles.storeStatus}>
-                    <Text style={styles.statusText}>16</Text>
-                </View>
-                <Ionicons name="chevron-forward" size={18} style={styles.arrowIcon} />
-            </View>
+            </TouchableOpacity>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {items.map((item, index) => {
                     let itemLeftStyle;
@@ -34,9 +43,8 @@ const StoreComponent = () => {
                     }
 
                     return (
-
-                        (
-                            <View key={index} style={styles.itemContainer}>
+                        <TouchableOpacity key={index} onPress={() => handleItemPress(item)} activeOpacity={0.6} delayPressIn={60}>
+                            <View style={styles.itemContainer}>
                                 <View style={styles.imageContainer}>
                                     <Image source={item.image} style={styles.itemImage} />
                                     <View style={styles.discountTag}>
@@ -50,12 +58,12 @@ const StoreComponent = () => {
                                     <Text style={styles.itemName}>{item.name}</Text>
                                     <View style={styles.priceContainer}>
                                         <Text style={styles.itemWasPrice}>was {item.wasPrice}</Text>
-
                                         <Text style={styles.itemPrice}>{item.price}</Text>
                                     </View>
                                 </View>
                             </View>
-                        ))
+                        </TouchableOpacity>
+                    );
                 })}
             </ScrollView>
         </View>

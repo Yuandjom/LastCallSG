@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, ScrollView, Image, Text, StyleSheet } from 'react-native';
+import { View, ScrollView, Image, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
 
 //move to components folder
 const categories = [
@@ -10,20 +10,30 @@ const categories = [
     { name: 'Grocery Store', image: require('@/assets/category/grocerystore.png') },
     { name: 'Bakery', image: require('@/assets/images/minibun.jpg') },
 ];
-
 const CategoryScrollView = () => {
+    const handleCategoryPress = (category: { name: any; image?: any; }) => {
+        Alert.alert('Category clicked', `You clicked on ${category.name}`);
+    };
+
     return (
         <View style={styles.categoryScroll}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {categories.map((category, index) => (
-                    <View key={index} style={styles.categoryContainer}>
-                        <View style={styles.imageContainer}>
-                            <Image source={category.image} style={styles.categoryImage} />
-                            <View style={styles.textContainer}>
-                                <Text style={styles.categoryText}>{category.name}</Text>
+                    <TouchableOpacity
+                        key={index}
+                        onPress={() => handleCategoryPress(category)}
+                        activeOpacity={0.6}
+                        delayPressIn={100}
+                    >
+                        <View style={styles.categoryContainer}>
+                            <View style={styles.imageContainer}>
+                                <Image source={category.image} style={styles.categoryImage} />
+                                <View style={styles.textContainer}>
+                                    <Text style={styles.categoryText}>{category.name}</Text>
+                                </View>
                             </View>
                         </View>
-                    </View>
+                    </TouchableOpacity>
                 ))}
             </ScrollView>
         </View>
