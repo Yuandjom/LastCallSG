@@ -1,10 +1,18 @@
-import React, { useState } from 'react';
-import { Image, StyleSheet, Text, View, ScrollView, StatusBar, Platform, RefreshControl } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import CategoryScrollView from '@/components/category/Category';
-import StoreComponent from '@/components/store/StoreComponent';
-
-
+import React, { useState } from "react";
+import {
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  StatusBar,
+  Platform,
+  RefreshControl,
+  TouchableOpacity,
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import CategoryScrollView from "@/components/category/Category";
+import StoreComponent from "@/components/store/StoreComponent";
 
 export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
@@ -16,6 +24,7 @@ export default function HomeScreen() {
       setRefreshing(false);
     }, 2000);
   };
+
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
@@ -26,7 +35,11 @@ export default function HomeScreen() {
           <Ionicons name="chevron-down" size={18} style={styles.chevronIcon} />
         </View>
         <Text style={styles.locationSubText}>Current location · 50 km</Text>
-        <Ionicons name="information-circle-outline" size={30} style={styles.infoIcon} />
+        <Ionicons
+          name="information-circle-outline"
+          size={30}
+          style={styles.infoIcon}
+        />
       </View>
       <CategoryScrollView />
 
@@ -38,6 +51,7 @@ export default function HomeScreen() {
       >
         <StoreComponent />
         <StoreComponent />
+        <StoreComponent />
       </ScrollView>
     </View>
   );
@@ -46,38 +60,38 @@ export default function HomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: "#fff",
   },
   scrollView: {
     flex: 1,
   },
   topBar: {
-    paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 50,
-    backgroundColor: '#fff',
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 50,
+    backgroundColor: "#fff",
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: "#e0e0e0",
     paddingHorizontal: 16,
     paddingVertical: 8,
-    flexDirection: 'column',
-    justifyContent: 'space-between',
-    alignItems: 'center',
+    flexDirection: "column",
+    justifyContent: "space-between",
+    alignItems: "center",
   },
   locationContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
   },
   locationText: {
     fontSize: 16,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   locationSubText: {
     fontSize: 12,
-    color: 'gray',
+    color: "gray",
     marginTop: 4,
   },
   infoIcon: {
-    color: 'gray',
-    position: 'absolute',
+    color: "gray",
+    position: "absolute",
     right: 20,
     top: 50,
   },
@@ -90,12 +104,12 @@ const styles = StyleSheet.create({
   },
   storeTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 4,
   },
   storeSubtitle: {
     fontSize: 14,
-    color: 'gray',
+    color: "gray",
     marginBottom: 16,
   },
   itemContainer: {
@@ -110,22 +124,22 @@ const styles = StyleSheet.create({
   },
   itemName: {
     fontSize: 14,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 4,
   },
   itemPrice: {
     fontSize: 14,
-    color: 'green',
+    color: "#56C071",
     marginBottom: 4,
   },
   itemWasPrice: {
     fontSize: 12,
-    color: 'gray',
-    textDecorationLine: 'line-through',
+    color: "gray",
+    textDecorationLine: "line-through",
     marginBottom: 4,
   },
   itemLeft: {
     fontSize: 12,
-    color: 'red',
+    color: "red",
   },
 });
