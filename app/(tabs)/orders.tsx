@@ -4,7 +4,7 @@ import React from 'react'
 const orders = () => {
     return (
         <View>
-            <Text>orders</Text>
+            <Text>Orders</Text>
         </View>
     )
 }
