@@ -46,7 +46,7 @@ const styles = StyleSheet.create({
     },
     headerContainer: {
         paddingTop: 50, // Adjust for safe area if needed
-        paddingBottom: 15,
+        paddingBottom: 10,
         backgroundColor: '#fff',
         alignItems: 'left',
         paddingLeft: 20,
