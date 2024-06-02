@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, ImageBackground, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, ImageBackground, StyleSheet, TouchableOpacity , Image} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 
@@ -42,6 +42,7 @@ const ItemPage = () => {
         >
           <Ionicons name="arrow-back" size={32} color="black" />
         </TouchableOpacity>
+        <View style={styles.imageOverlay}>
         <View style={styles.left_and_discount_container}>
         <View style={styles.leftContainer}>
          <Text style={styles.left}>{item.left}</Text>
@@ -49,6 +50,18 @@ const ItemPage = () => {
         <View style={styles.discountContainer}>
           <Text style={styles.discount}>{item.discount}</Text>
         </View>
+        </View>
+          <View style={styles.sellerContainer}>
+            <Image
+              source={require("@/assets/icons/starbucks.png")}
+              style={styles.storeLogo}
+            />
+            <View>
+              <Text style={styles.storeTitle}>Starbucks Coffee</Text>
+              <Text style={styles.rating}>{`${item.rating} ★`}</Text>
+            </View>
+            
+         </View>
         </View>
       </ImageBackground>
       <View style={styles.expiry_container}>
@@ -76,7 +89,6 @@ const ItemPage = () => {
       <Text style={styles.description}>{item.description}</Text>
       <View style={styles.seperator}></View>
       {/* <Text style={styles.discount}>{item.discount}</Text>
-      <Text style={styles.rating}>{`${item.rating} ★`}</Text>
       <Text style={styles.collectTime}>{item.collectTime}</Text> */}
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Chope Now</Text>
@@ -101,7 +113,7 @@ const styles = StyleSheet.create({
     height: 50,
     borderRadius: 25,
     marginTop: "16%",
-    marginLeft: "8%",
+    marginLeft: "6%",
     justifyContent: "center",
     alignItems: "center"
   },
@@ -126,10 +138,29 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     justifyContent: 'space-between'
   },
-
-  left_and_discount_container:{
-    flexDirection: "row"
+  imageOverlay: {
+    marginLeft: 4
   },
+  left_and_discount_container:{
+    flexDirection: "row",
+    marginLeft: 8
+  },
+  sellerContainer:{
+    flexDirection: "row",
+    alignItems: "center"
+  },
+  storeLogo: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    margin: 12,
+  },
+  storeTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "white"
+  },
+
 
   expiry_container: {
     width: '100%',
@@ -230,7 +261,7 @@ const styles = StyleSheet.create({
   },
   rating: {
     fontSize: 20,
-    color: "#444",
+    color: "white",
     marginTop: 5,
   },
   price: {
