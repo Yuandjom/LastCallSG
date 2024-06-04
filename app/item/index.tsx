@@ -1,11 +1,15 @@
 import React from "react";
+import { useState } from "react";
 import { View, Text, ImageBackground, StyleSheet, TouchableOpacity , Image} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import  ItemModal  from "@/components/item/ItemModal"
 
 const ItemPage = () => {
   const params = useLocalSearchParams();
   const router = useRouter();
+
+  const [modalVisible, setModalVisible] = useState(false);
   // const item = params.item ? JSON.parse(params.item as string) : {
   //   name: "Bag of Breads",
   //   left: 2,
@@ -17,6 +21,12 @@ const ItemPage = () => {
   //   description: "A bag of bread, contains 6-7 bread. Please collect before closing at 9PM."
   // }; // Added mock data for styling purposes
 
+  const openModal = () => {
+    setModalVisible(true);
+  };
+  const closeModal = () => {
+    setModalVisible(false);
+  };
   const item = {
     name: "Bag of Breads",
     left: "2 Left",
@@ -90,9 +100,11 @@ const ItemPage = () => {
       <View style={styles.seperator}></View>
       {/* <Text style={styles.discount}>{item.discount}</Text>
       <Text style={styles.collectTime}>{item.collectTime}</Text> */}
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity style={styles.button} onPress={openModal} >
         <Text style={styles.buttonText}>Chope Now</Text>
       </TouchableOpacity>
+
+      <ItemModal visible={modalVisible} onClose={closeModal} />
     </View>
   );
 };
