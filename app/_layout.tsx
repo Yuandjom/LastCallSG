@@ -8,7 +8,7 @@ import { Stack } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
 import { useEffect } from "react";
 import "react-native-reanimated";
-
+import Rating from "./rating/index";
 import { useColorScheme } from "@/hooks/useColorScheme";
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
@@ -36,6 +36,8 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="store/index" options={{ headerShown: false }} />
         <Stack.Screen name="item/index" options={{ headerShown: false }} />
+        {/* <Stack.Screen name="Rating/order" options={{ headerShown: false }} /> */}
+        <Stack.Screen name="rating/index" options={{ headerShown: false }} />
         <Stack.Screen
           name="interactive-map/index"
           options={{ headerShown: false }}
