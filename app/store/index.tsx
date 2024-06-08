@@ -17,13 +17,15 @@ import { Ionicons, EvilIcons } from "@expo/vector-icons";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
-import { Store,StoreItem } from "@/app/interfaces";
+import { Store, StoreItem } from "@/app/interfaces";
 
 const StorePage = () => {
   const router = useRouter();
   const params = useLocalSearchParams();
   const store: Store = params.store ? JSON.parse(params.store as string) : null;
-  const items: StoreItem[] = params.items ? JSON.parse(params.items as string) : [];
+  const items: StoreItem[] = params.items
+    ? JSON.parse(params.items as string)
+    : [];
 
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState("Products");
@@ -40,7 +42,7 @@ const StorePage = () => {
   const handleItemPress = (item: StoreItem) => {
     router.push({
       pathname: "/item",
-      params: { item: JSON.stringify(item) },
+      params: { item: JSON.stringify(item), store: JSON.stringify(store) },
     });
   };
 
@@ -132,13 +134,12 @@ const StorePage = () => {
         <View style={styles.storeHeader}>
           <View style={styles.backgroundColor} />
           <View style={styles.storeInfo}>
-            <Image
-              source={require("@/assets/icons/starbucks.png")}
-              style={styles.storeLogo}
-            />
+            <Image source={store.storeLogo} style={styles.storeLogo} />
             <View style={styles.storeTextContainer}>
               <Text style={styles.storeTitle}>{store.storeTitle}</Text>
-              <Text style={styles.storeSubtitle}>{store.storeDistance} • {store.storeCategory}</Text>
+              <Text style={styles.storeSubtitle}>
+                {store.storeDistance} • {store.storeCategory}
+              </Text>
             </View>
           </View>
         </View>

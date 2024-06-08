@@ -61,12 +61,12 @@ const ItemPage = () => {
           </View>
           <View style={styles.sellerContainer}>
             <Image
-              source={require("@/assets/icons/starbucks.png")}
+              source={store.storeLogo}
               style={styles.storeLogo}
             />
             <View>
               <Text style={styles.storeTitle}>{store.storeTitle}</Text>
-              <Text style={styles.rating}>4.8 ★</Text>
+              <Text style={styles.rating}>{store.storeRating} ★</Text>
             </View>
           </View>
         </View>

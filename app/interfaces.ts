@@ -22,4 +22,5 @@ export interface Store {
   items: StoreItem[];
   storeAddress: string;
   storePostalCode: string;
+  storeRating: number;
 }
