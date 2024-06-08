@@ -1,15 +1,7 @@
 import React from 'react';
 import { View, ScrollView, Image, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { categories } from '@/mocks/mockCategories';
 
-//move to components folder
-const categories = [
-    { name: 'Hawker Store', image: require('@/assets/category/hawkerstore.png') },
-    { name: 'Cafe', image: require('@/assets/category/cafe.png') },
-    { name: 'Mini Mart', image: require('@/assets/category/minimart.png') },
-    { name: 'Super Market', image: require('@/assets/category/supermarket.png') },
-    { name: 'Grocery Store', image: require('@/assets/category/grocerystore.png') },
-    { name: 'Bakery', image: require('@/assets/images/minibun.jpg') },
-];
 const CategoryScrollView = () => {
     const handleCategoryPress = (category: { name: any; image?: any; }) => {
         Alert.alert('Category clicked', `You clicked on ${category.name}`);

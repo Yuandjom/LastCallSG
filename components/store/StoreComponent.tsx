@@ -10,65 +10,29 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
+import { Store, StoreItem } from "@/app/interfaces";
 
-const items = [
-  {
-    name: "Barbeque Smoked Beef Steak",
-    price: "$1.99",
-    wasPrice: "$4.50",
-    left: 2,
-    image: require("@/assets/store/beef.png"),
-  },
-  {
-    name: "Baked Cheese and Veggie",
-    price: "$4.99",
-    wasPrice: "$5.80",
-    left: 1,
-    image: require("@/assets/store/cheese.png"),
-  },
-  {
-    name: "Honey Glazed Salmon",
-    price: "$4.50",
-    wasPrice: "$4.50",
-    left: 6,
-    image: require("@/assets/store/salmon.png"),
-  },
-  {
-    name: "Honey Glazed Salmon",
-    price: "$4.50",
-    wasPrice: "$4.50",
-    left: 6,
-    image: require("@/assets/store/salmon.png"),
-  },
-  {
-    name: "Barbeque Smoked Beef Steak",
-    price: "$1.99",
-    wasPrice: "$4.50",
-    left: 12,
-    image: require("@/assets/store/beef.png"),
-  },
-  {
-    name: "Barbeque Smoked Beef Steak",
-    price: "$1.99",
-    wasPrice: "$4.50",
-    left: 15,
-    image: require("@/assets/store/beef.png"),
-  },
-];
+interface StoreComponentProps {
+  store: Store;
+}
 
-const StoreComponent = () => {
+const StoreComponent: React.FC<StoreComponentProps> = ({ store }) => {
   const router = useRouter();
+
   const handleStorePress = () => {
     router.push({
-      pathname: '/store',
-      params: { items: JSON.stringify(items) },
+      pathname: "/store",
+      params: {
+        items: JSON.stringify(store.items),
+        store: JSON.stringify(store),
+      },
     });
   };
 
-  const handleItemPress = (item: { name: string }) => {
+  const handleItemPress = (item: StoreItem) => {
     router.push({
       pathname: "/item",
-      params: { item: JSON.stringify(item) },
+      params: { item: JSON.stringify(item), store: JSON.stringify(store) },
     });
   };
 
@@ -80,28 +44,27 @@ const StoreComponent = () => {
         delayPressIn={100}
       >
         <View style={styles.storeHeader}>
-          <Image
-            source={require("@/assets/icons/starbucks.png")}
-            style={styles.storeLogo}
-          />
+          <Image source={store.storeLogo} style={styles.storeLogo} />
           <View style={styles.storeInfo}>
-            <Text style={styles.storeTitle}>Starbucks Coffee</Text>
-            <Text style={styles.storeSubtitle}>2.5km • Grocery Store</Text>
+            <Text style={styles.storeTitle}>{store.storeTitle}</Text>
+            <Text style={styles.storeSubtitle}>
+              {store.storeDistance} • {store.storeCategory}
+            </Text>
           </View>
           <View style={styles.storeStatus}>
-            <Text style={styles.statusText}>16</Text>
+            <Text style={styles.statusText}>{store.storeItemQuantity}</Text>
           </View>
           <Ionicons name="chevron-forward" size={18} style={styles.arrowIcon} />
         </View>
       </TouchableOpacity>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {items.map((item, index) => {
-          let itemLeftStyle;
-          let itemLeftTextColor;
-          if (item.left === 1) {
+        {store.items.map((item, index) => {
+          let itemLeftStyle: any;
+          let itemLeftTextColor: any;
+          if (item.quantity === 1) {
             itemLeftStyle = styles.itemLeftRed;
             itemLeftTextColor = { color: "#B7222A" };
-          } else if (item.left > 10) {
+          } else if (item.quantity > 10) {
             itemLeftStyle = styles.itemLeftGreen;
             itemLeftTextColor = { color: "white" };
           } else {
@@ -118,19 +81,25 @@ const StoreComponent = () => {
             >
               <View style={styles.itemContainer}>
                 <View style={styles.imageContainer}>
-                  <Image source={item.image} style={styles.itemImage} />
+                  <Image source={item.imageURL} style={styles.itemImage} />
                   <View style={styles.discountTag}>
-                    <Text style={styles.discountText}>-10%</Text>
+                    <Text style={styles.discountText}>
+                      -{item.discount * 100}%
+                    </Text>
                   </View>
                 </View>
                 <View style={styles.itemInfo}>
                   <View style={[styles.itemLeftContainer, itemLeftStyle]}>
-                    <Text style={[styles.itemLeft, itemLeftTextColor]}>{item.left} left</Text>
+                    <Text style={[styles.itemLeft, itemLeftTextColor]}>
+                      {item.quantity} left
+                    </Text>
                   </View>
                   <Text style={styles.itemName}>{item.name}</Text>
                   <View style={styles.priceContainer}>
-                    <Text style={styles.itemWasPrice}>was {item.wasPrice}</Text>
-                    <Text style={styles.itemPrice}>{item.price}</Text>
+                    <Text style={styles.itemWasPrice}>
+                      was {item.originalPrice}
+                    </Text>
+                    <Text style={styles.itemPrice}>{item.finalPrice}</Text>
                   </View>
                 </View>
               </View>
