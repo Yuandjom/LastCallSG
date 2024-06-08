@@ -96,13 +96,13 @@ const Orders = () => {
           onPress={() => setActiveTab("Open")}
           style={styles.tab(activeTab === "Open")}
         >
-          <Text style={styles.tabText(activeTab === "Open")}>Open</Text>
+          <Text style={styles.tabText(activeTab === "Open")}>Scheduled</Text>
         </TouchableOpacity>
         <TouchableOpacity
           onPress={() => setActiveTab("Closed")}
           style={styles.tab(activeTab === "Closed")}
         >
-          <Text style={styles.tabText(activeTab === "Closed")}>Closed</Text>
+          <Text style={styles.tabText(activeTab === "Closed")}>Collected</Text>
         </TouchableOpacity>
       </View>
       <ScrollView contentContainerStyle={styles.contentContainer}>

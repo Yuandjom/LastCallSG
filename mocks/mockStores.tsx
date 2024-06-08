@@ -4,12 +4,12 @@ import { Store } from "../app/interfaces";
 
 export const stores: Store[] = [
   {
-    storeTitle: "Hardbucks Coffee",
+    storeTitle: "Phillip Market",
     storeDistance: "2.5km",
     storeCategory: "Grocery Store",
     storeItemQuantity: 16,
     storeLogo: {
-      uri: "https://drive.google.com/uc?export=view&id=1JGGuXYZnIbBYxbevcKoVwsNQEYorGL_U",
+      uri: "https://down-sg.img.susercontent.com/file/sg-11134202-7rd3l-lvjv6pvqrpt55d",
     },
     storeLatitude: 37.78825,
     storeLongitude: -122.4324,
@@ -23,7 +23,9 @@ export const stores: Store[] = [
         originalPrice: 4.5,
         discount: 0.35,
         quantity: 2,
-        imageURL: require("@/assets/store/beef.png"),
+        imageURL: {
+          uri: "https://down-sg.img.susercontent.com/file/sg-11134202-7rd3l-lvjv6pvqrpt55d",
+        },
         expiryDate: new Date(),
         description:
           "Let it makes an bread sandwich. Its flavours from the pulp of Banana, Papaya, Apple, Pear, Pineapple, Mango, Grape And Orange.",

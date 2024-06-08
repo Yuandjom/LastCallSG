@@ -43,7 +43,7 @@ const ItemPage = () => {
 
   return (
     <View style={styles.container}>
-      <ImageBackground source={item.imageURL} style={styles.image}>
+      <ImageBackground source={{ uri: item.imageURL }} style={styles.image}>
         <TouchableOpacity
           onPress={() => router.back()}
           style={styles.backButton}
@@ -60,10 +60,7 @@ const ItemPage = () => {
             </View>
           </View>
           <View style={styles.sellerContainer}>
-            <Image
-              source={store.storeLogo}
-              style={styles.storeLogo}
-            />
+            <Image source={{ uri: store.storeLogo }} style={styles.storeLogo} />
             <View>
               <Text style={styles.storeTitle}>{store.storeTitle}</Text>
               <Text style={styles.rating}>{store.storeRating} ★</Text>

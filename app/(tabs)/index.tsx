@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Image,
   StyleSheet,
-  Text,
+    Text,
   View,
   ScrollView,
   StatusBar,
@@ -17,6 +17,9 @@ import { Store } from "@/app/interfaces";
 
 export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
+  const [stores, setStores] = useState<Store[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -25,6 +28,27 @@ export default function HomeScreen() {
       setRefreshing(false);
     }, 2000);
   };
+
+  useEffect(() => {
+    fetchStores();
+  }, []);
+
+  const fetchStores = async () => {
+    try {
+      const response = await fetch("https://411r12agye.execute-api.ap-southeast-1.amazonaws.com/stores");
+      if (!response.ok) {
+        throw new Error("Failed to fetch stores");
+      }
+      const data = await response.json();
+      console.log(data[0].items);
+      setStores(data);
+    } catch (error: any) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   return (
     <View style={styles.container}>
