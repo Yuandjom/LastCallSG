@@ -134,7 +134,7 @@ const StorePage = () => {
         <View style={styles.storeHeader}>
           <View style={styles.backgroundColor} />
           <View style={styles.storeInfo}>
-            <Image source={store.storeLogo} style={styles.storeLogo} />
+            <Image source={{uri:store.storeLogo}} style={styles.storeLogo} />
             <View style={styles.storeTextContainer}>
               <Text style={styles.storeTitle}>{store.storeTitle}</Text>
               <Text style={styles.storeSubtitle}>
@@ -196,7 +196,7 @@ const StorePage = () => {
                   style={styles.product}
                 >
                   <View style={styles.imageContainer}>
-                    <Image source={item.imageURL} style={styles.productImage} />
+                    <Image source={{uri:item.imageURL}} style={styles.productImage} />
                     <View style={styles.discountTag}>
                       <Text style={styles.discountText}>-{item.discount}%</Text>
                     </View>

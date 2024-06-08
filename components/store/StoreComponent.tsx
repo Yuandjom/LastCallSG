@@ -44,7 +44,7 @@ const StoreComponent: React.FC<StoreComponentProps> = ({ store }) => {
         delayPressIn={100}
       >
         <View style={styles.storeHeader}>
-          <Image source={store.storeLogo} style={styles.storeLogo} />
+          <Image source={{uri:store.storeLogo}} style={styles.storeLogo} />
           <View style={styles.storeInfo}>
             <Text style={styles.storeTitle}>{store.storeTitle}</Text>
             <Text style={styles.storeSubtitle}>
@@ -52,7 +52,7 @@ const StoreComponent: React.FC<StoreComponentProps> = ({ store }) => {
             </Text>
           </View>
           <View style={styles.storeStatus}>
-            <Text style={styles.statusText}>{store.storeItemQuantity}</Text>
+            <Text style={styles.statusText}>{store.items.length}</Text>
           </View>
           <Ionicons name="chevron-forward" size={18} style={styles.arrowIcon} />
         </View>
@@ -81,7 +81,10 @@ const StoreComponent: React.FC<StoreComponentProps> = ({ store }) => {
             >
               <View style={styles.itemContainer}>
                 <View style={styles.imageContainer}>
-                  <Image source={item.imageURL} style={styles.itemImage} />
+                  <Image
+                    source={{ uri: item.imageURL }}
+                    style={styles.itemImage}
+                  />
                   <View style={styles.discountTag}>
                     <Text style={styles.discountText}>
                       -{item.discount * 100}%
