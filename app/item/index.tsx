@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  Animated
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -29,6 +30,11 @@ const ItemPage = () => {
   };
   const closeModal = () => {
     setModalVisible(false);
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
   };
 
   const item: StoreItem = params.item
@@ -49,7 +55,11 @@ const ItemPage = () => {
 
   return (
     <View style={styles.container}>
+      
+      <Animated.View style={[styles.overlay, { opacity: fadeAnim }]}>
+
       <ImageBackground source={item.imageURL} style={styles.image}>
+
         <TouchableOpacity
           onPress={() => router.back()}
           style={styles.backButton}
@@ -124,11 +134,19 @@ const ItemPage = () => {
       </TouchableOpacity>
 
       <ItemModal visible={modalVisible} onClose={closeModal} />
+      </Animated.View>
+
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+
+  overlay: {
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%'
+  },
   container: {
     flex: 1,
     alignItems: "center",
