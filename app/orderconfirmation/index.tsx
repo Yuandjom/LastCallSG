@@ -1,7 +1,17 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import { useRouter, useLocalSearchParams } from "expo-router";
 
 const OrderConfirmation = () => {
+    const router = useRouter();
+    const handlePress = () => {
+        // Add your code here
+        router.push({
+            pathname: "/",
+            params: {
+            },
+        })
+    }
     return (
         <View style={styles.container}>
             <View style={styles.contentContainer}>
@@ -38,7 +48,7 @@ const OrderConfirmation = () => {
                         Please collect your order within 7 days. You can pay for your purchase at the store counter. A confirmation email has been sent to your email address.
                     </Text>
                 </View>
-                <TouchableOpacity style={styles.button2} onPress={() => { }}>
+                <TouchableOpacity style={styles.button2} onPress={() => handlePress()}>
                     <Text style={styles.buttonText2}>View order</Text>
                 </TouchableOpacity>
             </View>

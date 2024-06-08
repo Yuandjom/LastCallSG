@@ -38,6 +38,7 @@ export default function RootLayout() {
         <Stack.Screen name="item/index" options={{ headerShown: false }} />
         {/* <Stack.Screen name="Rating/order" options={{ headerShown: false }} /> */}
         <Stack.Screen name="rating/index" options={{ headerShown: false }} />
+        <Stack.Screen name="orderconfirmation/index" options={{ headerShown: false }} />
         <Stack.Screen
           name="interactive-map/index"
           options={{ headerShown: false }}
