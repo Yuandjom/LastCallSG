@@ -1,6 +1,6 @@
 import React from "react";
 import { useState } from "react";
-import { View, Text, ImageBackground, StyleSheet, TouchableOpacity , Image} from "react-native";
+import { View, Text, ImageBackground, StyleSheet, TouchableOpacity , Image, Animated} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import  ItemModal  from "@/components/item/ItemModal"
@@ -8,24 +8,26 @@ import  ItemModal  from "@/components/item/ItemModal"
 const ItemPage = () => {
   const params = useLocalSearchParams();
   const router = useRouter();
+  const [fadeAnim] = useState(new Animated.Value(1));
 
   const [modalVisible, setModalVisible] = useState(false);
-  // const item = params.item ? JSON.parse(params.item as string) : {
-  //   name: "Bag of Breads",
-  //   left: 2,
-  //   discount: "-10%",
-  //   rating: 4.8,
-  //   collectTime: "19:00 - 22:00",
-  //   price: "$7.99",
-  //   originalPrice: "$8.00",
-  //   description: "A bag of bread, contains 6-7 bread. Please collect before closing at 9PM."
-  // }; // Added mock data for styling purposes
+
 
   const openModal = () => {
     setModalVisible(true);
+    Animated.timing(fadeAnim, {
+      toValue: 0.5,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
   };
   const closeModal = () => {
     setModalVisible(false);
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
   };
   const item = {
     name: "Bag of Breads",
@@ -37,7 +39,7 @@ const ItemPage = () => {
     originalPrice: "was $8.00",
     description: "A bag of bread, contains 6-7 bread. Please collect before closing at 9PM.",
     expiring_date: "Expiring <2 months",
-    paymentInstruction: "Please pay directly to merchant eqrw",
+    paymentInstruction: "Please pay directly to merchant",
     itemQty: "2 pcs"
   }; // Added mock data for styling purposes
 
@@ -45,6 +47,7 @@ const ItemPage = () => {
   
   return (
     <View style={styles.container}>
+      <Animated.View style={[styles.overlay, { opacity: fadeAnim }]}>
       <ImageBackground source={require('@/assets/images/croissant.jpg')} style={styles.image} >
         <TouchableOpacity
           onPress={() => router.back()}
@@ -105,12 +108,18 @@ const ItemPage = () => {
       </TouchableOpacity>
 
       <ItemModal visible={modalVisible} onClose={closeModal} />
+      </Animated.View>
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+  overlay: {
 
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%'
+  },
 
   container: {
     flex: 1,
@@ -124,7 +133,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    marginTop: "16%",
+    marginTop: "6%",
     marginLeft: "6%",
     justifyContent: "center",
     alignItems: "center"

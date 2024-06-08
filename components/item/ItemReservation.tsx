@@ -68,7 +68,6 @@ const ItemReservation: React.FC<MyModalProps> = ({setEmail , setName, setContact
 const styles = StyleSheet.create({
     modalBackground: {
         flex: 1,
-        backgroundColor: "rgba(44, 44, 44, 0.7)",
         justifyContent: 'flex-end',
     },
     
