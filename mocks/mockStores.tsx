@@ -16,6 +16,7 @@ export const stores: Store[] = [
     storeAddress: "1234, 5th Avenue, New York",
     storePostalCode: "10001",
     storeRating: 4.5,
+    storeEmailAddress: "test@gmail.com",
     items: [
       {
         name: "Barbeque Smoked Beef Steak",
@@ -76,6 +77,7 @@ export const stores: Store[] = [
     storeAddress: "1234, 5th Avenue, New York",
     storePostalCode: "10001",
     storeRating: 4.5,
+    storeEmailAddress: "test@gmail.com",
     items: [
       {
         name: "Barbeque Smoked Beef Steak",
@@ -134,6 +136,7 @@ export const stores: Store[] = [
     storeAddress: "1234, 5th Avenue, New York",
     storePostalCode: "10001",
     storeRating: 4.5,
+    storeEmailAddress: "test@gmail.com",
     items: [
       {
         name: "Barbeque Smoked Beef Steak",

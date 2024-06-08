@@ -11,6 +11,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import { Store, StoreItem } from "@/app/interfaces";
+import { truncateText } from "@/utils/truncateText";
 
 interface StoreComponentProps {
   store: Store;
@@ -44,9 +45,11 @@ const StoreComponent: React.FC<StoreComponentProps> = ({ store }) => {
         delayPressIn={100}
       >
         <View style={styles.storeHeader}>
-          <Image source={{uri:store.storeLogo}} style={styles.storeLogo} />
+          <Image source={{ uri: store.storeLogo }} style={styles.storeLogo} />
           <View style={styles.storeInfo}>
-            <Text style={styles.storeTitle}>{store.storeTitle}</Text>
+            <Text style={styles.storeTitle}>
+              {truncateText(store.storeTitle, 20)}
+            </Text>
             <Text style={styles.storeSubtitle}>
               {store.storeDistance} • {store.storeCategory}
             </Text>
@@ -97,7 +100,7 @@ const StoreComponent: React.FC<StoreComponentProps> = ({ store }) => {
                       {item.quantity} left
                     </Text>
                   </View>
-                  <Text style={styles.itemName}>{item.name}</Text>
+                  <Text style={styles.itemName}>{truncateText(item.name,35)}</Text>
                   <View style={styles.priceContainer}>
                     <Text style={styles.itemWasPrice}>
                       was {item.originalPrice}

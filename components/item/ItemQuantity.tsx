@@ -1,145 +1,183 @@
-
-import { Text, Modal, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { Text, TouchableOpacity, View, StyleSheet, TouchableWithoutFeedback } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { truncateText } from "@/utils/truncateText";
+import { useEffect, useState } from "react";
 
-const item = {
-  name: "Bag of Breads",
-  time: "Today: 09:00 - 12.00",
-  selectQuantity: "Select Quantity",
-  price: "S$15.98",
-  discount: "- $0",
-  confirmationText: "Proceed to Confirm"
-}
 interface MyModalProps {
   quantity: number;
   decreaseQuantity: () => void;
   increaseQuantity: () => void;
   onClose: () => void;
   shiftScreen: () => void;
+  item: any;
+  store: any;
 }
 
+const ItemQuantity: React.FC<MyModalProps> = ({
+  quantity,
+  decreaseQuantity,
+  increaseQuantity,
+  onClose,
+  shiftScreen,
+  item,
+  store,
+}) => {
+  const formattedExpiryDate = item.expiryDate.toString().split("T")[0];
+  const [totalPrice, setTotalPrice] = useState(0);
+  const [totalDiscount, setTotalDiscount] = useState(0);
 
-const ItemQuantity: React.FC<MyModalProps> = ({ quantity, decreaseQuantity, increaseQuantity, onClose, shiftScreen }) => {
+  useEffect(() => {
+    const price = quantity * item.finalPrice;
+    const discount = quantity * item.finalPrice * item.discount;
+    setTotalPrice(Number(price.toFixed(2)));
+    setTotalDiscount(Number(discount.toFixed(2)));
+  }, [quantity, item.finalPrice, item.discount])
 
   return (
-    <View style={styles.modalBackground}>
-      <View style={styles.modalOverlay}>
-        <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-          <Ionicons name="close-outline" size={32} color="black" />
-        </TouchableOpacity>
-        <View style={styles.detailAndQtyContainer}>
-          <Text style={styles.itemName}>{item.name}</Text>
-          <Text style={styles.itemTime}>{item.time}</Text>
-          <View style={styles.seperator}></View>
-          <Text style={styles.selectQuantity}>{item.selectQuantity}</Text>
-          <View style={styles.quantitySelector}>
-            <TouchableOpacity style={[styles.minusButton, quantity == 0 ? minusButtonInactivatedColor : minusButtonActivatedColor]} onPress={decreaseQuantity} disabled={quantity == 0}>
-              <Ionicons name="remove-outline" size={32} color="white" />
+    <TouchableWithoutFeedback onPress={onClose}>
+      <View style={styles.modalBackground}>
+        <TouchableWithoutFeedback>
+          <View style={styles.modalOverlay}>
+            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+              <Ionicons name="close" size={32} color="black" />
             </TouchableOpacity>
-            <Text style={styles.quantity}>{quantity}</Text>
-            <TouchableOpacity style={styles.addButton} onPress={increaseQuantity}>
-              <Ionicons name="add-outline" size={32} color="white" />
-            </TouchableOpacity>
-          </View>
-          <View style={styles.seperator}></View>
-          <View style={styles.priceContainer}>
-            <Text>price</Text>
-            <Text>{item.price}</Text>
-          </View>
-          <View style={styles.discountContainer}>
-            <Text>discount</Text>
-            <Text>{item.discount}</Text>
-          </View>
-          <View style={styles.seperator}></View>
-          <View style={styles.confirmationContainer}>
-            <View style={styles.totalPriceContainer}>
-              <Text>Total</Text>
-              {/* <Text style={styles.finalPrice}>{item.price}</Text> */}
+            <View style={styles.detailAndQtyContainer}>
+              <Text style={styles.itemName}>{truncateText(item.name, 20)}</Text>
+              <Text style={styles.itemTime}>Best before {formattedExpiryDate}</Text>
+              <View style={styles.seperator}></View>
+              <Text style={styles.selectQuantity}>{"Select quantity"}</Text>
+              <View style={styles.quantitySelector}>
+                <TouchableOpacity
+                  style={[
+                    styles.minusButton,
+                    quantity == 0
+                      ? styles.minusButtonInactivatedColor
+                      : styles.minusButtonActivatedColor,
+                  ]}
+                  onPress={decreaseQuantity}
+                  disabled={quantity == 0}
+                >
+                  <Ionicons name="remove-outline" size={32} color="white" />
+                </TouchableOpacity>
+                <Text style={styles.quantity}>{quantity}</Text>
+                <TouchableOpacity
+                  onPress={increaseQuantity}
+                  disabled={quantity === item.quantity}
+                  style={[
+                    styles.addButton,
+                    quantity == item.quantity
+                      ? styles.plusButtonInactivatedColor
+                      : styles.plusButtonActivatedColor,
+                  ]}
+                >
+                  <Ionicons name="add-outline" size={32} color="white" />
+                </TouchableOpacity>
+              </View>
+              <View style={styles.seperator}></View>
+              <View style={styles.priceContainer}>
+                <Text>Price</Text>
+                <Text>S${totalPrice}</Text>
+              </View>
+              <View style={styles.discountContainer}>
+                <Text>Discount</Text>
+                <Text>- S${totalDiscount}</Text>
+              </View>
+              <View style={styles.seperator}></View>
+              <View style={styles.confirmationContainer}>
+                <View style={styles.totalPriceContainer}>
+                  <Text>Total</Text>
+                  <Text style={styles.finalPrice}>
+                    S${(totalPrice - totalDiscount).toFixed(2)}
+                  </Text>
+                </View>
+                <TouchableOpacity
+                  style={[
+                    styles.confirmationButton,
+                    quantity === 0 ? styles.confirmationButtonDisabled : {},
+                  ]}
+                  onPress={shiftScreen}
+                  disabled={quantity === 0}
+                >
+                  <Text style={styles.confirmationText}>
+                    {"Proceed to Confirm"}
+                  </Text>
+                </TouchableOpacity>
+              </View>
             </View>
-            <TouchableOpacity style={styles.confirmationButton} onPress={shiftScreen} >
-              <Text style={styles.confirmationText}>{item.confirmationText}</Text>
-            </TouchableOpacity>
           </View>
-        </View>
+        </TouchableWithoutFeedback>
       </View>
-    </View>
-  )
-
-
-
-
-
-
-
-
-
-
-
-}
-
-const minusButtonInactivatedColor = {
-  backgroundColor: 'grey'
+    </TouchableWithoutFeedback>
+  );
 };
-
-const minusButtonActivatedColor = {
-  backgroundColor: 'green'
-}
-
 
 
 const styles = StyleSheet.create({
+  minusButtonActivatedColor: {
+    backgroundColor: "#168F55",
+  },
+  minusButtonInactivatedColor: {
+    backgroundColor: "grey",
+  },
+  plusButtonActivatedColor: {
+    backgroundColor: "#168F55",
+  },
+  plusButtonInactivatedColor: {
+    backgroundColor: "grey",
+  },
+  confirmationButtonDisabled: {
+    backgroundColor: "gray",
+  },
   modalBackground: {
     flex: 1,
-    justifyContent: 'flex-end',
+    justifyContent: "flex-end",
   },
   name: {
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   detailAndQtyContainer: {
-    marginTop: '5%',
+    marginTop: "5%",
     justifyContent: "center",
     alignItems: "center",
-    width: "100%"
+    width: "100%",
   },
   itemName: {
     textAlign: "center",
     fontSize: 20,
     fontWeight: "bold",
-    margin: 10
+    margin: 10,
   },
-  itemTime: {
-  },
+  itemTime: {},
 
   seperator: {
     height: 1, // Height of the line
-    backgroundColor: '#EEEEEE', // Color of the line
-    width: '80%', // Full width of the container
+    backgroundColor: "#EEEEEE", // Color of the line
+    width: "80%", // Full width of the container
     marginVertical: 10, // Margin around the line
   },
   selectQuantity: {
     fontWeight: "bold",
-    margin: 4
+    margin: 4,
   },
 
   quantity: {
     fontSize: 40,
-    fontWeight: 'bold',
-    margin: 10
+    fontWeight: "bold",
+    margin: 10,
   },
 
   quantitySelector: {
     justifyContent: "center",
     flexDirection: "row",
     height: "30%",
-    alignItems: "center"
+    alignItems: "center",
   },
 
   addButton: {
     height: 60,
     width: 60,
     borderRadius: 30,
-    backgroundColor: "green",
+    backgroundColor: "#168F55",
     margin: 8,
     justifyContent: "center",
     alignItems: "center",
@@ -148,76 +186,75 @@ const styles = StyleSheet.create({
     height: 60,
     width: 60,
     borderRadius: 30,
-    backgroundColor: 'green',
+    backgroundColor: "#168F55",
     margin: 8,
     justifyContent: "center",
     alignItems: "center",
   },
 
   modalOverlay: {
-    backgroundColor: 'white',
-    height: '50%',
-    marginTop: 'auto',
+    backgroundColor: "white",
+    height: "50%",
+    marginTop: "auto",
     borderTopLeftRadius: 20,
     borderTopRightRadius: 20,
-    alignItems: 'center',
-
+    alignItems: "center",
   },
   closeButton: {
-    position: 'absolute',
-    bottom: '88%',
-    right: '4%',
+    position: "absolute",
+    bottom: "88%",
+    right: "4%",
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: '#F5F2F9',
+    backgroundColor: "#F5F2F9",
     width: 40,
     height: 40,
     borderRadius: 20,
   },
   closeButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
+    color: "white",
+    fontWeight: "bold",
   },
   discountContainer: {
     justifyContent: "space-between",
     flexDirection: "row",
-    width: '90%',
-    margin: 5
+    width: "90%",
+    margin: 5,
   },
   priceContainer: {
     justifyContent: "space-between",
     flexDirection: "row",
-    width: '90%',
-    margin: 5
-
+    width: "90%",
+    margin: 5,
   },
   confirmationContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     width: "90%",
-    height: "12%",
-    justifyContent: "space-between"
+    height: "14%",
+    justifyContent: "space-between",
   },
   confirmationButton: {
-    backgroundColor: 'green',
-    width: "40%",
+    backgroundColor: "#168F55",
+    width: "60%",
     height: "100%",
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 20
+    borderRadius: 32,
+    padding: 14,
   },
   confirmationText: {
     fontSize: 15,
-    fontWeight: 'bold',
-    color: 'white'
+    fontWeight: "bold",
+    color: "white",
   },
   totalPriceContainer: {
-    justifyContent: 'space-between'
+    justifyContent: "center",
   },
   finalPrice: {
-    fontWeight: 'bold',
-    fontSize: 20
-  }
+    fontWeight: "bold",
+    marginTop: 5,
+    fontSize: 20,
+  },
 });
-
 
 export default ItemQuantity;

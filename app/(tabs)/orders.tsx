@@ -8,210 +8,168 @@ import {
   Modal,
   Animated,
   Easing,
+  Alert,
 } from "react-native";
 import React, { useState, useEffect, useRef } from "react";
 import { FontAwesome } from "@expo/vector-icons";
-// import { useNavigation } from '@react-navigation/native';
-import { useRouter } from "expo-router";
+import { useLocalSearchParams, useRouter } from "expo-router";
+import { Store, StoreItem } from "../interfaces";
 
 const Orders = () => {
-  const [activeTab, setActiveTab] = useState("Open");
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(300)).current;
-  // const navigation = useNavigation();
   const router = useRouter();
+  const params = useLocalSearchParams();
 
-  const [openOrders, setOpenOrders] = useState([
-    {
-      id: "O-125675",
-      shop: "Starbucks Coffee",
-      items: [
-        { name: "Double Cheeseburger", price: 4.99, quantity: 1 },
-        { name: "Bag of Breads", price: 15.98, quantity: 2 },
-      ],
-      status: "Order confirmed",
-      collectTime: "Collect today by 10pm",
-    },
-  ]); // Mock open orders data
+  const [orders, setOrders] = useState([]);
+  const item: StoreItem = params.item
+    ? JSON.parse(params.item as string)
+    : {
+        name: "",
+        finalPrice: 0,
+        originalPrice: 0,
+        discount: 0,
+        quantity: 0,
+        imageURL: "",
+        expiryDate: new Date(),
+        description: "",
+      };
 
-  const [closedOrders, setClosedOrders] = useState([]); // Closed orders list
+  const store: Store = params.store ? JSON.parse(params.store as string) : null;
+  const totalPrice: string = params.totalPrice
+    ? JSON.parse(params.totalPrice as string)
+    : "0.00";
+  const quantity: string = params.quantity
+    ? JSON.parse(params.quantity as string)
+    : 0;
+  const orderId = params.orderId ? JSON.parse(params.orderId as string) : "0";
 
-  const handleRedeemPress = (order: React.SetStateAction<null>) => {
-    setSelectedOrder(order);
-    setModalVisible(true);
-    Animated.timing(fadeAnim, {
-      toValue: 1,
-      duration: 300,
-      useNativeDriver: true,
-    }).start();
-    Animated.timing(slideAnim, {
-      toValue: 0,
-      duration: 300,
-      easing: Easing.out(Easing.ease),
-      useNativeDriver: true,
-    }).start();
-  };
+  useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        const response = await fetch(
+          `https://411r12agye.execute-api.ap-southeast-1.amazonaws.com/orders`
+        );
+        if (response.ok) {
+          const data = await response.json();
+          setOrders(data); 
+        } else {
+          throw new Error("Failed to fetch order by ID");
+        }
+      } catch (error) {
+        Alert.alert("Error", "Failed to fetch orders");
+      }
+    };
 
-  const handleConfirm = () => {
-    setClosedOrders([
-      ...closedOrders,
-      { ...selectedOrder, status: "Order completed" },
-    ]);
-    setOpenOrders(openOrders.filter((order) => order.id !== selectedOrder.id));
-    handleModalClose();
-  };
+    fetchOrders();
+  }, []);
 
-  const handleModalClose = () => {
-    Animated.timing(fadeAnim, {
-      toValue: 0,
-      duration: 300,
-      useNativeDriver: true,
-    }).start(() => {
-      setModalVisible(false);
-    });
-    Animated.timing(slideAnim, {
-      toValue: 300,
-      duration: 300,
-      easing: Easing.in(Easing.ease),
-      useNativeDriver: true,
-    }).start();
-  };
+  // const handleRedeemPress = (order) => {
+  //   setSelectedOrder(order);
+  //   setModalVisible(true);
+  //   Animated.timing(fadeAnim, {
+  //     toValue: 1,
+  //     duration: 300,
+  //     useNativeDriver: true,
+  //   }).start();
+  //   Animated.timing(slideAnim, {
+  //     toValue: 0,
+  //     duration: 300,
+  //     easing: Easing.out(Easing.ease),
+  //     useNativeDriver: true,
+  //   }).start();
+  // };
 
-  const handleRateOrder = (order: never) => {
+  // const handleConfirm = () => {
+  //   setOrders(orders.filter((order) => order.id !== selectedOrder.id));
+  //   handleModalClose();
+  // };
+
+  // const handleModalClose = () => {
+  //   Animated.timing(fadeAnim, {
+  //     toValue: 0,
+  //     duration: 300,
+  //     useNativeDriver: true,
+  //   }).start(() => {
+  //     setModalVisible(false);
+  //   });
+  //   Animated.timing(slideAnim, {
+  //     toValue: 300,
+  //     duration: 300,
+  //     easing: Easing.in(Easing.ease),
+  //     useNativeDriver: true,
+  //   }).start();
+  // };
+
+  const handleRateOrder = (order: any) => {
     router.push({
       pathname: "/rating",
       params: { order: JSON.stringify(order) },
     });
   };
-
+  console.log(orders);
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
         <Text style={styles.headerText}>Orders</Text>
       </View>
-      <View style={styles.tabContainer}>
-        <TouchableOpacity
-          onPress={() => setActiveTab("Open")}
-          style={styles.tab(activeTab === "Open")}
-        >
-          <Text style={styles.tabText(activeTab === "Open")}>Scheduled</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-          onPress={() => setActiveTab("Closed")}
-          style={styles.tab(activeTab === "Closed")}
-        >
-          <Text style={styles.tabText(activeTab === "Closed")}>Collected</Text>
-        </TouchableOpacity>
+      <View style={styles.orderHistoryContainer}>
+        <Text style={styles.orderHistoryText}>My Order History</Text>
+        <View style={styles.line} />
       </View>
       <ScrollView contentContainerStyle={styles.contentContainer}>
-        {activeTab === "Open" ? (
-          openOrders.length > 0 ? (
-            openOrders.map((order) => (
-              <View key={order.id} style={styles.orderContainer}>
-                <View style={styles.shopInfoContainer}>
-                  <Image
-                    source={require("@/assets/icons/starbucks.png")}
-                    style={styles.shopImage}
-                  />
-                  <View>
-                    <Text style={styles.shopName}>{order.shop}</Text>
-                    <Text style={styles.shopId}>{order.id}</Text>
-                  </View>
-                </View>
-                {order.items.map((item, index) => (
-                  <View key={index} style={styles.itemContainer}>
-                    <Text style={styles.itemText}>
-                      {item.quantity}x {item.name}
-                    </Text>
-                    <Text style={styles.itemPrice}>
-                      S${item.price.toFixed(2)}
-                    </Text>
-                  </View>
-                ))}
-                <View style={styles.statusContainer}>
-                  <FontAwesome name="check-circle" size={20} color="green" />
-                  <Text style={styles.orderStatus}>{order.status}</Text>
-                </View>
-                <View style={styles.collectTimeContainer}>
-                  <View style={styles.collectTimeLine} />
-                  <Text style={styles.collectTime}>{order.collectTime}</Text>
-                </View>
-                <TouchableOpacity
-                  style={styles.redeemButton}
-                  onPress={() => handleRedeemPress(order)}
-                >
-                  <Text style={styles.redeemButtonText}>Redeem</Text>
-                </TouchableOpacity>
-              </View>
-            ))
-          ) : (
-            <View style={styles.emptyContainer}>
-              <Text style={styles.emoji}>👀</Text>
-              <Text style={styles.noOrdersText}>You don't have any orders</Text>
-              <Text style={styles.subText}>Save money, reduce waste</Text>
-              <TouchableOpacity>
-                <Text style={styles.linkText}>Let's save something</Text>
-              </TouchableOpacity>
-            </View>
-          )
-        ) : closedOrders.length > 0 ? (
-          closedOrders.map((order) => (
+        {orders.length > 0 ? (
+          orders.map((order) => (
             <View key={order.id} style={styles.orderContainer}>
               <View style={styles.shopInfoContainer}>
                 <Image
-                  source={require("@/assets/icons/starbucks.png")}
+                  source={{ uri: order.storeLogo }}
                   style={styles.shopImage}
                 />
                 <View>
-                  <Text style={styles.shopName}>{order.shop}</Text>
-                  <View style={styles.statusContainer}>
-                    <FontAwesome name="check-circle" size={20} color="green" />
-                    <Text style={styles.orderStatus}>{order.status}</Text>
-                  </View>
+                  <Text style={styles.shopName}>{order.storeTitle}</Text>
+                  <Text style={styles.shopId}>{order.id}</Text>
                 </View>
               </View>
-              <Text style={styles.shopId}>{order.id}</Text>
+
               <View style={styles.itemContainer}>
-                <Text style={styles.totalItems}>
-                  Total{" "}
-                  {order.items.reduce(
-                    (acc: any, item: { quantity: any }) => acc + item.quantity,
-                    0
-                  )}{" "}
-                  Items
+                <Text style={styles.itemText}>
+                  {order.quantity}x {order.itemName}
                 </Text>
-                <Text style={styles.totalPrice}>
-                  S$
-                  {order.items
-                    .reduce(
-                      (acc: any, item: { price: any }) => acc + item.price,
-                      0
-                    )
-                    .toFixed(2)}
-                </Text>
+                <Text style={styles.itemPrice}>S${totalPrice}</Text>
               </View>
 
               <View style={styles.collectTimeContainer}>
-                <View style={styles.collectTimeLine} />
-                <Text style={styles.collectTime}>{order.collectTime}</Text>
+                <Text style={styles.collectTime}>
+                  {"Please collect before.."}
+                </Text>
               </View>
-              <TouchableOpacity
-                style={styles.rateButton}
-                onPress={() => handleRateOrder(order)}
+              <View style={styles.statusContainer}>
+                <FontAwesome name="check-circle" size={20} color="green" />
+                <Text style={styles.orderStatus}>{"Reserved"}</Text>
+              </View>
+              {/* <TouchableOpacity
+                style={styles.redeemButton}
+                onPress={() => handleRedeemPress(order)}
               >
-                <Text style={styles.rateButtonText}>Rate your order</Text>
-              </TouchableOpacity>
+                <Text style={styles.redeemButtonText}>Redeem</Text>
+              </TouchableOpacity> */}
             </View>
           ))
         ) : (
           <View style={styles.emptyContainer}>
-            <Text style={styles.noOrdersText}>No closed orders</Text>
+            <Text style={styles.emoji}>👀</Text>
+            <Text style={styles.noOrdersText}>You don't have any orders</Text>
+            <Text style={styles.subText}>Save money, reduce waste</Text>
+            <TouchableOpacity onPress={() => router.push("/")}>
+              <Text style={styles.linkText}>Let's save something</Text>
+            </TouchableOpacity>
           </View>
         )}
       </ScrollView>
-      {selectedOrder && (
+      {/* {selectedOrder && (
         <Modal
           transparent={true}
           visible={modalVisible}
@@ -252,8 +210,8 @@ const Orders = () => {
               </View>
             </Animated.View>
           </Animated.View>
-        </Modal>
-      )}
+        </Modal> */}
+      {/* )} */}
     </View>
   );
 };
@@ -269,7 +227,7 @@ const styles = StyleSheet.create({
     paddingTop: 50, // Adjust for safe area if needed
     paddingBottom: 10,
     backgroundColor: "#fff",
-    alignItems: "left",
+    alignItems: "flex-start",
     paddingLeft: 20,
     borderBottomWidth: 2,
     borderBottomColor: "#fff",
@@ -278,53 +236,36 @@ const styles = StyleSheet.create({
     fontSize: 22,
     fontWeight: "bold",
   },
-  tabContainer: {
-    flexDirection: "row",
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
-  },
-  tab: (isActive: any) => ({
-    flex: 1,
-    paddingVertical: 15,
-    borderBottomWidth: isActive ? 2 : 0,
-    borderBottomColor: isActive ? "#000" : "transparent",
+  orderHistoryContainer: {
     alignItems: "center",
-  }),
-  tabText: (isActive: any) => ({
-    color: isActive ? "#000" : "#888",
-    fontWeight: isActive ? "bold" : "normal",
-  }),
+    marginTop: 10,
+  },
+  orderHistoryText: {
+    fontSize: 20,
+    fontWeight: "bold",
+  },
+  line: {
+    height: 3,
+    backgroundColor: "#171717",
+    width: "100%",
+    marginTop: 10,
+  },
   contentContainer: {
     flexGrow: 1,
-    justifyContent: "center",
     alignItems: "center",
-  },
-  emptyContainer: {
-    alignItems: "center",
-  },
-  emoji: {
-    fontSize: 50,
-    marginBottom: 20,
-  },
-  noOrdersText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  subText: {
-    color: "#888",
-    marginBottom: 20,
-  },
-  linkText: {
-    color: "#007BFF",
-    fontWeight: "bold",
+    paddingTop: 20,
   },
   orderContainer: {
-    backgroundColor: "#f9f9f9",
+    backgroundColor: "#ffffff",
     borderRadius: 10,
     padding: 15,
     marginBottom: 15,
     width: "90%",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 5,
+    elevation: 3,
   },
   shopInfoContainer: {
     flexDirection: "row",
@@ -332,9 +273,9 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   shopImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+    width: 48,
+    height: 48,
+    borderRadius: 24,
     marginRight: 10,
   },
   shopName: {
@@ -400,18 +341,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  rateButton: {
-    borderColor: "#28a745",
-    borderWidth: 1,
-    paddingVertical: 10,
-    borderRadius: 5,
-    alignItems: "center",
-  },
-  rateButtonText: {
-    color: "#28a745",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
   modalBackground: {
     flex: 1,
     justifyContent: "flex-end",
@@ -467,6 +396,28 @@ const styles = StyleSheet.create({
   cancelButtonText: {
     color: "#fff",
     fontSize: 16,
+    fontWeight: "bold",
+  },
+  emptyContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 200,
+  },
+  emoji: {
+    fontSize: 50,
+    marginBottom: 20,
+  },
+  noOrdersText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 10,
+  },
+  subText: {
+    color: "#888",
+    marginBottom: 20,
+  },
+  linkText: {
+    color: "#007BFF",
     fontWeight: "bold",
   },
 });
