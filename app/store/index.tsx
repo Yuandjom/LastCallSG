@@ -17,16 +17,18 @@ import { Ionicons, EvilIcons } from "@expo/vector-icons";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
+import { Store,StoreItem } from "@/app/interfaces";
 
 const StorePage = () => {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const items: any[] = params.items ? JSON.parse(params.items as string) : [];
+  const store: Store = params.store ? JSON.parse(params.store as string) : null;
+  const items: StoreItem[] = params.items ? JSON.parse(params.items as string) : [];
 
   const [refreshing, setRefreshing] = useState(false);
   const [activeTab, setActiveTab] = useState("Products");
-  const [location, setLocation] = useState(null);
-  const [loading, setLoading] = useState(false); // State variable for loader
+  const [location, setLocation] = useState<any>(null);
+  const [loading, setLoading] = useState(false);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -35,7 +37,7 @@ const StorePage = () => {
     }, 2000);
   };
 
-  const handleItemPress = (item: { name: string }) => {
+  const handleItemPress = (item: StoreItem) => {
     router.push({
       pathname: "/item",
       params: { item: JSON.stringify(item) },
@@ -47,7 +49,7 @@ const StorePage = () => {
       const result = await Share.share({
         message:
           "Check out this store: Starbucks Coffee, located at 3 Sin Ming Walk, Singapura 575575. They have some great products!",
-        url: "https://www.starbucks.com.sg/", // Replace with the actual URL of the store if available
+        url: "https://www.starbucks.com.sg/",
         title: "Starbucks Coffee",
       });
 
@@ -66,32 +68,32 @@ const StorePage = () => {
   };
 
   const handleMapPress = async () => {
-    setLoading(true); // Show loader
+    setLoading(true);
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
         Alert.alert("Permission to access location was denied");
-        setLoading(false); // Hide loader if permission is denied
+        setLoading(false);
         return;
       }
 
       let location: any = await Location.getCurrentPositionAsync({});
       setLocation(location);
-      setLoading(false); // Hide loader after location is fetched
+      setLoading(false);
 
       router.push({
         pathname: "/interactive-map",
         params: {
           storeLocation: JSON.stringify({
-            latitude: 1.351616,
-            longitude: 103.837889,
+            latitude: store.storeLatitude,
+            longitude: store.storeLongitude,
           }),
           userLocation: JSON.stringify(location.coords),
         },
       });
     } catch (error: any) {
       Alert.alert("Error", error.message);
-      setLoading(false); // Hide loader if there is an error
+      setLoading(false);
     }
   };
 
@@ -135,8 +137,8 @@ const StorePage = () => {
               style={styles.storeLogo}
             />
             <View style={styles.storeTextContainer}>
-              <Text style={styles.storeTitle}>Starbucks Coffee</Text>
-              <Text style={styles.storeSubtitle}>2.5km • Grocery Store</Text>
+              <Text style={styles.storeTitle}>{store.storeTitle}</Text>
+              <Text style={styles.storeSubtitle}>{store.storeDistance} • {store.storeCategory}</Text>
             </View>
           </View>
         </View>
@@ -173,10 +175,10 @@ const StorePage = () => {
             {items.map((item, index) => {
               let itemLeftStyle;
               let itemLeftTextColor;
-              if (item.left === 1) {
+              if (item.quantity === 1) {
                 itemLeftStyle = styles.itemLeftRed;
                 itemLeftTextColor = { color: "#B7222A" };
-              } else if (item.left > 10) {
+              } else if (item.quantity > 10) {
                 itemLeftStyle = styles.itemLeftGreen;
                 itemLeftTextColor = { color: "white" };
               } else {
@@ -193,23 +195,23 @@ const StorePage = () => {
                   style={styles.product}
                 >
                   <View style={styles.imageContainer}>
-                    <Image source={item.image} style={styles.productImage} />
+                    <Image source={item.imageURL} style={styles.productImage} />
                     <View style={styles.discountTag}>
-                      <Text style={styles.discountText}>-10%</Text>
+                      <Text style={styles.discountText}>-{item.discount}%</Text>
                     </View>
                   </View>
                   <View style={styles.productInfo}>
                     <View style={[styles.itemLeftContainer, itemLeftStyle]}>
                       <Text style={[styles.itemLeft, itemLeftTextColor]}>
-                        {item.left} left
+                        {item.quantity} left
                       </Text>
                     </View>
                     <Text style={styles.productName}>{item.name}</Text>
                     <View style={styles.priceContainer}>
                       <Text style={styles.productWasPrice}>
-                        was {item.wasPrice}
+                        was {item.originalPrice}
                       </Text>
-                      <Text style={styles.productPrice}>{item.price}</Text>
+                      <Text style={styles.productPrice}>{item.finalPrice}</Text>
                     </View>
                   </View>
                 </TouchableOpacity>
@@ -220,7 +222,7 @@ const StorePage = () => {
           <View style={styles.storeInfoContainer}>
             <Text style={styles.storeInfoText}>Address</Text>
             <Text style={styles.storeAddress}>
-              3 Sin Ming Walk, Singapura 575575
+              {store.storeAddress} S({store.storePostalCode})
             </Text>
             <TouchableOpacity
               onPress={handleMapPress}

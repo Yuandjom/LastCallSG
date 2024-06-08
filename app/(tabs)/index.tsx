@@ -8,11 +8,12 @@ import {
   StatusBar,
   Platform,
   RefreshControl,
-  TouchableOpacity,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import CategoryScrollView from "@/components/category/Category";
 import StoreComponent from "@/components/store/StoreComponent";
+import { stores } from "@/mocks/mockStores";
+import { Store } from "@/app/interfaces";
 
 export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
@@ -49,9 +50,9 @@ export default function HomeScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
       >
-        <StoreComponent />
-        <StoreComponent />
-        <StoreComponent />
+        {stores.map((store: Store, index: number) => (
+          <StoreComponent key={index} store={store} />
+        ))}
       </ScrollView>
     </View>
   );
