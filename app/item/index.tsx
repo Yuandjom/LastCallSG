@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
+  Animated
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -15,14 +16,25 @@ import { Store, StoreItem } from "@/app/interfaces";
 const ItemPage = () => {
   const params = useLocalSearchParams();
   const router = useRouter();
+  const [fadeAnim] = useState(new Animated.Value(1));
 
   const [modalVisible, setModalVisible] = useState(false);
 
   const openModal = () => {
     setModalVisible(true);
+    Animated.timing(fadeAnim, {
+      toValue: 0.5,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
   };
   const closeModal = () => {
     setModalVisible(false);
+    Animated.timing(fadeAnim, {
+      toValue: 1,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
   };
 
   const item: StoreItem = params.item
@@ -43,6 +55,9 @@ const ItemPage = () => {
 
   return (
     <View style={styles.container}>
+      
+      <Animated.View style={[styles.overlay, { opacity: fadeAnim }]}>
+
       <ImageBackground source={{ uri: item.imageURL }} style={styles.image}>
         <TouchableOpacity
           onPress={() => router.back()}
@@ -115,11 +130,19 @@ const ItemPage = () => {
       </TouchableOpacity>
 
       <ItemModal visible={modalVisible} onClose={closeModal} />
+      </Animated.View>
+
     </View>
   );
 };
 
 const styles = StyleSheet.create({
+
+  overlay: {
+    justifyContent: 'center',
+    width: '100%',
+    height: '100%'
+  },
   container: {
     flex: 1,
     alignItems: "center",
@@ -132,7 +155,7 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 25,
-    marginTop: "16%",
+    marginTop: "6%",
     marginLeft: "6%",
     justifyContent: "center",
     alignItems: "center",

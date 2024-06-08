@@ -91,9 +91,7 @@ const minusButtonInactivatedColor = {
 const styles = StyleSheet.create({
     modalBackground: {
         flex: 1,
-        backgroundColor: "rgba(44, 44, 44, 0.7)",
         justifyContent: 'flex-end',
-  
     },
     name: {
       fontWeight: "bold"
@@ -172,9 +170,9 @@ const styles = StyleSheet.create({
       justifyContent: "center",
       alignItems: "center",
       backgroundColor: '#F5F2F9',
-      width: 36,
-      height: 36,
-      borderRadius: 18,
+      width: 40,
+      height: 40,
+      borderRadius: 20,
     },
     closeButtonText: {
       color: 'white',

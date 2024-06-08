@@ -65,13 +65,7 @@ const renderComponent = () => {
 
 }
 
-const minusButtonInactivatedColor = {
-  backgroundColor: 'grey'
-};
 
-const minusButtonActivatedColor = {
-  backgroundColor: 'green'
-}
 
 
 
