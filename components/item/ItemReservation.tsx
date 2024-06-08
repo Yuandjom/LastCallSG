@@ -1,5 +1,5 @@
 import React from 'react'
-import { Text, Modal, TouchableOpacity, View, StyleSheet , TextInput} from 'react-native';
+import { Text, Modal, TouchableOpacity, View, StyleSheet , TextInput, KeyboardAvoidingView, Platform} from 'react-native';
 import { Ionicons } from "@expo/vector-icons";
 
 
@@ -19,6 +19,8 @@ const ItemReservation: React.FC<MyModalProps> = ({setEmail , setName, setContact
 
     return (
         <View style={styles.modalBackground}>
+          <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === "ios" ? "padding" : undefined} >
+
               <View style={styles.modalOverlay}>
                 <TouchableOpacity onPress={onClose} style={styles.closeButton}>
                   <Ionicons name="close-outline" size={32} color="black" />
@@ -54,10 +56,9 @@ const ItemReservation: React.FC<MyModalProps> = ({setEmail , setName, setContact
                     </TouchableOpacity>
 
                 </View>
-                
-
-
               </View>
+          </KeyboardAvoidingView>
+
         </View>
 
     )
@@ -118,13 +119,13 @@ const styles = StyleSheet.create({
 
     modalOverlay: {
       backgroundColor:  'white',
-      height: '45%',
+      minHeight: '45%',
+      top: '8%',
       marginTop: 'auto',
       borderTopLeftRadius: 20,
       borderTopRightRadius: 20,
       alignItems: 'center',
-      padding: '5%'
-   
+      padding: '5%',   
     },
     closeButton: {
       position: 'absolute',
@@ -156,6 +157,12 @@ const styles = StyleSheet.create({
         borderRadius: 20
       },
 
+    container: {
+      flex: 1,
+      justifyContent: 'center',
+      height: '40%',
+      
+    }
 
   });
 
