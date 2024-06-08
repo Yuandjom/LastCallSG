@@ -52,7 +52,7 @@ const StoreComponent: React.FC<StoreComponentProps> = ({ store }) => {
             </Text>
           </View>
           <View style={styles.storeStatus}>
-            <Text style={styles.statusText}>{store.storeItemQuantity}</Text>
+            <Text style={styles.statusText}>{store.items.length}</Text>
           </View>
           <Ionicons name="chevron-forward" size={18} style={styles.arrowIcon} />
         </View>

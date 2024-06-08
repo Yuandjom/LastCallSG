@@ -40,7 +40,6 @@ export default function HomeScreen() {
         throw new Error("Failed to fetch stores");
       }
       const data = await response.json();
-      console.log(data[0].items);
       setStores(data);
     } catch (error: any) {
       setError(error.message);
