@@ -1,23 +1,24 @@
 import React from 'react';
-import { View, ScrollView, Image, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, ScrollView, Image, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { categories } from '@/mocks/mockCategories';
 
-const CategoryScrollView = () => {
-    const handleCategoryPress = (category: { name: any; image?: any; }) => {
-        Alert.alert('Category clicked', `You clicked on ${category.name}`);
-    };
-
+const CategoryScrollView = ({ selectedCategory, onCategoryPress }) => {
     return (
         <View style={styles.categoryScroll}>
             <ScrollView horizontal showsHorizontalScrollIndicator={false}>
                 {categories.map((category, index) => (
                     <TouchableOpacity
                         key={index}
-                        onPress={() => handleCategoryPress(category)}
+                        onPress={() => onCategoryPress(category.name)}
                         activeOpacity={0.6}
                         delayPressIn={100}
                     >
-                        <View style={styles.categoryContainer}>
+                        <View
+                            style={[
+                                styles.categoryContainer,
+                                selectedCategory === category.name && styles.selectedCategoryContainer,
+                            ]}
+                        >
                             <View style={styles.imageContainer}>
                                 <Image source={category.image} style={styles.categoryImage} />
                                 <View style={styles.textContainer}>
@@ -41,6 +42,12 @@ const styles = StyleSheet.create({
     categoryContainer: {
         alignItems: 'center',
         marginRight: 16,
+        borderWidth: 1.5,
+        borderColor: 'transparent',
+        borderRadius: 20,
+    },
+    selectedCategoryContainer: {
+        borderColor: 'black',
     },
     imageContainer: {
         position: 'relative',

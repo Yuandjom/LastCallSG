@@ -1,3 +1,4 @@
+import React, { useState, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -9,8 +10,9 @@ import {
   Animated,
   Easing,
   Alert,
+  RefreshControl,
+  ActivityIndicator,
 } from "react-native";
-import React, { useState, useEffect, useRef } from "react";
 import { FontAwesome } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Store, StoreItem } from "../interfaces";
@@ -24,18 +26,21 @@ const Orders = () => {
   const params = useLocalSearchParams();
 
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
   const item: StoreItem = params.item
     ? JSON.parse(params.item as string)
     : {
-        name: "",
-        finalPrice: 0,
-        originalPrice: 0,
-        discount: 0,
-        quantity: 0,
-        imageURL: "",
-        expiryDate: new Date(),
-        description: "",
-      };
+      name: "",
+      finalPrice: 0,
+      originalPrice: 0,
+      discount: 0,
+      quantity: 0,
+      imageURL: "",
+      expiryDate: new Date(),
+      description: "",
+    };
 
   const store: Store = params.store ? JSON.parse(params.store as string) : null;
   const totalPrice: string = params.totalPrice
@@ -47,61 +52,32 @@ const Orders = () => {
   const orderId = params.orderId ? JSON.parse(params.orderId as string) : "0";
 
   useEffect(() => {
-    const fetchOrders = async () => {
-      try {
-        const response = await fetch(
-          `https://411r12agye.execute-api.ap-southeast-1.amazonaws.com/orders`
-        );
-        if (response.ok) {
-          const data = await response.json();
-          setOrders(data); 
-        } else {
-          throw new Error("Failed to fetch order by ID");
-        }
-      } catch (error) {
-        Alert.alert("Error", "Failed to fetch orders");
-      }
-    };
-
     fetchOrders();
   }, []);
 
-  // const handleRedeemPress = (order) => {
-  //   setSelectedOrder(order);
-  //   setModalVisible(true);
-  //   Animated.timing(fadeAnim, {
-  //     toValue: 1,
-  //     duration: 300,
-  //     useNativeDriver: true,
-  //   }).start();
-  //   Animated.timing(slideAnim, {
-  //     toValue: 0,
-  //     duration: 300,
-  //     easing: Easing.out(Easing.ease),
-  //     useNativeDriver: true,
-  //   }).start();
-  // };
+  const fetchOrders = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch(
+        `https://411r12agye.execute-api.ap-southeast-1.amazonaws.com/orders`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setOrders(data);
+      } else {
+        throw new Error("Failed to fetch order by ID");
+      }
+    } catch (error) {
+      Alert.alert("Error", "Failed to fetch orders");
+    } finally {
+      setLoading(false);
+    }
+  };
 
-  // const handleConfirm = () => {
-  //   setOrders(orders.filter((order) => order.id !== selectedOrder.id));
-  //   handleModalClose();
-  // };
-
-  // const handleModalClose = () => {
-  //   Animated.timing(fadeAnim, {
-  //     toValue: 0,
-  //     duration: 300,
-  //     useNativeDriver: true,
-  //   }).start(() => {
-  //     setModalVisible(false);
-  //   });
-  //   Animated.timing(slideAnim, {
-  //     toValue: 300,
-  //     duration: 300,
-  //     easing: Easing.in(Easing.ease),
-  //     useNativeDriver: true,
-  //   }).start();
-  // };
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchOrders().finally(() => setRefreshing(false));
+  };
 
   const handleRateOrder = (order: any) => {
     router.push({
@@ -109,7 +85,7 @@ const Orders = () => {
       params: { order: JSON.stringify(order) },
     });
   };
-  console.log(orders);
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -119,99 +95,67 @@ const Orders = () => {
         <Text style={styles.orderHistoryText}>My Order History</Text>
         <View style={styles.line} />
       </View>
-      <ScrollView contentContainerStyle={styles.contentContainer}>
-        {orders.length > 0 ? (
-          orders.map((order) => (
-            <View key={order.id} style={styles.orderContainer}>
-              <View style={styles.shopInfoContainer}>
-                <Image
-                  source={{ uri: order.storeLogo }}
-                  style={styles.shopImage}
-                />
-                <View>
-                  <Text style={styles.shopName}>{order.storeTitle}</Text>
-                  <Text style={styles.shopId}>{order.id}</Text>
-                </View>
-              </View>
-
-              <View style={styles.itemContainer}>
-                <Text style={styles.itemText}>
-                  {order.quantity}x {order.itemName}
-                </Text>
-                <Text style={styles.itemPrice}>S${totalPrice}</Text>
-              </View>
-
-              <View style={styles.collectTimeContainer}>
-                <Text style={styles.collectTime}>
-                  {"Please collect before.."}
-                </Text>
-              </View>
-              <View style={styles.statusContainer}>
-                <FontAwesome name="check-circle" size={20} color="green" />
-                <Text style={styles.orderStatus}>{"Reserved"}</Text>
-              </View>
-              {/* <TouchableOpacity
-                style={styles.redeemButton}
-                onPress={() => handleRedeemPress(order)}
-              >
-                <Text style={styles.redeemButtonText}>Redeem</Text>
-              </TouchableOpacity> */}
-            </View>
-          ))
-        ) : (
-          <View style={styles.emptyContainer}>
-            <Text style={styles.emoji}>👀</Text>
-            <Text style={styles.noOrdersText}>You don't have any orders</Text>
-            <Text style={styles.subText}>Save money, reduce waste</Text>
-            <TouchableOpacity onPress={() => router.push("/")}>
-              <Text style={styles.linkText}>Let's save something</Text>
-            </TouchableOpacity>
-          </View>
-        )}
-      </ScrollView>
-      {/* {selectedOrder && (
-        <Modal
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={handleModalClose}
+      {loading ? (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color="gray" />
+        </View>
+      ) : (
+        <ScrollView
+          contentContainerStyle={styles.contentContainer}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
         >
-          <Animated.View
-            style={[styles.modalBackground, { opacity: fadeAnim }]}
-          >
-            <Animated.View
-              style={[
-                styles.modalContent,
-                { transform: [{ translateY: slideAnim }] },
-              ]}
-            >
-              <Text style={styles.modalTitle}>Redeem now?</Text>
-              <Text style={styles.modalSubtitle}>Redeem in:</Text>
-              <Text style={styles.modalTimer}>10 minutes</Text>
-              <View style={styles.collectTimeContainer}>
-                <View style={styles.collectTimeLine} />
-                <Text style={styles.collectTime}>
-                  Confirm only when you are at the store and ready for
-                  collection!
-                </Text>
-              </View>
-              <View style={styles.modalButtons}>
-                <TouchableOpacity
-                  style={styles.confirmButton}
-                  onPress={handleConfirm}
+          {orders.length > 0 ? (
+            orders.map((order) => (
+              <View key={order.id} style={styles.orderContainer}>
+                <View style={styles.shopInfoContainer}>
+                  <Image
+                    source={{ uri: order.storeLogo }}
+                    style={styles.shopImage}
+                  />
+                  <View>
+                    <Text style={styles.shopName}>{order.storeTitle}</Text>
+                    <Text style={styles.shopId}>{order.id}</Text>
+                  </View>
+                </View>
+
+                <View style={styles.itemContainer}>
+                  <Text style={styles.itemText}>
+                    {order.quantity}x {order.itemName}
+                  </Text>
+                  <Text style={styles.itemPrice}>S${totalPrice}</Text>
+                </View>
+
+                <View style={styles.collectTimeContainer}>
+                  <Text style={styles.collectTime}>
+                    {"Please collect before.."}
+                  </Text>
+                </View>
+                <View style={styles.statusContainer}>
+                  <FontAwesome name="check-circle" size={20} color="green" />
+                  <Text style={styles.orderStatus}>{"Reserved"}</Text>
+                </View>
+                {/* <TouchableOpacity
+                  style={styles.redeemButton}
+                  onPress={() => handleRedeemPress(order)}
                 >
-                  <Text style={styles.confirmButtonText}>Confirm</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.cancelButton}
-                  onPress={handleModalClose}
-                >
-                  <Text style={styles.cancelButtonText}>Cancel</Text>
-                </TouchableOpacity>
+                  <Text style={styles.redeemButtonText}>Redeem</Text>
+                </TouchableOpacity> */}
               </View>
-            </Animated.View>
-          </Animated.View>
-        </Modal> */}
-      {/* )} */}
+            ))
+          ) : (
+            <View style={styles.emptyContainer}>
+              <Text style={styles.emoji}>👀</Text>
+              <Text style={styles.noOrdersText}>You don't have any orders</Text>
+              <Text style={styles.subText}>Save money, reduce waste</Text>
+              <TouchableOpacity onPress={() => router.push("/")}>
+                <Text style={styles.linkText}>Let's save something</Text>
+              </TouchableOpacity>
+            </View>
+          )}
+        </ScrollView>
+      )}
     </View>
   );
 };
@@ -419,5 +363,10 @@ const styles = StyleSheet.create({
   linkText: {
     color: "#007BFF",
     fontWeight: "bold",
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });

@@ -2,31 +2,32 @@ import React, { useState, useEffect } from "react";
 import {
   Image,
   StyleSheet,
-    Text,
+  Text,
   View,
   ScrollView,
   StatusBar,
   Platform,
   RefreshControl,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import CategoryScrollView from "@/components/category/Category";
 import StoreComponent from "@/components/store/StoreComponent";
-import { stores } from "@/mocks/mockStores";
+import { stores as mockStores } from "@/mocks/mockStores";
 import { Store } from "@/app/interfaces";
 
 export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [stores, setStores] = useState<Store[]>([]);
+  const [filteredStores, setFilteredStores] = useState<Store[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [initialLoaded, setInitialLoaded] = useState<boolean>(false); // Track initial load
+  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
 
   const onRefresh = () => {
     setRefreshing(true);
-    // Simulate a network request or any asynchronous task
-    setTimeout(() => {
-      setRefreshing(false);
-    }, 2000);
+    fetchStores().finally(() => setRefreshing(false));
   };
 
   useEffect(() => {
@@ -41,13 +42,24 @@ export default function HomeScreen() {
       }
       const data = await response.json();
       setStores(data);
+      setFilteredStores(data);
     } catch (error: any) {
       setError(error.message);
     } finally {
       setLoading(false);
+      setInitialLoaded(true); // Mark initial load as complete
     }
   };
 
+  const handleCategoryPress = (category: string) => {
+    if (selectedCategory === category) {
+      setSelectedCategory(null);
+      setFilteredStores(stores);
+    } else {
+      setSelectedCategory(category);
+      setFilteredStores(stores.filter(store => store.storeCategory === category));
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -65,18 +77,27 @@ export default function HomeScreen() {
           style={styles.infoIcon}
         />
       </View>
-      <CategoryScrollView />
+      <CategoryScrollView
+        selectedCategory={selectedCategory}
+        onCategoryPress={handleCategoryPress}
+      />
 
-      <ScrollView
-        style={styles.scrollView}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-      >
-        {stores.map((store: Store, index: number) => (
-          <StoreComponent key={index} store={store} />
-        ))}
-      </ScrollView>
+      {loading && !initialLoaded ? (
+        <View style={styles.loaderContainer}>
+          <ActivityIndicator size="large" color="gray" />
+        </View>
+      ) : (
+        <ScrollView
+          style={styles.scrollView}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
+          {filteredStores.map((store: Store, index: number) => (
+            <StoreComponent key={index} store={store} />
+          ))}
+        </ScrollView>
+      )}
     </View>
   );
 }
@@ -121,6 +142,11 @@ const styles = StyleSheet.create({
   },
   chevronIcon: {
     marginLeft: 4,
+  },
+  loaderContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
   storeContainer: {
     paddingHorizontal: 16,
