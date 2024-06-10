@@ -53,36 +53,36 @@ const InteractiveMapScreen = () => {
 };
 
 const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-    },
-    topBar: {
-      paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 50,
-      backgroundColor: "#fff",
-      borderBottomWidth: 1,
-      borderBottomColor: "#e0e0e0",
-      paddingHorizontal: 16,
-      paddingVertical: 12,
-      flexDirection: "row",
-      alignItems: "center",
-      justifyContent: "center",
-    },
-    backButton: {
-      position: "absolute",
-      left: 16,
-      top: Platform.OS === "android" ? StatusBar.currentHeight : 50,
-      zIndex: 1,
-    },
-    headerText: {
-      fontSize: 18,
-      fontWeight: "bold",
-      textAlign: "center",
-      marginTop: 5,
-    },
-    map: {
-      width: "100%",
-      height: "100%",
-    },
-  });
-  
+  container: {
+    flex: 1,
+  },
+  topBar: {
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 50,
+    backgroundColor: "#fff",
+    borderBottomWidth: 1,
+    borderBottomColor: "#e0e0e0",
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  backButton: {
+    position: "absolute",
+    left: 16,
+    top: Platform.OS === "android" ? StatusBar.currentHeight : 50,
+    zIndex: 1,
+  },
+  headerText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    textAlign: "center",
+    marginTop: 5,
+  },
+  map: {
+    width: "100%",
+    height: "100%",
+  },
+});
+
 export default InteractiveMapScreen;

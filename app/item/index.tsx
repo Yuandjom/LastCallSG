@@ -45,15 +45,15 @@ const ItemPage = () => {
   const item: StoreItem = params.item
     ? JSON.parse(params.item as string)
     : {
-        name: "",
-        finalPrice: 0,
-        originalPrice: 0,
-        discount: 0,
-        quantity: 0,
-        imageURL: "",
-        expiryDate: new Date(),
-        description: "",
-      };
+      name: "",
+      finalPrice: 0,
+      originalPrice: 0,
+      discount: 0,
+      quantity: 0,
+      imageURL: "",
+      expiryDate: new Date(),
+      description: "",
+    };
   const store: Store = params.store ? JSON.parse(params.store as string) : null;
 
   const formattedExpiryDate = formatDate(item.expiryDate);
@@ -74,9 +74,8 @@ const ItemPage = () => {
                   <Text style={styles.left}>{`${item.quantity} Left`}</Text>
                 </View>
                 <View style={styles.discountContainer}>
-                  <Text style={styles.discount}>{`-${
-                    item.discount * 100
-                  }%`}</Text>
+                  <Text style={styles.discount}>{`-${item.discount * 100
+                    }%`}</Text>
                 </View>
               </View>
               <View style={styles.sellerContainer}>
@@ -233,6 +232,10 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginTop: 8,
+    backgroundColor: "black", // Added gray background color
+    borderRadius: 20,
+    opacity: 0.7,
+    right: 2,
   },
   storeLogo: {
     width: 40,

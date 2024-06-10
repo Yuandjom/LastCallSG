@@ -15,6 +15,7 @@ import CategoryScrollView from "@/components/category/Category";
 import StoreComponent from "@/components/store/StoreComponent";
 import { stores as mockStores } from "@/mocks/mockStores";
 import { Store } from "@/app/interfaces";
+import TopBar from "@/components/topbar/TobBar"; // Import the TopBar component
 
 export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
@@ -64,19 +65,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <View style={styles.topBar}>
-        <View style={styles.locationContainer}>
-          <Ionicons name="location-outline" size={18} />
-          <Text style={styles.locationText}>Your Location</Text>
-          <Ionicons name="chevron-down" size={18} style={styles.chevronIcon} />
-        </View>
-        <Text style={styles.locationSubText}>Current location · 50 km</Text>
-        <Ionicons
-          name="information-circle-outline"
-          size={30}
-          style={styles.infoIcon}
-        />
-      </View>
+      <TopBar></TopBar>
       <CategoryScrollView
         selectedCategory={selectedCategory}
         onCategoryPress={handleCategoryPress}
