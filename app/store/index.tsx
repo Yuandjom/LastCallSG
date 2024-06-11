@@ -134,7 +134,7 @@ const StorePage = () => {
         <View style={styles.storeHeader}>
           <View style={styles.backgroundColor} />
           <View style={styles.storeInfo}>
-            <Image source={{uri:store.storeLogo}} style={styles.storeLogo} />
+            <Image source={{uri:store.storeLogo as any}} style={styles.storeLogo} />
             <View style={styles.storeTextContainer}>
               <Text style={styles.storeTitle}>{store.storeTitle}</Text>
               <Text style={styles.storeSubtitle}>
@@ -174,8 +174,8 @@ const StorePage = () => {
         {activeTab === "Products" ? (
           <View style={styles.productsWrapper}>
             {items.map((item, index) => {
-              let itemLeftStyle;
-              let itemLeftTextColor;
+              let itemLeftStyle : any;
+              let itemLeftTextColor: any;
               if (item.quantity === 1) {
                 itemLeftStyle = styles.itemLeftRed;
                 itemLeftTextColor = { color: "#B7222A" };

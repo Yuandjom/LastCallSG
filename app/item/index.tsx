@@ -80,7 +80,7 @@ const ItemPage = () => {
               </View>
               <View style={styles.sellerContainer}>
                 <Image
-                  source={{ uri: store.storeLogo }}
+                  source={{ uri: store.storeLogo as any }}
                   style={styles.storeLogo}
                 />
                 <View>
@@ -222,7 +222,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   imageOverlay: {
-    marginLeft: 4,
+    marginLeft: 0,
   },
   left_and_discount_container: {
     flexDirection: "row",
@@ -233,9 +233,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 8,
     backgroundColor: "black", // Added gray background color
-    borderRadius: 20,
+    borderRadius: 0,
+    width: "100%",
     opacity: 0.7,
-    right: 2,
   },
   storeLogo: {
     width: 40,

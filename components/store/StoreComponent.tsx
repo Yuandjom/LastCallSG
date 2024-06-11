@@ -45,7 +45,7 @@ const StoreComponent: React.FC<StoreComponentProps> = ({ store }) => {
         delayPressIn={100}
       >
         <View style={styles.storeHeader}>
-          <Image source={{ uri: store.storeLogo }} style={styles.storeLogo} />
+          <Image source={{ uri: store.storeLogo as any }} style={styles.storeLogo} />
           <View style={styles.storeInfo}>
             <Text style={styles.storeTitle}>
               {truncateText(store.storeTitle, 20)}

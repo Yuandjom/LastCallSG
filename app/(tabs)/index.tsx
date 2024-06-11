@@ -10,12 +10,10 @@ import {
   RefreshControl,
   ActivityIndicator,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import CategoryScrollView from "@/components/category/Category";
 import StoreComponent from "@/components/store/StoreComponent";
-import { stores as mockStores } from "@/mocks/mockStores";
 import { Store } from "@/app/interfaces";
-import TopBar from "@/components/topbar/TobBar"; // Import the TopBar component
+import TopBar from "@/components/topbar/TopBar"; 
 
 export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
