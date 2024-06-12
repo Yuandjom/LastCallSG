@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -6,17 +6,13 @@ import {
   TouchableOpacity,
   ScrollView,
   Image,
-  Modal,
-  Animated,
-  Easing,
   Alert,
   RefreshControl,
   ActivityIndicator,
 } from "react-native";
-import { FontAwesome } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Store, StoreItem } from "../interfaces";
-import { useAuth } from "../../contexts/AuthContext"; // Adjust the path as needed
+import { useAuth } from "../../contexts/AuthContext";
 
 const Orders = () => {
   const router = useRouter();
@@ -94,6 +90,10 @@ const Orders = () => {
     });
   };
 
+  const formatDate = (date: Date) => {
+    return new Date(date).toLocaleDateString();
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -116,7 +116,11 @@ const Orders = () => {
         >
           {orders.length > 0 ? (
             orders.map((order) => (
-              <View key={order.id} style={styles.orderContainer}>
+              <TouchableOpacity
+                key={order.id}
+                style={styles.orderContainer}
+                onPress={() => handleRateOrder(order)}
+              >
                 <View style={styles.shopInfoContainer}>
                   <Image
                     source={{ uri: order.storeLogo }}
@@ -124,27 +128,33 @@ const Orders = () => {
                   />
                   <View>
                     <Text style={styles.shopName}>{order.storeTitle}</Text>
-                    <Text style={styles.shopId}>{order.id}</Text>
+                    <View style={styles.reservedContainer}>
+                      <Text style={styles.reservedText}>Reserved</Text>
+                    </View>
                   </View>
                 </View>
 
                 <View style={styles.itemContainer}>
-                  <Text style={styles.itemText}>
-                    {order.quantity}x {order.itemName}
+                  <Text style={styles.itemName}>{order.itemName}</Text>
+                  <Text style={styles.itemPrice}>S${order.totalPrice}</Text>
+                </View>
+
+                <View style={styles.unitsContainer}>
+                  <Text style={styles.unitsText}>
+                    {order.quantity} {order.quantity === 1 ? "unit" : "units"}
                   </Text>
-                  <Text style={styles.itemPrice}>S${totalPrice}</Text>
                 </View>
 
                 <View style={styles.collectTimeContainer}>
+                  <View style={styles.collectTimeLine} />
                   <Text style={styles.collectTime}>
-                    {"Please collect before.."}
+                    Collect by{" "}
+                    {formatDate(
+                      new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000)
+                    )}
                   </Text>
                 </View>
-                <View style={styles.statusContainer}>
-                  <FontAwesome name="check-circle" size={20} color="green" />
-                  <Text style={styles.orderStatus}>{"Reserved"}</Text>
-                </View>
-              </View>
+              </TouchableOpacity>
             ))
           ) : (
             <View style={styles.emptyContainer}>
@@ -161,8 +171,6 @@ const Orders = () => {
     </View>
   );
 };
-
-export default Orders;
 
 const styles = StyleSheet.create({
   container: {
@@ -228,121 +236,58 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: "bold",
   },
-  shopId: {
-    fontSize: 14,
-    color: "#888",
+  reservedContainer: {
+    backgroundColor: "rgba(16, 110, 51, 1)",
+    borderRadius: 5,
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    marginTop: 5,
+    width: 70,
   },
-  totalItems: {
-    fontSize: 16,
-    marginBottom: 5,
-  },
-  totalPrice: {
-    fontSize: 16,
-    fontWeight: "bold",
-    marginBottom: 5,
+  reservedText: {
+    color: "#fff",
+    fontSize: 12,
   },
   itemContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 5,
   },
-  itemText: {
+  itemName: {
     fontSize: 16,
   },
   itemPrice: {
     fontSize: 16,
     fontWeight: "bold",
   },
-  statusContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginVertical: 10,
+  unitsContainer: {
+    marginBottom: 10,
+    backgroundColor: "rgba(255, 247, 232, 1)",
+    width: 50,
+    paddingVertical: 3,
   },
-  orderStatus: {
-    color: "green",
-    marginLeft: 5,
+  unitsText: {
+    fontSize: 14,
+    fontWeight: "500",
+    marginLeft: 4,
+    color: "rgba(201, 140, 19, 1)",
   },
   collectTimeContainer: {
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 10,
+    backgroundColor: "rgba(255, 247, 232, 1)",
   },
   collectTimeLine: {
     width: 4,
-    height: "100%",
-    backgroundColor: "orange",
+    height: 31,
+    backgroundColor: "rgba(251, 175, 24, 1)",
     marginRight: 10,
   },
   collectTime: {
-    color: "#888",
-  },
-  redeemButton: {
-    backgroundColor: "#28a745",
-    paddingVertical: 10,
-    borderRadius: 5,
-    alignItems: "center",
-  },
-  redeemButtonText: {
-    color: "#fff",
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: "bold",
-  },
-  modalBackground: {
-    flex: 1,
-    justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    backgroundColor: "white",
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
-    padding: 20,
-    alignItems: "center",
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 10,
-  },
-  modalSubtitle: {
-    fontSize: 16,
-    color: "#888",
-    marginBottom: 10,
-  },
-  modalTimer: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "red",
-    marginBottom: 20,
-  },
-  modalButtons: {
-    flexDirection: "row",
-    justifyContent: "space-around",
-    width: "100%",
-  },
-  confirmButton: {
-    backgroundColor: "#28a745",
-    padding: 10,
-    borderRadius: 5,
-    alignItems: "center",
-    width: "40%",
-  },
-  confirmButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  cancelButton: {
-    backgroundColor: "#f44336",
-    padding: 10,
-    borderRadius: 5,
-    alignItems: "center",
-    width: "40%",
-  },
-  cancelButtonText: {
-    color: "#fff",
-    fontSize: 16,
-    fontWeight: "bold",
+    color: "#000",
   },
   emptyContainer: {
     alignItems: "center",
@@ -372,3 +317,5 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+
+export default Orders;
