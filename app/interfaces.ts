@@ -25,3 +25,4 @@ export interface Store {
   storeRating: number;
   storeEmailAddress:string;
 }
+

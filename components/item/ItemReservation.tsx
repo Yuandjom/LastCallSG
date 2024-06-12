@@ -15,6 +15,8 @@ import { Ionicons } from "@expo/vector-icons";
 import emailjs from "@emailjs/react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import uuid from "react-native-uuid";
+import { useAuth } from "../../contexts/AuthContext"; // Adjust the path as needed
+import Toast from "react-native-toast-message";
 
 interface MyModalProps {
   setEmail: React.Dispatch<React.SetStateAction<string>>;
@@ -44,7 +46,12 @@ const sendEmail = () => {
       },
       (err) => {
         console.log("FAILED...", err);
-        Alert.alert("Error", "Failed to send email");
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: "Failed to send email",
+          topOffset: 60,
+        });
       }
     );
 };
@@ -60,15 +67,16 @@ const ItemReservation: React.FC<MyModalProps> = ({
   quantity,
 }) => {
   const router = useRouter();
-  const [name, setNameState] = useState("");
+  const { user } = useAuth();
+  const [username, setUsernameState] = useState(user?.username || "");
   const [contact, setContactState] = useState("");
-  const [email, setEmailState] = useState("");
+  const [email, setEmailState] = useState(user?.email || "");
   const [isFormValid, setIsFormValid] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
   useEffect(() => {
-    setIsFormValid(name !== "" && contact !== "" && email !== "");
-  }, [name, contact, email]);
+    setIsFormValid(username !== "" && contact !== "" && email !== "");
+  }, [username, contact, email]);
 
   // CALCULATING TOTALS & DISCOUNTS
   let totalPrice: string = (item.finalPrice * quantity).toFixed(2);
@@ -81,7 +89,7 @@ const ItemReservation: React.FC<MyModalProps> = ({
     if (isFormValid) {
       const orderData = {
         id: orderId,
-        name,
+        username: user?.username || username, // Include the username in the order data
         contact,
         email,
         item,
@@ -110,100 +118,131 @@ const ItemReservation: React.FC<MyModalProps> = ({
         );
 
         if (response.ok) {
+          console.log("New order ok.");
           // Alert.alert("Success", "Order placed successfully");
-          router.push({
-            pathname: "/orderconfirmation",
-            params: {
-              item: JSON.stringify(item),
-              store: JSON.stringify(store),
-              totalPrice: JSON.stringify(totalPrice),
-              orderId: JSON.stringify(orderId),
-              quantity: JSON.stringify(quantity),
-            },
-          });
           onClose();
+          Toast.show({
+            type: "success",
+            text1: "Success",
+            text2: "Order placed successfully",
+          });
+          setTimeout(() => {
+            router.push({
+              pathname: "/orderconfirmation",
+              params: {
+                item: JSON.stringify(item),
+                store: JSON.stringify(store),
+                totalPrice: JSON.stringify(totalPrice),
+                orderId: JSON.stringify(orderId),
+                quantity: JSON.stringify(quantity),
+              },
+            });
+          }, 0);
         } else {
           const error = await response.json();
           console.log(error);
-          Alert.alert("Error", error.message);
+          Toast.show({
+            type: "error",
+            text1: "Error",
+            text2: error.message,
+          });
         }
       } catch (error) {
-        Alert.alert("Error", error.message);
+        Toast.show({
+          type: "error",
+          text1: "Error",
+          text2: error.message,
+        });
       }
     } else {
-      Alert.alert("Error", "Please fill in all fields.");
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: "Please fill in all fields.",
+      });
     }
   };
   return (
-    <TouchableWithoutFeedback onPress={onClose}>
-      <View style={styles.modalBackground}>
-        <KeyboardAvoidingView
-          style={styles.container}
-          behavior={Platform.OS === "ios" ? "padding" : undefined}
-        >
-          <TouchableWithoutFeedback>
-            <View style={styles.modalOverlay}>
-              <View style={styles.headerRow}>
-                <TouchableOpacity
-                  onPress={backToItemQuantity}
-                  style={styles.backButton}
-                >
-                  <Ionicons name="arrow-back" size={32} color="black" />
-                </TouchableOpacity>
-                <Text style={styles.header}>Contact Details</Text>
-                <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-                  <Ionicons name="close-outline" size={32} color="black" />
-                </TouchableOpacity>
+    <>
+      <TouchableWithoutFeedback onPress={onClose}>
+        <View style={styles.modalBackground}>
+          <KeyboardAvoidingView
+            style={styles.container}
+            behavior={Platform.OS === "ios" ? "padding" : undefined}
+          >
+            <TouchableWithoutFeedback>
+              <View style={styles.modalOverlay}>
+                <View style={styles.headerRow}>
+                  <TouchableOpacity
+                    onPress={backToItemQuantity}
+                    style={styles.backButton}
+                  >
+                    <Ionicons name="arrow-back" size={32} color="black" />
+                  </TouchableOpacity>
+                  <Text style={styles.header}>Contact Details</Text>
+                  <TouchableOpacity
+                    onPress={onClose}
+                    style={styles.closeButton}
+                  >
+                    <Ionicons name="close-outline" size={32} color="black" />
+                  </TouchableOpacity>
+                </View>
+                <View style={styles.inputContainer}>
+                  <Text>Name</Text>
+                  <TextInput
+                    style={styles.nameInput}
+                    placeholder="Jon"
+                    value={username}
+                    onChangeText={(text) => {
+                      setName(text);
+                      setUsernameState(text);
+                    }}
+                    placeholderTextColor="#B2BAC5"
+                  />
+                  <Text>Contact</Text>
+                  <TextInput
+                    style={styles.contactInput}
+                    placeholder="91234567"
+                    value={contact}
+                    keyboardType="number-pad"
+                    onChangeText={(text) => {
+                      setContact(text);
+                      setContactState(text);
+                    }}
+                    placeholderTextColor="#B2BAC5"
+                  />
+                  <Text>Email</Text>
+                  <TextInput
+                    style={styles.emailInput}
+                    placeholder="ilhhasap@gmail.com"
+                    value={email}
+                    onChangeText={(text) => {
+                      setEmail(text);
+                      setEmailState(text);
+                    }}
+                    placeholderTextColor="#B2BAC5"
+                  />
+                  <TouchableOpacity
+                    onPress={handlePress}
+                    style={[
+                      styles.confirmationButton,
+                      !isFormValid && styles.confirmationButtonDisabled,
+                      hasSubmitted && styles.confirmationButtonDisabled,
+                    ]}
+                    disabled={!isFormValid || hasSubmitted}
+                  >
+                    <Text style={styles.confirmationText}>
+                      {"Confirm Chope"}
+                    </Text>
+                  </TouchableOpacity>
+                </View>
               </View>
-              <View style={styles.inputContainer}>
-                <Text>Name</Text>
-                <TextInput
-                  style={styles.nameInput}
-                  placeholder="Jon"
-                  onChangeText={(text) => {
-                    setName(text);
-                    setNameState(text);
-                  }}
-                  placeholderTextColor="#B2BAC5"
-                />
-                <Text>Contact</Text>
-                <TextInput
-                  style={styles.contactInput}
-                  placeholder="91234567"
-                  keyboardType="number-pad"
-                  onChangeText={(text) => {
-                    setContact(text);
-                    setContactState(text);
-                  }}
-                  placeholderTextColor="#B2BAC5"
-                />
-                <Text>Email</Text>
-                <TextInput
-                  style={styles.emailInput}
-                  placeholder="ilhhasap@gmail.com"
-                  onChangeText={(text) => {
-                    setEmail(text);
-                    setEmailState(text);
-                  }}
-                  placeholderTextColor="#B2BAC5"
-                />
-                <TouchableOpacity
-                  onPress={handlePress}
-                  style={[
-                    styles.confirmationButton,
-                    !isFormValid && styles.confirmationButtonDisabled,
-                    hasSubmitted && styles.confirmationButtonDisabled,
-                  ]}
-                  disabled={!isFormValid || hasSubmitted}
-                >
-                  <Text style={styles.confirmationText}>{"Confirm Chope"}</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </TouchableWithoutFeedback>
-        </KeyboardAvoidingView>
-      </View>
-    </TouchableWithoutFeedback>
+            </TouchableWithoutFeedback>
+          </KeyboardAvoidingView>
+        </View>
+      </TouchableWithoutFeedback>
+      <Toast topOffset={150} />
+    </>
   );
 };
 

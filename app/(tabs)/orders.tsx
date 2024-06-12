@@ -16,31 +16,29 @@ import {
 import { FontAwesome } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Store, StoreItem } from "../interfaces";
+import { useAuth } from "../../contexts/AuthContext"; // Adjust the path as needed
 
 const Orders = () => {
-  const [modalVisible, setModalVisible] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState(null);
-  const fadeAnim = useRef(new Animated.Value(0)).current;
-  const slideAnim = useRef(new Animated.Value(300)).current;
   const router = useRouter();
   const params = useLocalSearchParams();
 
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const { user } = useAuth(); // Get the current user
 
   const item: StoreItem = params.item
     ? JSON.parse(params.item as string)
     : {
-      name: "",
-      finalPrice: 0,
-      originalPrice: 0,
-      discount: 0,
-      quantity: 0,
-      imageURL: "",
-      expiryDate: new Date(),
-      description: "",
-    };
+        name: "",
+        finalPrice: 0,
+        originalPrice: 0,
+        discount: 0,
+        quantity: 0,
+        imageURL: "",
+        expiryDate: new Date(),
+        description: "",
+      };
 
   const store: Store = params.store ? JSON.parse(params.store as string) : null;
   const totalPrice: string = params.totalPrice
@@ -59,15 +57,25 @@ const Orders = () => {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://411r12agye.execute-api.ap-southeast-1.amazonaws.com/orders`
+        "https://411r12agye.execute-api.ap-southeast-1.amazonaws.com/orders"
       );
       if (response.ok) {
         const data = await response.json();
-        setOrders(data);
+        // Filter orders based on the current user's username
+        if (user) {
+          const filteredOrders = data.filter(
+            (order: any) => order.username === user.username
+          );
+          setOrders(filteredOrders);
+        } else {
+          console.log("No username");
+        }
       } else {
-        throw new Error("Failed to fetch order by ID");
+        console.log(response);
+        throw new Error("Failed to fetch all orders");
       }
     } catch (error) {
+      console.error(error);
       Alert.alert("Error", "Failed to fetch orders");
     } finally {
       setLoading(false);
@@ -136,12 +144,6 @@ const Orders = () => {
                   <FontAwesome name="check-circle" size={20} color="green" />
                   <Text style={styles.orderStatus}>{"Reserved"}</Text>
                 </View>
-                {/* <TouchableOpacity
-                  style={styles.redeemButton}
-                  onPress={() => handleRedeemPress(order)}
-                >
-                  <Text style={styles.redeemButtonText}>Redeem</Text>
-                </TouchableOpacity> */}
               </View>
             ))
           ) : (
@@ -149,7 +151,7 @@ const Orders = () => {
               <Text style={styles.emoji}>👀</Text>
               <Text style={styles.noOrdersText}>You don't have any orders</Text>
               <Text style={styles.subText}>Save money, reduce waste</Text>
-              <TouchableOpacity onPress={() => router.push("/")}>
+              <TouchableOpacity onPress={() => router.push("/register")}>
                 <Text style={styles.linkText}>Let's save something</Text>
               </TouchableOpacity>
             </View>

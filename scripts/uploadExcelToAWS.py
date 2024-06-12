@@ -8,8 +8,6 @@ SPREADSHEETFILE = r"C:\Users\cheej\Desktop\SEND_HELP\scripts\BFG .xlsx"
 STORE_ID = 4
 DYNAMODB_TABLE = "LastCallSG"
 
-
-
 aws_access_key_id = 'AKIAVAY2Y2RRT2TPC7MC'
 aws_secret_access_key = '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'
 
@@ -21,9 +19,6 @@ dynamodb = boto3.client(
     aws_secret_access_key=aws_secret_access_key,
     region_name=region_name
 )
-
-
-
 
 if not os.path.exists(SPREADSHEETFILE):
     print(f"Error: The file {SPREADSHEETFILE} does not exist.")
