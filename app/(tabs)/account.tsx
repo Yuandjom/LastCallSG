@@ -5,7 +5,6 @@ import {
   StyleSheet,
   TouchableOpacity,
   Image,
-  Button,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router"; // Import useRouter hook
@@ -34,18 +33,23 @@ const Account = () => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.profileHeader}>
-        <Image
-          source={{
-            uri: "https://media.licdn.com/dms/image/D5610AQFE4u2nwCkbdw/image-shrink_800/0/1712033034641?e=2147483647&v=beta&t=BvZlz8yy1HflEvizk4nbz-DHX9NZRbsj6VoRTc6XbC4",
-          }}
-          style={styles.profileImage}
-        />
-        <View style={styles.profileInfo}>
-          <Text style={styles.profileEmail}>Email@gmail.com</Text>
-          <Text style={styles.profileRole}>Eco Warrior</Text>
-        </View>
+      <View style={styles.headerContainer}>
+        <Text style={styles.headerText}>Account</Text>
       </View>
+      {user && (
+        <View style={styles.profileHeader}>
+          <Image
+            source={{
+              uri: "https://media.licdn.com/dms/image/D5610AQFE4u2nwCkbdw/image-shrink_800/0/1712033034641?e=2147483647&v=beta&t=BvZlz8yy1HflEvizk4nbz-DHX9NZRbsj6VoRTc6XbC4",
+            }}
+            style={styles.profileImage}
+          />
+          <View style={styles.profileInfo}>
+            <Text style={styles.profileEmail}>{user.username}</Text>
+            <Text style={styles.profileRole}>Eco Warrior</Text>
+          </View>
+        </View>
+      )}
       {!user && (
         <View style={styles.joinMerchant}>
           <TouchableOpacity onPress={() => router.push("/register")}>
@@ -91,11 +95,24 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#f4f4f4",
   },
+  headerContainer: {
+    paddingBottom: 10,
+    backgroundColor: "#fff",
+    alignItems: "flex-start",
+    borderBottomWidth: 2,
+    borderBottomColor: "#fff",
+    paddingTop: 60, // Added padding top for the header
+    paddingLeft: 15,
+  },
+  headerText: {
+    fontSize: 24,
+    fontWeight: "bold",
+  },
   profileHeader: {
     flexDirection: "row",
     alignItems: "center",
-    padding: 20,
-    paddingTop: 70,
+    paddingLeft: 15,
+    paddingBottom: 15, // Adjust padding as needed
     backgroundColor: "#fff",
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
@@ -157,12 +174,13 @@ const styles = StyleSheet.create({
   },
   logOutButton: {
     backgroundColor: "rgba(86, 192, 113, 1)",
-    width: "100%",
-    paddingVertical: 14,
+    width: "80%",
+    paddingVertical: 15,
     borderRadius: 25,
     marginTop: 20,
     alignItems: "center",
     justifyContent: "center",
+    alignSelf: "center", // Center the logout button
   },
   logOutButtonText: {
     color: "#ffffff",

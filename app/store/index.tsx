@@ -18,6 +18,7 @@ import { useRouter, useLocalSearchParams } from "expo-router";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import { Store, StoreItem } from "@/app/interfaces";
+import Toast from "react-native-toast-message";
 
 const StorePage = () => {
   const router = useRouter();
@@ -50,9 +51,9 @@ const StorePage = () => {
     try {
       const result = await Share.share({
         message:
-          "Check out this store: Starbucks Coffee, located at 3 Sin Ming Walk, Singapura 575575. They have some great products!",
+          `Check out this store: ${store.storeTitle}, located at ${store.storeAddress}, Singapura ${store.storePostalCode}. They have some great products!`,
         url: "https://www.starbucks.com.sg/",
-        title: "Starbucks Coffee",
+        title: `${store.storeTitle}`,
       });
 
       if (result.action === Share.sharedAction) {
@@ -74,7 +75,11 @@ const StorePage = () => {
     try {
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== "granted") {
-        Alert.alert("Permission to access location was denied");
+        Toast.show({
+          type: "error",
+          text1: "Permission to access location was denied",
+          text2: "Please grant us location permission to proceed.",
+        });
         setLoading(false);
         return;
       }
@@ -94,7 +99,11 @@ const StorePage = () => {
         },
       });
     } catch (error: any) {
-      Alert.alert("Error", error.message);
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: error.message,
+      });
       setLoading(false);
     }
   };
@@ -198,7 +207,7 @@ const StorePage = () => {
                   <View style={styles.imageContainer}>
                     <Image source={{uri:item.imageURL}} style={styles.productImage} />
                     <View style={styles.discountTag}>
-                      <Text style={styles.discountText}>-{item.discount}%</Text>
+                      <Text style={styles.discountText}>-{item.discount * 100}%</Text>
                     </View>
                   </View>
                   <View style={styles.productInfo}>
@@ -254,6 +263,7 @@ const StorePage = () => {
           </View>
         )}
       </ScrollView>
+      <Toast topOffset={60} />
     </View>
   );
 };
