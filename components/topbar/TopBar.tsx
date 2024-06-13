@@ -70,7 +70,7 @@ const TopBar = () => {
 
   const handleMarkerPress = (address) => {
     const now = Date.now();
-    if (lastTapRef.current && (now - lastTapRef.current) < 300) {
+    if (lastTapRef.current && (now - lastTapRef.current) < 1000) {
       // Double tap detected
       const query = encodeURIComponent(address);
       const url = `https://www.google.com/search?q=${query}`;
