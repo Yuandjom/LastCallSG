@@ -137,10 +137,10 @@ const ItemPage = () => {
               </View>
               <View style={styles.seperator}></View>
               <View style={styles.descriptionHeaderContainer}>
-                <Text style={styles.descriptionHeader}>👉 Description</Text>
+              {item.description != 'None' ? <Text style={styles.descriptionHeader}>👉 Description</Text> : null}
               </View>
-              <TruncateWithShowMore text={item.description} maxLength={200} />
-              <View style={styles.seperator}></View>
+              <TruncateWithShowMore text={item.description == 'None' ? "" : item.description} maxLength={200} />
+              {item.description != 'None' ?  <View style={styles.seperator}></View> : null}
             </View>
           </ScrollView>
           <TouchableOpacity style={styles.button} onPress={openModal}>

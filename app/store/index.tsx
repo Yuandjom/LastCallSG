@@ -118,18 +118,7 @@ const StorePage = () => {
         >
           <Ionicons name="arrow-back" size={32} color="black" />
         </TouchableOpacity>
-        <View style={styles.locationWrapper}>
-          <View style={styles.locationContainer}>
-            <Ionicons name="location-outline" size={18} />
-            <Text style={styles.locationText}>Your Location</Text>
-            <Ionicons
-              name="chevron-down"
-              size={18}
-              style={styles.chevronIcon}
-            />
-          </View>
-          <Text style={styles.locationSubText}>Current location · 50 km</Text>
-        </View>
+
         <TouchableOpacity style={styles.shareButton} onPress={handleSharePress}>
           <EvilIcons name="share-apple" size={32} color="black" />
         </TouchableOpacity>
