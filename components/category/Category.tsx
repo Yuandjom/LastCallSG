@@ -29,6 +29,7 @@ const CategoryScrollView = ({ selectedCategory, onCategoryPress }) => {
                     </TouchableOpacity>
                 ))}
             </ScrollView>
+
         </View>
     );
 };
@@ -78,6 +79,7 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontWeight: 'bold',
     },
+
 });
 
 export default CategoryScrollView;

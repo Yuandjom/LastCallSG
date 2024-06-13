@@ -11,8 +11,10 @@ import {
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker, Circle } from "react-native-maps";
+import { useRouter } from "expo-router";
 
 const TopBar = () => {
+  const router = useRouter();
   const [modalVisible, setModalVisible] = useState(false);
   const userLocation = { latitude: 1.2931, longitude: 103.8496 }; // Dummy user location
   const storeLocation = { latitude: 1.2931, longitude: 103.8496 }; // Dummy store location
@@ -20,7 +22,11 @@ const TopBar = () => {
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
-
+  const handlePress = () => {
+    router.push({
+      pathname: "/onboarding",
+    });
+  };
   return (
     <View>
       <View style={styles.topBar}>
@@ -33,11 +39,19 @@ const TopBar = () => {
           <Ionicons name="chevron-down" size={18} style={styles.chevronIcon} />
         </TouchableOpacity>
         <Text style={styles.locationSubText}>Current location · 50 km</Text>
-        <Ionicons
-          name="information-circle-outline"
-          size={30}
-          style={styles.infoIcon}
-        />
+        {/* <TouchableOpacity onPress={handlePress}>
+          <Ionicons
+            name="information-circle-outline"
+            size={30}
+            style={styles.infoIcon}
+          />
+        </TouchableOpacity> */}
+        <TouchableOpacity onPress={handlePress} style={styles.infoIcon} >
+          <Ionicons
+            name="information-circle-outline"
+            size={30}
+          />
+        </TouchableOpacity>
       </View>
 
       <Modal

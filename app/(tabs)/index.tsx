@@ -13,7 +13,7 @@ import {
 import CategoryScrollView from "@/components/category/Category";
 import StoreComponent from "@/components/store/StoreComponent";
 import { Store } from "@/app/interfaces";
-import TopBar from "@/components/topbar/TopBar"; 
+import TopBar from "@/components/topbar/TopBar";
 
 export default function HomeScreen() {
   const [refreshing, setRefreshing] = useState(false);
@@ -68,7 +68,12 @@ export default function HomeScreen() {
         selectedCategory={selectedCategory}
         onCategoryPress={handleCategoryPress}
       />
-
+      <View style={styles.bottomBar}>
+        <Image source={require('@/assets/icons/environment.png')} style={styles.bottomBarImage} />
+        <Text style={styles.bottomBarText}>
+          👋 {100} KG of food waste prevented to date
+        </Text>
+      </View>
       {loading && !initialLoaded ? (
         <View style={styles.loaderContainer}>
           <ActivityIndicator size="large" color="gray" />
@@ -178,5 +183,24 @@ const styles = StyleSheet.create({
   itemLeft: {
     fontSize: 12,
     color: "red",
+  },
+  bottomBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingVertical: 10,
+    backgroundColor: '#e0f7fa',
+    borderTopWidth: 1,
+    borderColor: '#cfd8dc',
+  },
+  bottomBarImage: {
+    width: 50,
+    height: 30,
+    marginRight: 10,
+  },
+  bottomBarText: {
+    fontSize: 14,
+    color: '#00796b',
+    fontWeight: 'bold',
   },
 });

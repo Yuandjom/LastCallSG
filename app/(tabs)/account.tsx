@@ -26,6 +26,7 @@ const Account = () => {
       title: "About LastCall SG",
       icon: "information-circle",
       section: "INFORMATION",
+      onPress: () => router.push("/onboarding"), // Add onPress handler
     },
   ];
 
@@ -40,7 +41,7 @@ const Account = () => {
         <View style={styles.profileHeader}>
           <Image
             source={{
-              uri: "https://media.licdn.com/dms/image/D5610AQFE4u2nwCkbdw/image-shrink_800/0/1712033034641?e=2147483647&v=beta&t=BvZlz8yy1HflEvizk4nbz-DHX9NZRbsj6VoRTc6XbC4",
+              uri: "https://avatar.iran.liara.run/public",
             }}
             style={styles.profileImage}
           />
@@ -66,7 +67,11 @@ const Account = () => {
           {buttonData
             .filter((button) => button.section === section)
             .map((button, index) => (
-              <TouchableOpacity key={index} style={styles.button}>
+              <TouchableOpacity
+                key={index}
+                style={styles.button}
+                onPress={button.onPress} // Apply the onPress handler if it exists
+              >
                 <Ionicons name={button.icon as any} size={24} color="#000" />
                 <Text style={styles.buttonText}>{button.title}</Text>
                 <Ionicons
