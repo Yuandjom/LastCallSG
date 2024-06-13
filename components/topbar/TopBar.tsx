@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   StatusBar,
   Modal,
   Dimensions,
+  Linking,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import MapView, { Marker, Circle } from "react-native-maps";
@@ -16,17 +17,69 @@ import { useRouter } from "expo-router";
 const TopBar = () => {
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState(false);
-  const userLocation = { latitude: 1.2931, longitude: 103.8496 }; // Dummy user location
-  const storeLocation = { latitude: 1.2931, longitude: 103.8496 }; // Dummy store location
+  const userLocation = { latitude: 1.296568, longitude: 103.852119 }; // Dummy user location
+  const lastTapRef = useRef(null); // Reference to store last tap time
+
+  const stores = [
+    {
+      latitude: 1.2956,
+      longitude: 103.8583,
+      title: "Store Location 1",
+      description: "Store address 1",
+      address: "51 Bras Basah Rd, #04-08 Lazada One",
+    },
+    {
+      latitude: 1.3000,
+      longitude: 103.8500,
+      title: "Store Location 2",
+      description: "Store address 2",
+      address: "123 Orchard Rd, #01-01",
+    },
+    {
+      latitude: 1.3100,
+      longitude: 103.8600,
+      title: "Store Location 3",
+      description: "Store address 3",
+      address: "456 Marina Bay, #02-02",
+    },
+    {
+      latitude: 1.4376,
+      longitude: 103.8376,
+      title: "Philip's Market",
+      description: "Philip's market is a market place providing everyday essentials...",
+      address: "7 YISHUN INDUSTRIAL STREET 1, BIZHUB, #03-50 NORTH SPRING, 768162",
+    },
+    {
+      latitude: 1.3100,
+      longitude: 103.8600,
+      title: "Store Location 3",
+      description: "Store address 3",
+      address: "456 Marina Bay, #02-02",
+    },
+  ];
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
   };
+
   const handlePress = () => {
     router.push({
       pathname: "/onboarding",
     });
   };
+
+  const handleMarkerPress = (address) => {
+    const now = Date.now();
+    if (lastTapRef.current && (now - lastTapRef.current) < 300) {
+      // Double tap detected
+      const query = encodeURIComponent(address);
+      const url = `https://www.google.com/search?q=${query}`;
+      Linking.openURL(url);
+    } else {
+      lastTapRef.current = now;
+    }
+  };
+
   return (
     <View>
       <View style={styles.topBar}>
@@ -39,17 +92,11 @@ const TopBar = () => {
           <Ionicons name="chevron-down" size={18} style={styles.chevronIcon} />
         </TouchableOpacity>
         <Text style={styles.locationSubText}>Current location · 50 km</Text>
-        {/* <TouchableOpacity onPress={handlePress}>
+        <TouchableOpacity onPress={handlePress} style={styles.infoIcon}>
           <Ionicons
             name="information-circle-outline"
             size={30}
-            style={styles.infoIcon}
-          />
-        </TouchableOpacity> */}
-        <TouchableOpacity onPress={handlePress} style={styles.infoIcon} >
-          <Ionicons
-            name="information-circle-outline"
-            size={30}
+            color="gray"
           />
         </TouchableOpacity>
       </View>
@@ -70,25 +117,42 @@ const TopBar = () => {
               longitudeDelta: 0.0421,
             }}
           >
-            <Marker
-              coordinate={storeLocation}
-              title="Store Location"
-              description="Store address"
-            />
+            {stores.map((store, index) => (
+              <Marker
+                key={index}
+                coordinate={{
+                  latitude: store.latitude,
+                  longitude: store.longitude,
+                }}
+                title={store.title}
+                description={store.description}
+                onPress={() => handleMarkerPress(store.address)}
+              >
+                <View style={styles.markerContainer}>
+                  <Ionicons name="storefront-outline" size={24} color="white" />
+                  <Text style={styles.markerLabel}>{store.title}</Text>
+                </View>
+              </Marker>
+            ))}
             <Marker
               coordinate={userLocation}
               title="Your Location"
-              pinColor="blue"
-            />
+              pinColor="#474744"
+            >
+              <View style={styles.markerContainer}>
+                <Ionicons name="person-circle-outline" size={24} color="red" />
+                <Text style={styles.markerLabel}>You</Text>
+              </View>
+            </Marker>
             <Circle
               center={userLocation}
-              radius={5000} // Radius in meters
-              strokeColor="rgba(0,0,255,0.5)"
-              fillColor="rgba(0,0,255,0.1)"
+              radius={500} // Radius in meters
+              strokeColor="rgba(0,255,255,0.5)"
+              fillColor="rgba(0,255,255,0.1)"
             />
           </MapView>
           <TouchableOpacity style={styles.closeButton} onPress={toggleModal}>
-            <Text style={styles.closeButtonText}>Close</Text>
+            <Ionicons name="close" size={30} color="white" />
           </TouchableOpacity>
         </View>
       </Modal>
@@ -122,32 +186,34 @@ const styles = StyleSheet.create({
     marginTop: 4,
   },
   infoIcon: {
-    color: "gray",
     position: "absolute",
     right: 20,
-    top: 50,
+    top: Platform.OS === "android" ? StatusBar.currentHeight + 10 : 50,
   },
   chevronIcon: {
     marginLeft: 4,
   },
   modalContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   map: {
     width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height * 0.8,
+    height: Dimensions.get("window").height,
   },
   closeButton: {
-    backgroundColor: "#fff",
-    padding: 10,
+    position: "absolute",
+    top: 50,
+    right: 20,
+    backgroundColor: "rgba(0, 0, 0, 0.6)",
     borderRadius: 20,
-    marginTop: 20,
+    padding: 10,
   },
-  closeButtonText: {
-    color: "#007BFF",
+  markerContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  markerLabel: {
+    color: "white",
     fontWeight: "bold",
   },
 });
