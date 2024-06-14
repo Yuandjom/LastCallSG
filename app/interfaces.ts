@@ -24,5 +24,6 @@ export interface Store {
   storePostalCode: string;
   storeRating: number;
   storeEmailAddress:string;
+  id: number
 }
 
