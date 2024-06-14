@@ -102,8 +102,8 @@ const TopBar: React.FC<TopBarProps> = ({ filteredStores }) => {
             initialRegion={{
               latitude: userLocation.latitude,
               longitude: userLocation.longitude,
-              latitudeDelta: 0.0922,
-              longitudeDelta: 0.0421,
+              latitudeDelta: 0.01,
+              longitudeDelta: 0.01,
             }}
           >
             {filteredStores.map((store, index) => (
@@ -147,7 +147,7 @@ const TopBar: React.FC<TopBarProps> = ({ filteredStores }) => {
             </Marker>
             <Circle
               center={userLocation}
-              radius={5000} // Radius in meters
+              radius={500} // Radius in meters
               strokeColor="rgba(0,255,255,0.5)"
               fillColor="rgba(0,255,255,0.1)"
             />
