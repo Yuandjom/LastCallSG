@@ -11,54 +11,19 @@ import {
   Linking,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import MapView, { Marker, Circle } from "react-native-maps";
+import MapView, { Marker, Circle, Callout } from "react-native-maps";
 import { useRouter } from "expo-router";
+import { Store } from "@/app/interfaces";
 
-const TopBar = () => {
+interface TopBarProps {
+  filteredStores: Store[];
+}
+
+const TopBar: React.FC<TopBarProps> = ({ filteredStores }) => {
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState(false);
   const userLocation = { latitude: 1.296568, longitude: 103.852119 }; // Dummy user location
   const lastTapRef = useRef(null); // Reference to store last tap time
-
-  const stores = [
-    {
-      latitude: 1.2956,
-      longitude: 103.8583,
-      title: "Store Location 1",
-      description: "Store address 1",
-      address: "51 Bras Basah Rd, #04-08 Lazada One",
-    },
-    {
-      latitude: 1.3,
-      longitude: 103.85,
-      title: "Store Location 2",
-      description: "Store address 2",
-      address: "123 Orchard Rd, #01-01",
-    },
-    {
-      latitude: 1.31,
-      longitude: 103.86,
-      title: "Store Location 3",
-      description: "Store address 3",
-      address: "456 Marina Bay, #02-02",
-    },
-    {
-      latitude: 1.4376,
-      longitude: 103.8376,
-      title: "Philip's Market",
-      description:
-        "Philip's market is a market place providing everyday essentials...",
-      address:
-        "7 YISHUN INDUSTRIAL STREET 1, BIZHUB, #03-50 NORTH SPRING, 768162",
-    },
-    {
-      latitude: 1.31,
-      longitude: 103.86,
-      title: "Store Location 3",
-      description: "Store address 3",
-      address: "456 Marina Bay, #02-02",
-    },
-  ];
 
   const toggleModal = () => {
     setModalVisible(!modalVisible);
@@ -70,13 +35,39 @@ const TopBar = () => {
     });
   };
 
-  const handleMarkerPress = (address:any) => {
+  const handleMarkerPress = (
+    address: any,
+    latitude: number,
+    longitude: number
+  ) => {
     const now = Date.now();
     if (lastTapRef.current && now - lastTapRef.current < 1000) {
       // Double tap detected
-      const query = encodeURIComponent(address);
-      const url = `https://www.google.com/search?q=${query}`;
-      Linking.openURL(url);
+      if (Platform.OS === "ios") {
+        // Open in Google Maps app or browser on iOS
+        const url = `comgooglemaps://?q=${address}&center=${latitude},${longitude}`;
+        Linking.canOpenURL(url).then((supported) => {
+          if (supported) {
+            Linking.openURL(url);
+          } else {
+            Linking.openURL(
+              `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`
+            );
+          }
+        });
+      } else {
+        // Open in Google Maps app or browser on Android
+        const url = `geo:${latitude},${longitude}?q=${address}`;
+        Linking.canOpenURL(url).then((supported) => {
+          if (supported) {
+            Linking.openURL(url);
+          } else {
+            Linking.openURL(
+              `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`
+            );
+          }
+        });
+      }
     } else {
       lastTapRef.current = now;
     }
@@ -115,21 +106,33 @@ const TopBar = () => {
               longitudeDelta: 0.0421,
             }}
           >
-            {stores.map((store, index) => (
+            {filteredStores.map((store, index) => (
               <Marker
                 key={index}
                 coordinate={{
-                  latitude: store.latitude,
-                  longitude: store.longitude,
+                  latitude: store.storeLatitude,
+                  longitude: store.storeLongitude,
                 }}
-                title={store.title}
-                description={store.description}
-                onPress={() => handleMarkerPress(store.address)}
+                onPress={() =>
+                  handleMarkerPress(
+                    store.storeAddress,
+                    store.storeLatitude,
+                    store.storeLongitude
+                  )
+                }
               >
                 <View style={styles.markerContainer}>
                   <Ionicons name="storefront-outline" size={24} color="white" />
-                  <Text style={styles.markerLabel}>{store.title}</Text>
+                  <Text style={styles.markerLabel}>{store.storeTitle}</Text>
                 </View>
+                <Callout>
+                  <View style={styles.calloutContainer}>
+                    <Text style={styles.calloutTitle}>{store.storeTitle}</Text>
+                    <Text style={styles.calloutDescription}>
+                      {store.storeAddress}
+                    </Text>
+                  </View>
+                </Callout>
               </Marker>
             ))}
             <Marker
@@ -213,6 +216,18 @@ const styles = StyleSheet.create({
   markerLabel: {
     color: "white",
     fontWeight: "bold",
+  },
+  calloutContainer: {
+    width: 150,
+    padding: 5,
+  },
+  calloutTitle: {
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  calloutDescription: {
+    fontSize: 14,
+    color: "gray",
   },
 });
 

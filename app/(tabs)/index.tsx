@@ -67,7 +67,7 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <TopBar></TopBar>
+      <TopBar filteredStores = {filteredStores}></TopBar>
       <CategoryScrollView
         selectedCategory={selectedCategory}
         onCategoryPress={handleCategoryPress}
