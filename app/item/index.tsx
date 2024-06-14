@@ -45,15 +45,15 @@ const ItemPage = () => {
   const item: StoreItem = params.item
     ? JSON.parse(params.item as string)
     : {
-      name: "",
-      finalPrice: 0,
-      originalPrice: 0,
-      discount: 0,
-      quantity: 0,
-      imageURL: "",
-      expiryDate: new Date(),
-      description: "",
-    };
+        name: "",
+        finalPrice: 0,
+        originalPrice: 0,
+        discount: 0,
+        quantity: 0,
+        imageURL: "",
+        expiryDate: new Date(),
+        description: "",
+      };
   const store: Store = params.store ? JSON.parse(params.store as string) : null;
 
   const formattedExpiryDate = formatDate(item.expiryDate);
@@ -74,8 +74,9 @@ const ItemPage = () => {
                   <Text style={styles.left}>{`${item.quantity} Left`}</Text>
                 </View>
                 <View style={styles.discountContainer}>
-                  <Text style={styles.discount}>{`-${item.discount * 100
-                    }%`}</Text>
+                  <Text style={styles.discount}>{`-${
+                    item.discount * 100
+                  }%`}</Text>
                 </View>
               </View>
               <View style={styles.sellerContainer}>
@@ -137,10 +138,17 @@ const ItemPage = () => {
               </View>
               <View style={styles.seperator}></View>
               <View style={styles.descriptionHeaderContainer}>
-              {item.description != 'None' ? <Text style={styles.descriptionHeader}>👉 Description</Text> : null}
+                {item.description != "None" ? (
+                  <Text style={styles.descriptionHeader}>👉 Description</Text>
+                ) : null}
               </View>
-              <TruncateWithShowMore text={item.description == 'None' ? "" : item.description} maxLength={200} />
-              {item.description != 'None' ?  <View style={styles.seperator}></View> : null}
+              <TruncateWithShowMore
+                text={item.description == "None" ? "" : item.description}
+                maxLength={200}
+              />
+              {item.description != "None" ? (
+                <View style={styles.seperator}></View>
+              ) : null}
             </View>
           </ScrollView>
           <TouchableOpacity style={styles.button} onPress={openModal}>
@@ -286,6 +294,7 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   itemQuantityContainer: {
+    width: "70%",
     margin: 10,
     gap: 4,
   },
@@ -314,7 +323,7 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   title: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: "bold",
     marginTop: 10,
     gap: 4,
@@ -348,6 +357,7 @@ const styles = StyleSheet.create({
     color: "white",
   },
   price: {
+    marginTop: 4,
     fontSize: 20,
     fontWeight: "bold",
     color: "#168F55",

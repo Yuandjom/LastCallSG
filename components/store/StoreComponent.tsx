@@ -120,12 +120,12 @@ const StoreComponent: React.FC<StoreComponentProps> = ({ store }) => {
 const styles = StyleSheet.create({
   storeContainer: {
     paddingHorizontal: 16,
-    paddingVertical: 16,
+    paddingVertical: 8,
   },
   storeHeader: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 16,
+    marginBottom: 12,
   },
   storeLogo: {
     width: 50,
@@ -232,7 +232,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    marginBottom: 4,
+
   },
   itemPrice: {
     fontSize: 14,

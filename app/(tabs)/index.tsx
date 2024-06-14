@@ -35,7 +35,9 @@ export default function HomeScreen() {
 
   const fetchStores = async () => {
     try {
-      const response = await fetch("https://411r12agye.execute-api.ap-southeast-1.amazonaws.com/stores");
+      const response = await fetch(
+        "https://411r12agye.execute-api.ap-southeast-1.amazonaws.com/stores"
+      );
       if (!response.ok) {
         throw new Error("Failed to fetch stores");
       }
@@ -56,7 +58,9 @@ export default function HomeScreen() {
       setFilteredStores(stores);
     } else {
       setSelectedCategory(category);
-      setFilteredStores(stores.filter(store => store.storeCategory === category));
+      setFilteredStores(
+        stores.filter((store) => store.storeCategory === category)
+      );
     }
   };
 
@@ -69,7 +73,12 @@ export default function HomeScreen() {
         onCategoryPress={handleCategoryPress}
       />
       <View style={styles.bottomBar}>
-        <Image source={require('@/assets/icons/environment.png')} style={styles.bottomBarImage} />
+        <Image
+          source={{
+            uri: "https://walaoeh.s3.ap-southeast-1.amazonaws.com/homeBannerIcon.png",
+          }}
+          style={styles.bottomBarImage}
+        />
         <Text style={styles.bottomBarText}>
           👋 {100} KG of food waste prevented to date
         </Text>
@@ -185,13 +194,13 @@ const styles = StyleSheet.create({
     color: "red",
   },
   bottomBar: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     paddingVertical: 10,
-    backgroundColor: '#e0f7fa',
+    backgroundColor: "#e0f7fa",
     borderTopWidth: 1,
-    borderColor: '#cfd8dc',
+    borderColor: "#cfd8dc",
   },
   bottomBarImage: {
     width: 50,
@@ -200,7 +209,7 @@ const styles = StyleSheet.create({
   },
   bottomBarText: {
     fontSize: 14,
-    color: '#00796b',
-    fontWeight: 'bold',
+    color: "#00796b",
+    fontWeight: "bold",
   },
 });

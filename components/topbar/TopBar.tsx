@@ -29,15 +29,15 @@ const TopBar = () => {
       address: "51 Bras Basah Rd, #04-08 Lazada One",
     },
     {
-      latitude: 1.3000,
-      longitude: 103.8500,
+      latitude: 1.3,
+      longitude: 103.85,
       title: "Store Location 2",
       description: "Store address 2",
       address: "123 Orchard Rd, #01-01",
     },
     {
-      latitude: 1.3100,
-      longitude: 103.8600,
+      latitude: 1.31,
+      longitude: 103.86,
       title: "Store Location 3",
       description: "Store address 3",
       address: "456 Marina Bay, #02-02",
@@ -46,12 +46,14 @@ const TopBar = () => {
       latitude: 1.4376,
       longitude: 103.8376,
       title: "Philip's Market",
-      description: "Philip's market is a market place providing everyday essentials...",
-      address: "7 YISHUN INDUSTRIAL STREET 1, BIZHUB, #03-50 NORTH SPRING, 768162",
+      description:
+        "Philip's market is a market place providing everyday essentials...",
+      address:
+        "7 YISHUN INDUSTRIAL STREET 1, BIZHUB, #03-50 NORTH SPRING, 768162",
     },
     {
-      latitude: 1.3100,
-      longitude: 103.8600,
+      latitude: 1.31,
+      longitude: 103.86,
       title: "Store Location 3",
       description: "Store address 3",
       address: "456 Marina Bay, #02-02",
@@ -68,9 +70,9 @@ const TopBar = () => {
     });
   };
 
-  const handleMarkerPress = (address) => {
+  const handleMarkerPress = (address:any) => {
     const now = Date.now();
-    if (lastTapRef.current && (now - lastTapRef.current) < 1000) {
+    if (lastTapRef.current && now - lastTapRef.current < 1000) {
       // Double tap detected
       const query = encodeURIComponent(address);
       const url = `https://www.google.com/search?q=${query}`;
@@ -91,13 +93,9 @@ const TopBar = () => {
           <Text style={styles.locationText}>Your Location</Text>
           <Ionicons name="chevron-down" size={18} style={styles.chevronIcon} />
         </TouchableOpacity>
-        <Text style={styles.locationSubText}>Current location · 50 km</Text>
+        <Text style={styles.locationSubText}>Current location · 500m</Text>
         <TouchableOpacity onPress={handlePress} style={styles.infoIcon}>
-          <Ionicons
-            name="information-circle-outline"
-            size={30}
-            color="gray"
-          />
+          <Ionicons name="information-circle-outline" size={30} color="gray" />
         </TouchableOpacity>
       </View>
 
@@ -146,7 +144,7 @@ const TopBar = () => {
             </Marker>
             <Circle
               center={userLocation}
-              radius={500} // Radius in meters
+              radius={5000} // Radius in meters
               strokeColor="rgba(0,255,255,0.5)"
               fillColor="rgba(0,255,255,0.1)"
             />
