@@ -28,7 +28,7 @@ const TopBar: React.FC<TopBarProps> = ({ stores, onSearchSubmit }) => {
   const toggleSearchModal = () => {
     setSearchModalVisible(!searchModalVisible);
   };
-  console.log(stores);
+  // console.log(stores);
   return (
     <View>
       <View style={styles.topBar}>
