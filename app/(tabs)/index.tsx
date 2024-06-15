@@ -11,7 +11,7 @@ import {
   ActivityIndicator,
 } from "react-native";
 import StoreComponent from "@/components/store/StoreComponent";
-import { Store } from "@/app/interfaces";
+import { Store, Item } from "@/app/interfaces";
 import TopBar from "@/components/topbar/TopBar";
 
 export default function HomeScreen() {
@@ -21,6 +21,7 @@ export default function HomeScreen() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [initialLoaded, setInitialLoaded] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -51,11 +52,13 @@ export default function HomeScreen() {
   };
 
   const handleSearchSubmit = (query: string) => {
-    const results = stores.filter((store) =>
-      store.items.some((item) =>
+    setSearchQuery(query); // Store the search query
+    const results = stores.map((store) => {
+      const filteredItems = store.items.filter((item) =>
         item.name.toLowerCase().includes(query.toLowerCase())
-      )
-    );
+      );
+      return { ...store, items: filteredItems };
+    }).filter(store => store.items.length > 0);
     setFilteredStores(results);
   };
 
@@ -77,6 +80,21 @@ export default function HomeScreen() {
       {loading && !initialLoaded ? (
         <View style={styles.loaderContainer}>
           <ActivityIndicator size="large" color="gray" />
+        </View>
+      ) : filteredStores.length === 0 && searchQuery ? (
+        <View style={styles.noResultsContainer}>
+          <Image
+            source={{
+              uri: "https://walaoeh.s3.ap-southeast-1.amazonaws.com/onBoardingIndex.png",
+            }}
+            style={styles.noResultsImage}
+          />
+          <Text style={styles.noResultsText}>
+            "{searchQuery}" is currently not available.
+          </Text>
+          <Text style={styles.noResultsText}>
+            We will inform you when it is available!
+          </Text>
         </View>
       ) : (
         <ScrollView
@@ -125,5 +143,21 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: "#00796b",
     fontWeight: "bold",
+  },
+  noResultsContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 16,
+  },
+  noResultsImage: {
+    width: 150,
+    height: 150,
+    marginBottom: 20,
+  },
+  noResultsText: {
+    fontSize: 18,
+    color: "#333",
+    textAlign: "center",
   },
 });

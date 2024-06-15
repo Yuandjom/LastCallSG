@@ -31,16 +31,37 @@ const SearchModal: React.FC<SearchModalProps> = ({
     };
 
     const handleSubmit = () => {
-        onSearchSubmit(searchQuery);
+        if (searchQuery.trim() !== "") {
+            onSearchSubmit(searchQuery);
+        }
         toggleModal();
         Keyboard.dismiss();
     };
 
-    const filteredResults = stores.filter((store) =>
-        store.items.some((item) =>
-            item.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const boldSearchQuery = (text: string, query: string) => {
+        if (!query) return text;
+
+        const regex = new RegExp(`(${query})`, 'gi');
+        const parts = text.split(regex);
+
+        return parts.map((part, index) =>
+            part.toLowerCase() === query.toLowerCase() ? (
+                <Text key={index} style={{ fontWeight: 'bold' }}>
+                    {part}
+                </Text>
+            ) : (
+                part
+            )
+        );
+    };
+
+    const filteredResults = searchQuery.trim()
+        ? stores.filter((store) =>
+            store.items.some((item) =>
+                item.name.toLowerCase().includes(searchQuery.toLowerCase())
+            )
         )
-    );
+        : [];
 
     return (
         <Modal
@@ -54,6 +75,7 @@ const SearchModal: React.FC<SearchModalProps> = ({
                     <TextInput
                         style={styles.searchBar}
                         placeholder="Search items..."
+                        placeholderTextColor="#888" // Adjust color as needed
                         value={searchQuery}
                         onChangeText={handleSearch}
                         onSubmitEditing={handleSubmit}
@@ -63,14 +85,15 @@ const SearchModal: React.FC<SearchModalProps> = ({
                         keyExtractor={(item) => item.id.toString()}
                         renderItem={({ item }) => (
                             <View style={styles.storeContainer}>
-                                <Text style={styles.storeName}>{item.storeTitle}</Text>
                                 <FlatList
                                     data={item.items.filter((item) =>
                                         item.name.toLowerCase().includes(searchQuery.toLowerCase())
                                     )}
                                     keyExtractor={(item) => item.name}
                                     renderItem={({ item }) => (
-                                        <Text style={styles.itemName}>{item.name}</Text>
+                                        <Text style={styles.storeName}>
+                                            {boldSearchQuery(item.name, searchQuery)}
+                                        </Text>
                                     )}
                                 />
                             </View>
@@ -109,6 +132,8 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         paddingHorizontal: 8,
         marginBottom: 16,
+        fontSize: 16, // Increase font size for better visibility
+        color: "#000", // Ensure text color is visible
     },
     resultsList: {
         flex: 1,
@@ -121,7 +146,6 @@ const styles = StyleSheet.create({
     },
     storeName: {
         fontSize: 16,
-        fontWeight: "bold",
     },
     itemName: {
         fontSize: 14,
