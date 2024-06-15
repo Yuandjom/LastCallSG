@@ -49,10 +49,12 @@ const StorePage = () => {
 
   const handleSharePress = async () => {
     try {
+      const storeTitleQuery = encodeURIComponent(store.storeTitle);
+      const googleQueryUrl = `https://www.google.com/search?q=${storeTitleQuery}`;
+      const message = `Check out this store: ${store.storeTitle}, located at ${store.storeAddress}, Singapura ${store.storePostalCode}. They have some great products!\n\nFind out more: ${googleQueryUrl}`;
+
       const result = await Share.share({
-        message:
-          `Check out this store: ${store.storeTitle}, located at ${store.storeAddress}, Singapura ${store.storePostalCode}. They have some great products!`,
-        url: "https://www.starbucks.com.sg/",
+        message: message,
         title: `${store.storeTitle}`,
       });
 
@@ -132,7 +134,10 @@ const StorePage = () => {
         <View style={styles.storeHeader}>
           <View style={styles.backgroundColor} />
           <View style={styles.storeInfo}>
-            <Image source={{uri:store.storeLogo as any}} style={styles.storeLogo} />
+            <Image
+              source={{ uri: store.storeLogo as any }}
+              style={styles.storeLogo}
+            />
             <View style={styles.storeTextContainer}>
               <Text style={styles.storeTitle}>{store.storeTitle}</Text>
               <Text style={styles.storeSubtitle}>
@@ -172,7 +177,7 @@ const StorePage = () => {
         {activeTab === "Products" ? (
           <View style={styles.productsWrapper}>
             {items.map((item, index) => {
-              let itemLeftStyle : any;
+              let itemLeftStyle: any;
               let itemLeftTextColor: any;
               if (item.quantity === 1) {
                 itemLeftStyle = styles.itemLeftRed;
@@ -194,9 +199,14 @@ const StorePage = () => {
                   style={styles.product}
                 >
                   <View style={styles.imageContainer}>
-                    <Image source={{uri:item.imageURL}} style={styles.productImage} />
+                    <Image
+                      source={{ uri: item.imageURL }}
+                      style={styles.productImage}
+                    />
                     <View style={styles.discountTag}>
-                      <Text style={styles.discountText}>-{item.discount * 100}%</Text>
+                      <Text style={styles.discountText}>
+                        -{item.discount * 100}%
+                      </Text>
                     </View>
                   </View>
                   <View style={styles.productInfo}>

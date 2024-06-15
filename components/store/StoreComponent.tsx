@@ -45,7 +45,10 @@ const StoreComponent: React.FC<StoreComponentProps> = ({ store }) => {
         delayPressIn={100}
       >
         <View style={styles.storeHeader}>
-          <Image source={{ uri: store.storeLogo as any }} style={styles.storeLogo} />
+          <Image
+            source={{ uri: store.storeLogo as any }}
+            style={styles.storeLogo}
+          />
           <View style={styles.storeInfo}>
             <Text style={styles.storeTitle}>
               {truncateText(store.storeTitle, 20)}
@@ -100,12 +103,14 @@ const StoreComponent: React.FC<StoreComponentProps> = ({ store }) => {
                       {item.quantity} left
                     </Text>
                   </View>
-                  <Text style={styles.itemName}>{truncateText(item.name,35)}</Text>
+                  <Text style={styles.itemName}>
+                    {truncateText(item.name, 30)}
+                  </Text>
                   <View style={styles.priceContainer}>
                     <Text style={styles.itemWasPrice}>
                       was {item.originalPrice}
                     </Text>
-                    <Text style={styles.itemPrice}>{item.finalPrice}</Text>
+                    <Text style={styles.itemPrice}>{(item.finalPrice).toFixed(2)}</Text>
                   </View>
                 </View>
               </View>
@@ -232,7 +237,6 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-
   },
   itemPrice: {
     fontSize: 14,
