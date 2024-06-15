@@ -35,6 +35,8 @@ const SearchModal: React.FC<SearchModalProps> = ({
     const handleSubmit = () => {
         if (searchQuery.trim() !== "") {
             onSearchSubmit(searchQuery);
+        } else {
+            onSearchSubmit("");
         }
         toggleModal();
         Keyboard.dismiss();
@@ -118,6 +120,9 @@ const SearchModal: React.FC<SearchModalProps> = ({
                             )}
                             style={styles.resultsList}
                         />
+                        <TouchableOpacity onPress={handleSubmit} style={styles.searchButton}>
+                            <Text style={styles.searchButtonText}>Search</Text>
+                        </TouchableOpacity>
                         <TouchableOpacity onPress={toggleModal} style={styles.closeButton}>
                             <Text style={styles.closeButtonText}>Close</Text>
                         </TouchableOpacity>
@@ -178,6 +183,18 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: "#666",
         marginLeft: 16,
+    },
+    searchButton: {
+        width: "100%",
+        padding: 8,
+        backgroundColor: "#4CAF50",
+        borderRadius: 4,
+        alignItems: "center",
+        marginBottom: 10,
+    },
+    searchButtonText: {
+        color: "#fff",
+        fontSize: 16,
     },
     closeButton: {
         width: "100%",

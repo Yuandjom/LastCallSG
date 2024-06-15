@@ -41,7 +41,7 @@ const Account = () => {
         <View style={styles.profileHeader}>
           <Image
             source={{
-              uri: "https://avatar.iran.liara.run/public",
+              uri: "https://walaoeh.s3.ap-southeast-1.amazonaws.com/avatar.png",
             }}
             style={styles.profileImage}
           />

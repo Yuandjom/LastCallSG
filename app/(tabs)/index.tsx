@@ -9,6 +9,7 @@ import {
   Platform,
   RefreshControl,
   ActivityIndicator,
+  TouchableOpacity,
 } from "react-native";
 import StoreComponent from "@/components/store/StoreComponent";
 import { Store } from "@/app/interfaces";
@@ -52,13 +53,18 @@ export default function HomeScreen() {
 
   const handleSearchSubmit = (query: string) => {
     setSearchQuery(query); // Store the search query
-    const results = stores.map((store) => {
-      const filteredItems = store.items.filter((item) =>
-        item.name.toLowerCase().includes(query.toLowerCase())
-      );
-      return { ...store, items: filteredItems };
-    }).filter(store => store.items.length > 0);
-    setFilteredStores(results);
+    if (query.trim() === "") {
+      fetchStores();
+      setFilteredStores(stores);
+    } else {
+      const results = stores.map((store) => {
+        const filteredItems = store.items.filter((item) =>
+          item.name.toLowerCase().includes(query.toLowerCase())
+        );
+        return { ...store, items: filteredItems };
+      }).filter(store => store.items.length > 0);
+      setFilteredStores(results);
+    }
   };
 
   return (
@@ -94,6 +100,12 @@ export default function HomeScreen() {
           <Text style={styles.noResultsText}>
             We will inform you when it is available!
           </Text>
+          <TouchableOpacity
+            style={styles.refreshButton}
+            onPress={fetchStores}
+          >
+            <Text style={styles.refreshButtonText}>Click here to continue browsing</Text>
+          </TouchableOpacity>
         </View>
       ) : (
         <ScrollView
@@ -159,4 +171,16 @@ const styles = StyleSheet.create({
     color: "#333",
     textAlign: "center",
   },
+  refreshButton: {
+    marginTop: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    backgroundColor: "#00796b",
+    borderRadius: 5,
+  },
+  refreshButtonText: {
+    color: "#fff",
+    fontSize: 16,
+  },
 });
+
