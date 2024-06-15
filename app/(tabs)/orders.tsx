@@ -252,9 +252,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 5,
+    width : '100%',
+    borderWidth : 5,
+    borderColor: 'red'
   },
   itemName: {
     fontSize: 16,
+    flexWrap: 'wrap',
+    maxWidth: '80%'
   },
   itemPrice: {
     fontSize: 16,
