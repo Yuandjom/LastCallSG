@@ -8,15 +8,16 @@ import {
   StatusBar,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import MapModal from "./mapmodal/MapModal"; // Import the new MapModal component
-import SearchModal from "./searchmodal/SearchModal"; // Import the new SearchModal component
+import MapModal from "./mapmodal/MapModal";
+import SearchModal from "./searchmodal/SearchModal";
 import { Store } from "@/app/interfaces";
 
 interface TopBarProps {
   stores: Store[];
+  onSearchSubmit: (query: string) => void;
 }
 
-const TopBar: React.FC<TopBarProps> = ({ stores }) => {
+const TopBar: React.FC<TopBarProps> = ({ stores, onSearchSubmit }) => {
   const [mapModalVisible, setMapModalVisible] = useState(false);
   const [searchModalVisible, setSearchModalVisible] = useState(false);
 
@@ -55,6 +56,7 @@ const TopBar: React.FC<TopBarProps> = ({ stores }) => {
         modalVisible={searchModalVisible}
         toggleModal={toggleSearchModal}
         stores={stores}
+        onSearchSubmit={onSearchSubmit}
       />
     </View>
   );

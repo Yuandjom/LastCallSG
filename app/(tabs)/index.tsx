@@ -10,7 +10,6 @@ import {
   RefreshControl,
   ActivityIndicator,
 } from "react-native";
-import CategoryScrollView from "@/components/category/Category";
 import StoreComponent from "@/components/store/StoreComponent";
 import { Store } from "@/app/interfaces";
 import TopBar from "@/components/topbar/TopBar";
@@ -21,8 +20,7 @@ export default function HomeScreen() {
   const [filteredStores, setFilteredStores] = useState<Store[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
-  const [initialLoaded, setInitialLoaded] = useState<boolean>(false); // Track initial load
-  const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
+  const [initialLoaded, setInitialLoaded] = useState<boolean>(false);
 
   const onRefresh = () => {
     setRefreshing(true);
@@ -48,29 +46,23 @@ export default function HomeScreen() {
       setError(error.message);
     } finally {
       setLoading(false);
-      setInitialLoaded(true); // Mark initial load as complete
+      setInitialLoaded(true);
     }
   };
-  const handleCategoryPress = (category: string) => {
-    if (selectedCategory === category) {
-      setSelectedCategory(null);
-      setFilteredStores(stores);
-    } else {
-      setSelectedCategory(category);
-      setFilteredStores(
-        stores.filter((store) => store.storeCategory === category)
-      );
-    }
+
+  const handleSearchSubmit = (query: string) => {
+    const results = stores.filter((store) =>
+      store.items.some((item) =>
+        item.name.toLowerCase().includes(query.toLowerCase())
+      )
+    );
+    setFilteredStores(results);
   };
 
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <TopBar stores={stores}></TopBar>
-      {/* <CategoryScrollView
-        selectedCategory={selectedCategory}
-        onCategoryPress={handleCategoryPress}
-      /> */}
+      <TopBar stores={stores} onSearchSubmit={handleSearchSubmit} />
       <View style={styles.bottomBar}>
         <Image
           source={{
@@ -110,87 +102,10 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
-  topBar: {
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 50,
-    backgroundColor: "#fff",
-    borderBottomWidth: 1,
-    borderBottomColor: "#e0e0e0",
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    flexDirection: "column",
-    justifyContent: "space-between",
-    alignItems: "center",
-  },
-  locationContainer: {
-    flexDirection: "row",
-    alignItems: "center",
-  },
-  locationText: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  locationSubText: {
-    fontSize: 12,
-    color: "gray",
-    marginTop: 4,
-  },
-  infoIcon: {
-    color: "gray",
-    position: "absolute",
-    right: 20,
-    top: 50,
-  },
-  chevronIcon: {
-    marginLeft: 4,
-  },
   loaderContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-  },
-  storeContainer: {
-    paddingHorizontal: 16,
-    paddingVertical: 16,
-  },
-  storeTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 4,
-  },
-  storeSubtitle: {
-    fontSize: 14,
-    color: "gray",
-    marginBottom: 16,
-  },
-  itemContainer: {
-    marginRight: 16,
-    width: 150,
-  },
-  itemImage: {
-    width: 150,
-    height: 100,
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  itemName: {
-    fontSize: 14,
-    fontWeight: "bold",
-    marginBottom: 4,
-  },
-  itemPrice: {
-    fontSize: 14,
-    color: "#56C071",
-    marginBottom: 4,
-  },
-  itemWasPrice: {
-    fontSize: 12,
-    color: "gray",
-    textDecorationLine: "line-through",
-    marginBottom: 4,
-  },
-  itemLeft: {
-    fontSize: 12,
-    color: "red",
   },
   bottomBar: {
     flexDirection: "row",

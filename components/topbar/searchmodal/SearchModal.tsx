@@ -7,6 +7,7 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
+    Keyboard,
 } from "react-native";
 import { Store } from "@/app/interfaces";
 
@@ -14,17 +15,25 @@ interface SearchModalProps {
     modalVisible: boolean;
     toggleModal: () => void;
     stores: Store[];
+    onSearchSubmit: (query: string) => void;
 }
 
 const SearchModal: React.FC<SearchModalProps> = ({
     modalVisible,
     toggleModal,
     stores,
+    onSearchSubmit,
 }) => {
     const [searchQuery, setSearchQuery] = useState("");
 
     const handleSearch = (query: string) => {
         setSearchQuery(query);
+    };
+
+    const handleSubmit = () => {
+        onSearchSubmit(searchQuery);
+        toggleModal();
+        Keyboard.dismiss();
     };
 
     const filteredResults = stores.filter((store) =>
@@ -47,6 +56,7 @@ const SearchModal: React.FC<SearchModalProps> = ({
                         placeholder="Search items..."
                         value={searchQuery}
                         onChangeText={handleSearch}
+                        onSubmitEditing={handleSubmit}
                     />
                     <FlatList
                         data={filteredResults}
@@ -65,6 +75,7 @@ const SearchModal: React.FC<SearchModalProps> = ({
                                 />
                             </View>
                         )}
+                        style={styles.resultsList}
                     />
                     <TouchableOpacity onPress={toggleModal} style={styles.closeButton}>
                         <Text style={styles.closeButtonText}>Close</Text>
@@ -84,6 +95,7 @@ const styles = StyleSheet.create({
     },
     modalContent: {
         width: "90%",
+        height: "80%",
         backgroundColor: "#fff",
         borderRadius: 8,
         padding: 16,
@@ -98,8 +110,11 @@ const styles = StyleSheet.create({
         paddingHorizontal: 8,
         marginBottom: 16,
     },
-    storeContainer: {
+    resultsList: {
+        flex: 1,
         width: "100%",
+    },
+    storeContainer: {
         padding: 16,
         borderBottomWidth: 1,
         borderBottomColor: "#eee",
@@ -114,10 +129,11 @@ const styles = StyleSheet.create({
         marginLeft: 16,
     },
     closeButton: {
-        marginTop: 16,
+        width: "100%",
         padding: 8,
         backgroundColor: "#2196F3",
         borderRadius: 4,
+        alignItems: "center",
     },
     closeButtonText: {
         color: "#fff",
