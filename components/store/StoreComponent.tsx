@@ -57,6 +57,8 @@ const StoreComponent: React.FC<StoreComponentProps> = ({ store }) => {
               {store.storeDistance} 
             </Text>
           </View>
+
+          <Ionicons name="chevron-forward" size={18} style={styles.arrowIcon} />
         </View>
       </TouchableOpacity>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
