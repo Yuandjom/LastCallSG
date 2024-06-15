@@ -99,9 +99,6 @@ const StoreComponent: React.FC<StoreComponentProps> = ({ store }) => {
                 </View>
                 <View style={styles.itemInfo}>
                   <View style={[styles.itemLeftContainer, itemLeftStyle]}>
-                    <Text style={[styles.itemLeft, itemLeftTextColor]}>
-                      {item.quantity} left
-                    </Text>
                   </View>
                   <Text style={styles.itemName}>
                     {truncateText(item.name, 30)}
