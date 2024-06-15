@@ -44,7 +44,9 @@ const ItemQuantity: React.FC<MyModalProps> = ({
         <TouchableWithoutFeedback>
           <View style={styles.modalOverlay}>
             <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <Ionicons name="close" size={32} color="black" />
+              <View style={styles.closeButton}>
+                <Ionicons name="close" size={33} color="black" />
+              </View>
             </TouchableOpacity>
             <View style={styles.detailAndQtyContainer}>
               <Text style={styles.itemName}>{truncateText(item.name, 20)}</Text>
@@ -208,14 +210,16 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     position: "absolute",
-    bottom: "88%",
-    right: "4%",
+    top:10 ,
+    right: 20,
     justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#F5F2F9",
+    alignItems: "stretch",
+    // backgroundColor: "#F5F2F9",
     width: 40,
     height: 40,
-    borderRadius: 20,
+    // borderRadius: 20,
+    borderWidth:5 ,
+    borderColor: 'red'
   },
   closeButtonText: {
     color: "white",
