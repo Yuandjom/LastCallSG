@@ -28,16 +28,14 @@ const ItemPage = () => {
   const [imageModalVisible, setImageModalVisible] = useState(false);
 
   const openModal = () => {
-    if (!user) {
-      router.push("/register");
-    } else {
+
       setModalVisible(true);
       Animated.timing(fadeAnim, {
         toValue: 0.5,
         duration: 500,
         useNativeDriver: true,
       }).start();
-    }
+
   };
 
   const closeModal = () => {
@@ -97,7 +95,7 @@ const ItemPage = () => {
                 />
                 <View>
                   <Text style={styles.storeTitle}>{store.storeTitle}</Text>
-                  <Text style={styles.rating}>⭐ {store.storeRating}</Text>
+                  <Text style={styles.rating}>⭐ {store.storeRating.toFixed(1)}</Text>
                 </View>
               </View>
             </View>
@@ -159,7 +157,7 @@ const ItemPage = () => {
             </View>
           </ScrollView>
           <TouchableOpacity style={styles.button} onPress={openModal}>
-            <Text style={styles.buttonText}>Chope Now</Text>
+            <Text style={styles.buttonText}>Purchase Now</Text>
           </TouchableOpacity>
         </View>
         <ItemModal

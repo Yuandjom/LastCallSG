@@ -55,7 +55,7 @@ const LoginScreen: React.FC = () => {
         setMessage("");
         setTimeout(() => {
           router.push("/");
-        }, 1000); // 2 seconds delay before navigation
+        }, 400); // 0.4 seconds delay before navigation
       } else {
         setMessage(data.error || "Login failed");
       }

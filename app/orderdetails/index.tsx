@@ -1,26 +1,62 @@
-import React from "react";
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TouchableOpacity,
+  Linking,
+  Platform,
+  Modal,
+  Pressable,
+} from "react-native";
+import QRCode from "react-native-qrcode-svg";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { Store, StoreItem } from "../interfaces";
 import { truncateText } from "@/utils/truncateText";
 import { formatUTCDate } from "@/utils/formatDate";
 
-const OrderConfirmation = () => {
+const OrderDetails = () => {
   const router = useRouter();
   const params = useLocalSearchParams();
 
-  const handlePress = () => {
-    // Add your code here
-    router.push({
-      pathname: "/orders",
-      params: {
-        item: JSON.stringify(item),
-        store: JSON.stringify(store),
-        totalPrice: JSON.stringify(totalPrice),
-        orderId: JSON.stringify(orderId),
-        quantity: JSON.stringify(quantity),
-      },
-    });
+  const [qrCodeVisible, setQrCodeVisible] = useState(false);
+
+  const showQrCodeModal = () => {
+    setQrCodeVisible(true);
+  };
+
+  const hideQrCodeModal = () => {
+    setQrCodeVisible(false);
+  };
+  const openGoogleMaps = (address: string) => {
+    const encodedAddress = encodeURIComponent(address);
+
+    if (Platform.OS === "ios") {
+      // Open in Google Maps app or browser on iOS
+      const url = `comgooglemaps://?q=${encodedAddress}`;
+      Linking.canOpenURL(url).then((supported) => {
+        if (supported) {
+          Linking.openURL(url);
+        } else {
+          Linking.openURL(
+            `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`
+          );
+        }
+      });
+    } else {
+      // Open in Google Maps app or browser on Android
+      const url = `geo:0,0?q=${encodedAddress}`;
+      Linking.canOpenURL(url).then((supported) => {
+        if (supported) {
+          Linking.openURL(url);
+        } else {
+          Linking.openURL(
+            `https://www.google.com/maps/search/?api=1&query=${encodedAddress}`
+          );
+        }
+      });
+    }
   };
 
   const item: StoreItem = params.item
@@ -35,7 +71,6 @@ const OrderConfirmation = () => {
         expiryDate: new Date(),
         description: "",
       };
-
   const store: Store = params.store ? JSON.parse(params.store as string) : null;
   const totalPrice: string = params.totalPrice
     ? JSON.parse(params.totalPrice as string)
@@ -44,7 +79,13 @@ const OrderConfirmation = () => {
     ? JSON.parse(params.quantity as string)
     : 0;
   const orderId = params.orderId ? JSON.parse(params.orderId as string) : "0";
-
+  const openPaymentLink = () => {
+    const url =
+      "https://www.dbs.com.sg/personal/mobile/paylink/index.html?tranRef=Y6LAoByOW2";
+    Linking.openURL(url).catch((err) =>
+      console.error("Failed to open URL:", err)
+    );
+  };
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
@@ -68,7 +109,7 @@ const OrderConfirmation = () => {
           <Text style={styles.marketName}>{store.storeTitle}</Text>
           <View style={styles.orderDetails}>
             <Text style={styles.label}>Order ID:</Text>
-            <Text style={styles.value}>{orderId}</Text>
+            <Text style={styles.value}>{truncateText(orderId, 30)}</Text>
           </View>
           <View style={styles.orderDetails}>
             <Text style={styles.label}>Date:</Text>
@@ -93,9 +134,43 @@ const OrderConfirmation = () => {
           at the store counter. A confirmation email has been sent to your email
           address.
         </Text>
-        <TouchableOpacity style={styles.button2} onPress={() => handlePress()}>
-          <Text style={styles.buttonText2}>Done</Text>
+        <TouchableOpacity
+          style={[styles.button]}
+          onPress={() =>
+            openGoogleMaps(
+              store.storeAddress
+            )
+          }
+        >
+          <Text style={styles.buttonText}>Navigate to store</Text>
         </TouchableOpacity>
+        <TouchableOpacity style={[styles.button2]} onPress={showQrCodeModal}>
+          <Text style={styles.buttonText}>Pay & Collect</Text>
+        </TouchableOpacity>
+        <Modal
+          visible={qrCodeVisible}
+          transparent={true}
+          animationType="fade"
+          onRequestClose={hideQrCodeModal}
+        >
+          <Pressable
+            style={styles.fullScreenContainer}
+            onPress={hideQrCodeModal}
+          >
+          
+              <QRCode
+                value={`Payment for orderID ${orderId}`}
+                logo={
+                  {
+                    uri: "https://walaoeh.s3.ap-southeast-1.amazonaws.com/Screenshot_20240615-130536.png",
+                  } as any
+                }
+                logoSize={300}
+                size={300}
+                logoBackgroundColor="transparent"
+              />
+            </Pressable>
+        </Modal>
       </View>
     </View>
   );
@@ -220,7 +295,7 @@ const styles = StyleSheet.create({
     marginVertical: 20,
     marginHorizontal: 15,
   },
-  button2: {
+  button: {
     backgroundColor: "#168F55",
     borderRadius: 32,
     paddingVertical: 12,
@@ -235,11 +310,22 @@ const styles = StyleSheet.create({
     color: "#168F55",
     textDecorationLine: "underline",
   },
-  buttonText2: {
+  buttonText: {
     color: "#fff",
     fontSize: 18,
     fontWeight: "700",
   },
+  button2: {
+    backgroundColor: "#007BFF",
+    borderRadius: 32,
+    paddingVertical: 12,
+    paddingHorizontal: 50,
+    marginTop: 10,
+    marginBottom: 10,
+    width: "100%",
+    alignItems: "center",
+  },
+
   dottedLine: {
     width: "100%",
     borderWidth: 1,
@@ -247,6 +333,28 @@ const styles = StyleSheet.create({
     borderColor: "#000",
     marginVertical: 0,
   },
+  fullScreenContainer: {
+    flex: 1,
+    backgroundColor: "rgba(0, 0, 0, 0.8)",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  fullScreenButton: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    width: "100%", // Ensure it takes the full width
+  },
+  box: {
+    width: 400,
+    height: 400,
+  },
+  qrCodeContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    width: 300,
+    height: 300,
+  },
 });
 
-export default OrderConfirmation;
+export default OrderDetails;

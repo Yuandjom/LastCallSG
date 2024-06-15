@@ -28,7 +28,10 @@ const ItemQuantity: React.FC<MyModalProps> = ({
   item,
   store,
 }) => {
-  const formattedExpiryDate = item.expiryDate.toString().split("T")[0].slice(0,10);
+  const formattedExpiryDate = item.expiryDate
+    .toString()
+    .split("T")[0]
+    .slice(0, 10);
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
   useEffect(() => {
@@ -36,23 +39,27 @@ const ItemQuantity: React.FC<MyModalProps> = ({
     const discount = quantity * item.originalPrice * item.discount;
     setTotalPrice(Number(price.toFixed(2)));
     setTotalDiscount(Number(discount.toFixed(2)));
-  }, [quantity, item.finalPrice, item.discount]);
+  }, [quantity, item.originalPrice, item.discount]);
 
   return (
     <TouchableWithoutFeedback onPress={onClose}>
       <View style={styles.modalBackground}>
         <TouchableWithoutFeedback>
           <View style={styles.modalOverlay}>
-            <TouchableOpacity onPress={onClose} style={styles.closeButton}>
-              <View style={styles.closeButton}>
-                <Ionicons name="close" size={33} color="black" />
-              </View>
-            </TouchableOpacity>
             <View style={styles.detailAndQtyContainer}>
-              <Text style={styles.itemName}>{truncateText(item.name, 20)}</Text>
-              <Text style={styles.itemTime}>
-                Best before {formattedExpiryDate}
-              </Text>
+              <View style={styles.headerContainer}>
+                <View>
+                  <Text style={styles.itemName}>
+                    {truncateText(item.name, 20)}
+                  </Text>
+                  <Text style={styles.itemTime}>
+                    Best before {formattedExpiryDate}
+                  </Text>
+                </View>
+                <TouchableOpacity onPress={onClose} style={styles.closeButton}>
+                  <Ionicons name="close-outline" size={32} color="black" />
+                </TouchableOpacity>
+              </View>
               <View style={styles.seperator}></View>
               <Text style={styles.selectQuantity}>{"Select quantity"}</Text>
               <View style={styles.quantitySelector}>
@@ -89,7 +96,12 @@ const ItemQuantity: React.FC<MyModalProps> = ({
               </View>
               <View style={styles.discountContainer}>
                 <Text>Discount</Text>
-                <Text>- S${((item.originalPrice - item.finalPrice) * quantity).toFixed(2) }</Text>
+                <Text>
+                  - S$
+                  {((item.originalPrice - item.finalPrice) * quantity).toFixed(
+                    2
+                  )}
+                </Text>
               </View>
               <View style={styles.seperator}></View>
               <View style={styles.confirmationContainer}>
@@ -149,43 +161,44 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
   },
+  headerContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+    paddingHorizontal: 20,
+    alignItems: "center",
+  },
   itemName: {
-    textAlign: "center",
     fontSize: 20,
     fontWeight: "bold",
-    margin: 10,
+    marginBottom: 5,
   },
-  itemTime: {},
-
+  itemTime: {
+    marginBottom: 5,
+  },
   seperator: {
-    height: 1, // Height of the line
-    backgroundColor: "#EEEEEE", // Color of the line
-    width: "80%", // Full width of the container
-    marginVertical: 10, // Margin around the line
+    height: 1,
+    backgroundColor: "#EEEEEE",
+    width: "80%",
+    marginVertical: 10,
   },
   selectQuantity: {
     fontWeight: "bold",
     margin: 4,
   },
-
   quantity: {
     fontSize: 40,
     fontWeight: "bold",
     margin: 10,
   },
-
   quantitySelector: {
-    justifyContent: "center",
     flexDirection: "row",
-    height: "30%",
     alignItems: "center",
   },
-
   addButton: {
     height: 60,
     width: 60,
     borderRadius: 30,
-    backgroundColor: "#168F55",
     margin: 8,
     justifyContent: "center",
     alignItems: "center",
@@ -194,12 +207,10 @@ const styles = StyleSheet.create({
     height: 60,
     width: 60,
     borderRadius: 30,
-    backgroundColor: "#168F55",
     margin: 8,
     justifyContent: "center",
     alignItems: "center",
   },
-
   modalOverlay: {
     backgroundColor: "white",
     height: "50%",
@@ -209,21 +220,12 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   closeButton: {
-    position: "absolute",
-    top:10 ,
-    right: 20,
+    backgroundColor: "#F5F2F9",
+    width: 35,
+    height: 35,
+    borderRadius: 20,
     justifyContent: "center",
-    alignItems: "stretch",
-    // backgroundColor: "#F5F2F9",
-    width: 40,
-    height: 40,
-    // borderRadius: 20,
-    borderWidth:5 ,
-    borderColor: 'red'
-  },
-  closeButtonText: {
-    color: "white",
-    fontWeight: "bold",
+    alignItems: "center",
   },
   discountContainer: {
     justifyContent: "space-between",

@@ -16,6 +16,7 @@ import emailjs from "@emailjs/react-native";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import uuid from "react-native-uuid";
 import { useAuth } from "../../contexts/AuthContext"; // Adjust the path as needed
+import { useGuestEmail } from "../../contexts/GuestEmailContext"; // Adjust the path as needed
 import Toast from "react-native-toast-message";
 
 interface MyModalProps {
@@ -24,15 +25,14 @@ interface MyModalProps {
   setContact: React.Dispatch<React.SetStateAction<string>>;
   onClose: () => void;
   item: any;
-  store: any;  
+  store: any;
   backToItemQuantity: () => void;
   quantity: number;
 }
-const orderId = uuid.v4(); // Generate a unique ID using react-native-uuid
 
-const sendEmail = () => {
+const sendEmail = (email: string, orderId: string) => {
   const templateParams = {
-    to_email: "lastcallsg@gmail.com",
+    to_email: email,
     orderNo: orderId, // NEED CHANGE THIS IN THE FUTURE
   };
 
@@ -68,15 +68,26 @@ const ItemReservation: React.FC<MyModalProps> = ({
 }) => {
   const router = useRouter();
   const { user } = useAuth();
-  const [username, setUsernameState] = useState(user?.username || "");
+  const { guestEmail, setGuestEmail } = useGuestEmail();
+  const [orderId, setOrderId] = useState("");
+  const [username, setUsernameState] = useState(user?.username || "guest");
   const [contact, setContactState] = useState("");
   const [email, setEmailState] = useState(user?.email || "");
   const [isFormValid, setIsFormValid] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
 
   useEffect(() => {
-    setIsFormValid(username !== "" && contact !== "" && email !== "");
-  }, [username, contact, email]);
+    setOrderId(uuid.v4().slice(0, 18) as string); // Generate a unique ID using react-native-uuid each time it loads
+  }, []);
+
+  useEffect(() => {
+    setIsFormValid(email !== "" && validateEmail(email));
+  }, [email]);
+
+  const validateEmail = (email: string) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+  };
 
   // CALCULATING TOTALS & DISCOUNTS
   let totalPrice: string = (item.finalPrice * quantity).toFixed(2);
@@ -84,15 +95,23 @@ const ItemReservation: React.FC<MyModalProps> = ({
   let discount: string = (item.finalPrice * item.discount * quantity).toFixed(
     2
   );
-
   const closeItemReservation = () => {
-    onClose()
-    backToItemQuantity()
-  }
-
-  
+    onClose();
+    backToItemQuantity();
+  };
 
   const handlePress = async () => {
+    if (!validateEmail(email)) {
+      Toast.show({
+        type: "error",
+        text1: "Invalid Email",
+        text2: "Please enter a valid email address.",
+        topOffset: 60,
+        visibilityTime: 3000,
+      });
+      return;
+    }
+
     if (isFormValid) {
       const orderData = {
         id: orderId,
@@ -110,8 +129,12 @@ const ItemReservation: React.FC<MyModalProps> = ({
       };
       setHasSubmitted(true);
 
-      // sendEmail();
+      // sendEmail(email);
 
+      // Save the order to backend, if no logged in, we call hook to set this guest email locally only.
+      if (!user) {
+        setGuestEmail(email);
+      }
       try {
         const response = await fetch(
           "https://411r12agye.execute-api.ap-southeast-1.amazonaws.com/orders",
@@ -125,34 +148,25 @@ const ItemReservation: React.FC<MyModalProps> = ({
         );
 
         if (response.ok) {
-          console.log("New order ok.");
-          // Alert.alert("Success", "Order placed successfully");
+          console.log("Adding new order ok.");
           onClose();
           Toast.show({
             type: "success",
             text1: "Success",
             text2: "Order placed successfully",
           });
-          setTimeout(() => {
-            router.push({
-              pathname: "/orderconfirmation",
-              params: {
-                item: JSON.stringify(item),
-                store: JSON.stringify(store),
-                totalPrice: JSON.stringify(totalPrice),
-                orderId: JSON.stringify(orderId),
-                quantity: JSON.stringify(quantity),
-              },
-            });
-          }, 0);
-        } else {
-          const error = await response.json();
-          console.log(error);
-          Toast.show({
-            type: "error",
-            text1: "Error",
-            text2: error.message,
+          router.push({
+            pathname: "/orderconfirmation",
+            params: {
+              item: JSON.stringify(item),
+              store: JSON.stringify(store),
+              totalPrice: JSON.stringify(totalPrice),
+              orderId: JSON.stringify(orderId),
+              quantity: JSON.stringify(quantity),
+            },
           });
+        } else {
+          throw Error("Post API Error");
         }
       } catch (error) {
         Toast.show({
@@ -160,13 +174,8 @@ const ItemReservation: React.FC<MyModalProps> = ({
           text1: "Error",
           text2: error.message,
         });
+        onClose();
       }
-    } else {
-      Toast.show({
-        type: "error",
-        text1: "Error",
-        text2: "Please fill in all fields.",
-      });
     }
   };
   return (
@@ -195,29 +204,6 @@ const ItemReservation: React.FC<MyModalProps> = ({
                   </TouchableOpacity>
                 </View>
                 <View style={styles.inputContainer}>
-                  <Text>Name</Text>
-                  <TextInput
-                    style={styles.nameInput}
-                    placeholder="Jon"
-                    value={username}
-                    onChangeText={(text) => {
-                      setName(text);
-                      setUsernameState(text);
-                    }}
-                    placeholderTextColor="#B2BAC5"
-                  />
-                  <Text>Contact</Text>
-                  <TextInput
-                    style={styles.contactInput}
-                    placeholder="91234567"
-                    value={contact}
-                    keyboardType="number-pad"
-                    onChangeText={(text) => {
-                      setContact(text);
-                      setContactState(text);
-                    }}
-                    placeholderTextColor="#B2BAC5"
-                  />
                   <Text>Email</Text>
                   <TextInput
                     style={styles.emailInput}
@@ -229,6 +215,19 @@ const ItemReservation: React.FC<MyModalProps> = ({
                     }}
                     placeholderTextColor="#B2BAC5"
                   />
+                  <Text>Contact </Text>
+                  <TextInput
+                    style={styles.contactInput}
+                    placeholder="91234567 (Optional)"
+                    value={contact}
+                    keyboardType="number-pad"
+                    onChangeText={(text) => {
+                      setContact(text);
+                      setContactState(text);
+                    }}
+                    placeholderTextColor="#B2BAC5"
+                  />
+
                   <TouchableOpacity
                     onPress={handlePress}
                     style={[
@@ -239,7 +238,7 @@ const ItemReservation: React.FC<MyModalProps> = ({
                     disabled={!isFormValid || hasSubmitted}
                   >
                     <Text style={styles.confirmationText}>
-                      {"Confirm Chope"}
+                      {"Confirm Purchase"}
                     </Text>
                   </TouchableOpacity>
                 </View>
@@ -267,15 +266,6 @@ const styles = StyleSheet.create({
   header: {
     fontSize: 20,
     fontWeight: "bold",
-  },
-
-  nameInput: {
-    height: 40,
-    borderColor: "#CBD5E1",
-    borderBottomWidth: 1,
-    marginBottom: 12,
-    paddingHorizontal: 8,
-    color: "black",
   },
   emailnput: {
     height: 40,
@@ -324,7 +314,7 @@ const styles = StyleSheet.create({
 
   modalOverlay: {
     backgroundColor: "white",
-    minHeight: "45%",
+    minHeight: "30%",
     top: "8%",
     marginTop: "auto",
     borderTopLeftRadius: 20,
@@ -349,7 +339,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "white",
   },
-
   confirmationButton: {
     backgroundColor: "#168F55",
     width: "100%",

@@ -62,7 +62,7 @@ const StoreComponent: React.FC<StoreComponentProps> = ({ store }) => {
         </View>
       </TouchableOpacity>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {store.items.map((item, index) => {
+        {store.items.filter(item => item.quantity > 0).map((item, index) => {
           let itemLeftStyle: any;
           let itemLeftTextColor: any;
           if (item.quantity === 1) {
@@ -105,7 +105,9 @@ const StoreComponent: React.FC<StoreComponentProps> = ({ store }) => {
                     <Text style={styles.itemWasPrice}>
                       was {item.originalPrice}
                     </Text>
-                    <Text style={styles.itemPrice}>{(item.finalPrice).toFixed(2)}</Text>
+                    <Text style={styles.itemPrice}>
+                      {item.finalPrice.toFixed(2)}
+                    </Text>
                   </View>
                 </View>
               </View>

@@ -13,6 +13,7 @@ import {
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Store, StoreItem } from "../interfaces";
 import { useAuth } from "../../contexts/AuthContext";
+import { useGuestEmail } from "@/contexts/GuestEmailContext";
 
 const Orders = () => {
   const router = useRouter();
@@ -22,7 +23,7 @@ const Orders = () => {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const { user } = useAuth(); // Get the current user
-
+  const { guestEmail } = useGuestEmail();
   const item: StoreItem = params.item
     ? JSON.parse(params.item as string)
     : {
@@ -35,7 +36,6 @@ const Orders = () => {
         expiryDate: new Date(),
         description: "",
       };
-
   const store: Store = params.store ? JSON.parse(params.store as string) : null;
   const totalPrice: string = params.totalPrice
     ? JSON.parse(params.totalPrice as string)
@@ -51,25 +51,29 @@ const Orders = () => {
 
   const fetchOrders = async () => {
     setLoading(true);
+    if (!user && !guestEmail) {
+      setLoading(false);
+      return;
+    }
     try {
+      let orders = [];
+
       const response = await fetch(
         "https://411r12agye.execute-api.ap-southeast-1.amazonaws.com/orders"
       );
+
       if (response.ok) {
         const data = await response.json();
-        // Filter orders based on the current user's username
+        orders = data;
         if (user) {
-          const filteredOrders = data.filter(
+          orders = data.filter(
             (order: any) => order.username === user.username
           );
-          setOrders(filteredOrders);
-        } else {
-          console.log("No username");
+        } else if (guestEmail) {
+          orders = data.filter((order: any) => order.email === guestEmail);
         }
-      } else {
-        console.log(response);
-        throw new Error("Failed to fetch all orders");
       }
+      setOrders(orders);
     } catch (error) {
       console.error(error);
       Alert.alert("Error", "Failed to fetch orders");
@@ -83,10 +87,16 @@ const Orders = () => {
     fetchOrders().finally(() => setRefreshing(false));
   };
 
-  const handleRateOrder = (order: any) => {
+  const handleOrderDetails = (order: any) => {
     router.push({
-      pathname: "/rating",
-      params: { order: JSON.stringify(order) },
+      pathname: "/orderdetails",
+      params: {
+        item: JSON.stringify(item),
+        store: JSON.stringify(store),
+        totalPrice: JSON.stringify(totalPrice),
+        orderId: JSON.stringify(orderId),
+        quantity: JSON.stringify(quantity),
+      },
     });
   };
 
@@ -119,7 +129,7 @@ const Orders = () => {
               <TouchableOpacity
                 key={order.id}
                 style={styles.orderContainer}
-                onPress={() => handleRateOrder(order)}
+                onPress={() => handleOrderDetails(order)}
               >
                 <View style={styles.shopInfoContainer}>
                   <Image
@@ -161,7 +171,7 @@ const Orders = () => {
               <Text style={styles.emoji}>👀</Text>
               <Text style={styles.noOrdersText}>You don't have any orders</Text>
               <Text style={styles.subText}>Save money, reduce waste</Text>
-              <TouchableOpacity onPress={() => router.push("/register")}>
+              <TouchableOpacity onPress={() => router.push("/")}>
                 <Text style={styles.linkText}>Let's save something</Text>
               </TouchableOpacity>
             </View>
@@ -252,12 +262,12 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     marginBottom: 5,
-    width : '100%',
+    width: "100%",
   },
   itemName: {
     fontSize: 16,
-    flexWrap: 'wrap',
-    maxWidth: '80%'
+    flexWrap: "wrap",
+    maxWidth: "80%",
   },
   itemPrice: {
     fontSize: 16,

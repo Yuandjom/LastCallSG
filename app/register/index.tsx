@@ -13,6 +13,7 @@ import {
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router"; // Import useRouter hook
 import Toast from "react-native-toast-message";
+import { useAuth } from "@/contexts/AuthContext";
 
 const RegisterScreen: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -21,6 +22,7 @@ const RegisterScreen: React.FC = () => {
   const [message, setMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const router = useRouter();
+  const { login } = useAuth();
 
   const handleRegister = async () => {
     if (!username || !email || !password) {
@@ -47,13 +49,14 @@ const RegisterScreen: React.FC = () => {
           text1: "Registration Successful",
           text2: `${data.message}, Redirecting...`,
         });
+        login({ username, email, password });
         setMessage("");
         setEmail(""); // Clear input fields
         setUsername("");
         setPassword("");
         setTimeout(() => {
-          router.push("/login");
-        }, 1000); // 2 seconds delay before navigation
+          router.push("/");
+        }, 400); // 0.4 seconds delay before navigation
       } else {
         setMessage(data.error || "Registration failed");
       }
@@ -98,7 +101,7 @@ const RegisterScreen: React.FC = () => {
               />
             </View>
             <View style={styles.inputContainer}>
-              <Text style={styles.label}>Your Name</Text>
+              <Text style={styles.label}>Your Username</Text>
               <TextInput
                 style={styles.input}
                 placeholder="Ex: Saul Ramirez"
