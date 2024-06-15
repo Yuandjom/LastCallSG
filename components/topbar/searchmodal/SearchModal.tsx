@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Modal,
   View,
@@ -9,9 +9,17 @@ import {
   TouchableOpacity,
   TouchableWithoutFeedback,
   Keyboard,
+  Platform,
+  LayoutAnimation,
+  UIManager,
 } from "react-native";
 import { Store } from "@/app/interfaces";
 import { Ionicons } from "@expo/vector-icons";
+
+// Enable layout animation for Android
+if (Platform.OS === 'android' && UIManager.setLayoutAnimationEnabledExperimental) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
 
 interface SearchModalProps {
   modalVisible: boolean;
@@ -27,6 +35,29 @@ const SearchModal: React.FC<SearchModalProps> = ({
   onSearchSubmit,
 }) => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [keyboardVisible, setKeyboardVisible] = useState(false);
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      "keyboardDidShow",
+      () => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setKeyboardVisible(true);
+      }
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      "keyboardDidHide",
+      () => {
+        LayoutAnimation.configureNext(LayoutAnimation.Presets.easeInEaseOut);
+        setKeyboardVisible(false);
+      }
+    );
+
+    return () => {
+      keyboardDidShowListener.remove();
+      keyboardDidHideListener.remove();
+    };
+  }, []);
 
   const handleSearch = (query: string) => {
     setSearchQuery(query);
@@ -82,8 +113,20 @@ const SearchModal: React.FC<SearchModalProps> = ({
     >
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
+          <View
+            style={[
+              styles.modalContent,
+              keyboardVisible && styles.modalContentShifted,
+            ]}
+          >
             <View style={styles.searchBarContainer}>
+              <TouchableOpacity onPress={handleSubmit}>
+                <Ionicons
+                  name="search-outline"
+                  size={20}
+                  style={styles.searchBarSearchIcon}
+                />
+              </TouchableOpacity>
               <TextInput
                 style={styles.searchBar}
                 placeholder="Search items..."
@@ -140,10 +183,7 @@ const SearchModal: React.FC<SearchModalProps> = ({
                 />
                 <Text style={styles.searchButtonText}>Search</Text>
               </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.payButton}
-                onPress={toggleModal}
-              >
+              <TouchableOpacity style={styles.payButton} onPress={toggleModal}>
                 <Ionicons
                   name="close-outline"
                   size={24}
@@ -153,7 +193,6 @@ const SearchModal: React.FC<SearchModalProps> = ({
                 <Text style={styles.buttonText}>Close</Text>
               </TouchableOpacity>
             </View>
-
           </View>
         </View>
       </TouchableWithoutFeedback>
@@ -170,11 +209,15 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     width: "90%",
-    height: "80%",
+    height: "50%",
     backgroundColor: "#fff",
-    borderRadius: 8,
+    borderRadius: 16,
     padding: 16,
     alignItems: "center",
+    justifyContent: "center", // Center content vertically
+  },
+  modalContentShifted: {
+    marginTop: Platform.OS === "ios" ? -200 : -100, // Adjust as needed
   },
   searchBarContainer: {
     flexDirection: "row",
@@ -212,7 +255,6 @@ const styles = StyleSheet.create({
     color: "#666",
     marginLeft: 16,
   },
-
   closeButton: {
     width: "100%",
     padding: 8,
@@ -272,6 +314,10 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 16,
     fontWeight: "700",
+  },
+  searchBarSearchIcon: {
+    marginLeft: 8,
+    color: "#888",
   },
 });
 
