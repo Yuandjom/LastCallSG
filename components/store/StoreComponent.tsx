@@ -54,13 +54,9 @@ const StoreComponent: React.FC<StoreComponentProps> = ({ store }) => {
               {truncateText(store.storeTitle, 20)}
             </Text>
             <Text style={styles.storeSubtitle}>
-              {store.storeDistance} • {store.storeCategory}
+              {store.storeDistance} 
             </Text>
           </View>
-          <View style={styles.storeStatus}>
-            <Text style={styles.statusText}>{store.items.length}</Text>
-          </View>
-          <Ionicons name="chevron-forward" size={18} style={styles.arrowIcon} />
         </View>
       </TouchableOpacity>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -130,9 +126,9 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   storeLogo: {
-    width: 50,
-    height: 50,
-    borderRadius: 30,
+    width: 40,
+    height: 40,
+    borderRadius: 20,
     marginRight: 8,
   },
   storeInfo: {

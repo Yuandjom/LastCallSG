@@ -147,19 +147,15 @@ const ItemPage = () => {
                   )}`}</Text>
                 </View>
               </View>
-              <View style={styles.seperator}></View>
               <View style={styles.descriptionHeaderContainer}>
                 {item.description != "None" ? (
-                  <Text style={styles.descriptionHeader}>👉 Description</Text>
+                  <Text style={styles.descriptionHeader}>Description</Text>
                 ) : null}
               </View>
               <TruncateWithShowMore
                 text={item.description == "None" ? "" : item.description}
                 maxLength={200}
               />
-              {item.description != "None" ? (
-                <View style={styles.seperator}></View>
-              ) : null}
             </View>
           </ScrollView>
           <TouchableOpacity style={styles.button} onPress={openModal}>
@@ -327,14 +323,14 @@ const styles = StyleSheet.create({
   },
   descriptionHeader: {
     fontWeight: "bold",
-    fontSize: 20,
+    fontSize: 16,
     margin: 10,
   },
   itemQty: {
     fontSize: 12,
   },
   title: {
-    fontSize: 18,
+    fontSize: 24,
     fontWeight: "bold",
     marginTop: 10,
     gap: 4,
