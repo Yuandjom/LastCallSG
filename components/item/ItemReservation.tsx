@@ -85,6 +85,13 @@ const ItemReservation: React.FC<MyModalProps> = ({
     2
   );
 
+  const closeItemReservation = () => {
+    onClose()
+    backToItemQuantity()
+  }
+
+  
+
   const handlePress = async () => {
     if (isFormValid) {
       const orderData = {
@@ -181,7 +188,7 @@ const ItemReservation: React.FC<MyModalProps> = ({
                   </TouchableOpacity>
                   <Text style={styles.header}>Contact Details</Text>
                   <TouchableOpacity
-                    onPress={onClose}
+                    onPress={closeItemReservation}
                     style={styles.closeButton}
                   >
                     <Ionicons name="close-outline" size={32} color="black" />
