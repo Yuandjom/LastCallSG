@@ -28,14 +28,12 @@ const ItemPage = () => {
   const [imageModalVisible, setImageModalVisible] = useState(false);
 
   const openModal = () => {
-
-      setModalVisible(true);
-      Animated.timing(fadeAnim, {
-        toValue: 0.5,
-        duration: 500,
-        useNativeDriver: true,
-      }).start();
-
+    setModalVisible(true);
+    Animated.timing(fadeAnim, {
+      toValue: 0.5,
+      duration: 500,
+      useNativeDriver: true,
+    }).start();
   };
 
   const closeModal = () => {
@@ -95,7 +93,9 @@ const ItemPage = () => {
                 />
                 <View>
                   <Text style={styles.storeTitle}>{store.storeTitle}</Text>
-                  <Text style={styles.rating}>⭐ {store.storeRating.toFixed(1)}</Text>
+                  <Text style={styles.rating}>
+                    ⭐ {store.storeRating.toFixed(1)}
+                  </Text>
                 </View>
               </View>
             </View>
@@ -118,7 +118,7 @@ const ItemPage = () => {
                   adjustsFontSizeToFit={true}
                   numberOfLines={1}
                 >
-                  {`Expiring ${formattedExpiryDate}`}
+                  {`Best before ${formattedExpiryDate}`}
                 </Text>
               </View>
               <View style={styles.paymentInfoContainer}>

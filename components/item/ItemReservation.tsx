@@ -18,6 +18,7 @@ import uuid from "react-native-uuid";
 import { useAuth } from "../../contexts/AuthContext"; // Adjust the path as needed
 import { useGuestEmail } from "../../contexts/GuestEmailContext"; // Adjust the path as needed
 import Toast from "react-native-toast-message";
+import { formatUTCDate } from "@/utils/formatDate";
 
 interface MyModalProps {
   setEmail: React.Dispatch<React.SetStateAction<string>>;
@@ -30,10 +31,18 @@ interface MyModalProps {
   quantity: number;
 }
 
-const sendEmail = (email: string, orderId: string) => {
+const sendEmail = (
+  email: string,
+  orderId: string,
+  storeAddress: string,
+  storeTitle: string,
+  collectionDate: string
+) => {
   const templateParams = {
     to_email: email,
     orderNo: orderId, // NEED CHANGE THIS IN THE FUTURE
+    storeAddress,
+    storeTitle,
   };
 
   emailjs
@@ -75,7 +84,8 @@ const ItemReservation: React.FC<MyModalProps> = ({
   const [email, setEmailState] = useState(user?.email || "");
   const [isFormValid, setIsFormValid] = useState(false);
   const [hasSubmitted, setHasSubmitted] = useState(false);
-
+  const isPaid = false;
+  const collectionDate = formatUTCDate();
   useEffect(() => {
     setOrderId(uuid.v4().slice(0, 18) as string); // Generate a unique ID using react-native-uuid each time it loads
   }, []);
@@ -126,10 +136,17 @@ const ItemReservation: React.FC<MyModalProps> = ({
         storeLogo: store.storeLogo,
         storeTitle: store.storeTitle,
         store,
+        isPaid,
       };
       setHasSubmitted(true);
 
-      // sendEmail(email);
+      // sendEmail(
+      //   email,
+      //   orderId,
+      //   store.storeTitle,
+      //   store.storeAddress,
+      //   collectionDate
+      // );
 
       // Save the order to backend, if no logged in, we call hook to set this guest email locally only.
       if (!user) {

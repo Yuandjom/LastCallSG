@@ -149,18 +149,18 @@ const Orders = () => {
                   <Text style={styles.itemPrice}>S${order.totalPrice}</Text>
                 </View>
 
-                <View style={styles.unitsContainer}>
+                {/* <View style={styles.unitsContainer}>
                   <Text style={styles.unitsText}>
                     {order.quantity} {order.quantity === 1 ? "unit" : "units"}
                   </Text>
-                </View>
+                </View> */}
 
                 <View style={styles.collectTimeContainer}>
                   <View style={styles.collectTimeLine} />
                   <Text style={styles.collectTime}>
                     Collect by{" "}
                     {formatDate(
-                      new Date(new Date().getTime() + 3 * 24 * 60 * 60 * 1000)
+                      new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000)
                     )}
                   </Text>
                 </View>
@@ -261,7 +261,7 @@ const styles = StyleSheet.create({
   itemContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 5,
+    marginBottom: 15,
     width: "100%",
   },
   itemName: {
@@ -272,6 +272,7 @@ const styles = StyleSheet.create({
   itemPrice: {
     fontSize: 16,
     fontWeight: "bold",
+    
   },
   unitsContainer: {
     marginBottom: 10,

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -9,18 +9,46 @@ import {
   Platform,
   Modal,
   Pressable,
+  AppState,
 } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import { Store, StoreItem } from "../interfaces";
 import { truncateText } from "@/utils/truncateText";
 import { formatUTCDate } from "@/utils/formatDate";
+import { Ionicons } from "@expo/vector-icons";
+import Toast from "react-native-toast-message";
 
 const OrderDetails = () => {
   const router = useRouter();
   const params = useLocalSearchParams();
-
   const [qrCodeVisible, setQrCodeVisible] = useState(false);
+
+  useEffect(() => {
+    const handleAppStateChange = (nextAppState) => {
+      if (nextAppState === "active") {
+        setQrCodeVisible(false);
+        setTimeout(() => {
+          Toast.show({
+            type: "success",
+            text1: "Payment successful!",
+            text2: "We look forward to seeing you again.",
+          });
+        }, 2000);
+
+        router.push("/");
+      }
+    };
+
+    const subscription = AppState.addEventListener(
+      "change",
+      handleAppStateChange
+    );
+
+    return () => {
+      subscription.remove();
+    };
+  }, []);
 
   const showQrCodeModal = () => {
     setQrCodeVisible(true);
@@ -29,6 +57,7 @@ const OrderDetails = () => {
   const hideQrCodeModal = () => {
     setQrCodeVisible(false);
   };
+
   const openGoogleMaps = (address: string) => {
     const encodedAddress = encodeURIComponent(address);
 
@@ -79,6 +108,7 @@ const OrderDetails = () => {
     ? JSON.parse(params.quantity as string)
     : 0;
   const orderId = params.orderId ? JSON.parse(params.orderId as string) : "0";
+
   const openPaymentLink = () => {
     const url =
       "https://www.dbs.com.sg/personal/mobile/paylink/index.html?tranRef=Y6LAoByOW2";
@@ -86,6 +116,7 @@ const OrderDetails = () => {
       console.error("Failed to open URL:", err)
     );
   };
+
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
@@ -112,8 +143,8 @@ const OrderDetails = () => {
             <Text style={styles.value}>{truncateText(orderId, 30)}</Text>
           </View>
           <View style={styles.orderDetails}>
-            <Text style={styles.label}>Date:</Text>
-            <Text style={styles.value}>{formatUTCDate(new Date())}</Text>
+            <Text style={styles.label}>Collect By:</Text>
+            <Text style={styles.value}>{formatUTCDate()}</Text>
           </View>
           <Text style={styles.itemLabel}>ITEM</Text>
           <View style={styles.orderDetails}>
@@ -130,23 +161,33 @@ const OrderDetails = () => {
           </View>
         </View>
         <Text style={styles.note}>
-          Please collect your order within 7 days. You can pay for your purchase
-          at the store counter. A confirmation email has been sent to your email
-          address.
+          Please collect your order within 7 days. Please only pay for your
+          purchase at the store when collecting the items. A confirmation email
+          has also been sent to your email address.
         </Text>
-        <TouchableOpacity
-          style={[styles.button]}
-          onPress={() =>
-            openGoogleMaps(
-              store.storeAddress
-            )
-          }
-        >
-          <Text style={styles.buttonText}>Navigate to store</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={[styles.button2]} onPress={showQrCodeModal}>
-          <Text style={styles.buttonText}>Pay & Collect</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={styles.navigateButton}
+            onPress={() => openGoogleMaps(store.storeAddress)}
+          >
+            <Ionicons
+              name="navigate-circle-outline"
+              size={32}
+              color="rgba(22, 143, 85, 1)"
+              style={styles.buttonIcon}
+            />
+            <Text style={styles.navigateButtonText}>Find Store</Text>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.payButton} onPress={showQrCodeModal}>
+            <Ionicons
+              name="card-outline"
+              size={30}
+              color="#fff"
+              style={styles.buttonIcon}
+            />
+            <Text style={styles.buttonText}>Pay & Collect</Text>
+          </TouchableOpacity>
+        </View>
         <Modal
           visible={qrCodeVisible}
           transparent={true}
@@ -157,7 +198,10 @@ const OrderDetails = () => {
             style={styles.fullScreenContainer}
             onPress={hideQrCodeModal}
           >
-          
+            <Pressable
+              style={styles.qrCodeContainer}
+              onPress={openPaymentLink} // Add this to handle tap on QR code
+            >
               <QRCode
                 value={`Payment for orderID ${orderId}`}
                 logo={
@@ -170,8 +214,10 @@ const OrderDetails = () => {
                 logoBackgroundColor="transparent"
               />
             </Pressable>
+          </Pressable>
         </Modal>
       </View>
+      <Toast topOffset={60} />
     </View>
   );
 };
@@ -289,10 +335,11 @@ const styles = StyleSheet.create({
     color: "#168F55",
   },
   note: {
-    fontSize: 12,
+    fontSize: 14,
     color: "#666",
     textAlign: "center",
-    marginVertical: 20,
+    marginTop: 10,
+    marginBottom: 15,
     marginHorizontal: 15,
   },
   button: {
@@ -312,7 +359,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     color: "#fff",
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "700",
   },
   button2: {
@@ -354,6 +401,45 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: 300,
     height: 300,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
+  },
+  navigateButton: {
+    borderColor: "rgba(22, 143, 85, 1)",
+    borderWidth: 1.5,
+    borderRadius: 30,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    marginTop: 10,
+    marginBottom: 10,
+    alignItems: "center",
+    flexDirection: "row",
+    flex: 1,
+    justifyContent: "center",
+  },
+  payButton: {
+    backgroundColor: "rgba(22, 143, 85, 1)",
+    borderRadius: 32,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    marginTop: 10,
+    marginBottom: 10,
+    alignItems: "center",
+    flexDirection: "row",
+    flex: 1,
+    justifyContent: "center",
+    marginLeft: 10,
+  },
+  navigateButtonText: {
+    color: "rgba(22, 143, 85, 1)",
+    fontSize: 16,
+    fontWeight: "700",
+  },
+  buttonIcon: {
+    marginRight: 10,
   },
 });
 

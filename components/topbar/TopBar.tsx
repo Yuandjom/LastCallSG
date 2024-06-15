@@ -28,7 +28,7 @@ const TopBar: React.FC<TopBarProps> = ({ stores, onSearchSubmit }) => {
   const toggleSearchModal = () => {
     setSearchModalVisible(!searchModalVisible);
   };
-  // console.log(stores);
+
   return (
     <View>
       <View style={styles.topBar}>
@@ -36,11 +36,17 @@ const TopBar: React.FC<TopBarProps> = ({ stores, onSearchSubmit }) => {
           onPress={toggleMapModal}
           style={styles.locationContainer}
         >
-          <Ionicons name="location-outline" size={18} />
-          <Text style={styles.locationText}>SMU Yong Pung How</Text>
-          <Ionicons name="chevron-down" size={18} style={styles.chevronIcon} />
+          <View style={styles.locationRow}>
+            <Ionicons name="location-outline" size={18} />
+            <Text style={styles.locationText}> SMU Yong Pung How</Text>
+            <Ionicons
+              name="chevron-down"
+              size={18}
+              style={styles.chevronIcon}
+            />
+          </View>
+          <Text style={styles.locationSubText}>Find closest stores</Text>
         </TouchableOpacity>
-        <Text style={styles.locationSubText}>Current location</Text>
         <TouchableOpacity onPress={toggleSearchModal} style={styles.infoIcon}>
           <Ionicons name="search-outline" size={30} color="gray" />
         </TouchableOpacity>
@@ -64,33 +70,38 @@ const TopBar: React.FC<TopBarProps> = ({ stores, onSearchSubmit }) => {
 
 const styles = StyleSheet.create({
   topBar: {
-    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 50,
+    paddingTop: Platform.OS === "android" ? StatusBar.currentHeight : 55,
     backgroundColor: "#fff",
     borderBottomWidth: 1,
     borderBottomColor: "#e0e0e0",
     paddingHorizontal: 16,
     paddingVertical: 8,
-    flexDirection: "column",
-    justifyContent: "space-between",
+    flexDirection: "row",
+    justifyContent: "center",
     alignItems: "center",
   },
   locationContainer: {
+    alignItems: "center",
+  },
+  locationRow: {
     flexDirection: "row",
     alignItems: "center",
   },
   locationText: {
     fontSize: 16,
     fontWeight: "bold",
+    textAlign: "center",
   },
   locationSubText: {
     fontSize: 12,
     color: "gray",
     marginTop: 4,
+    textAlign: "center",
   },
   infoIcon: {
     position: "absolute",
     right: 20,
-    top: Platform.OS === "android" ? StatusBar.currentHeight + 10 : 50,
+    top: Platform.OS === "android" ? StatusBar.currentHeight + 10 : 55,
   },
   chevronIcon: {
     marginLeft: 4,

@@ -50,7 +50,7 @@ const ItemQuantity: React.FC<MyModalProps> = ({
               <View style={styles.headerContainer}>
                 <View>
                   <Text style={styles.itemName}>
-                    {truncateText(item.name, 20)}
+                    {truncateText(item.name, 25)}
                   </Text>
                   <Text style={styles.itemTime}>
                     Best before {formattedExpiryDate}
@@ -163,9 +163,13 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    alignItems: "center",
     width: "100%",
     paddingHorizontal: 20,
+    justifyContent: "center",
+  },
+  headerTextContainer: {
+    flex: 1,
     alignItems: "center",
   },
   itemName: {
@@ -220,6 +224,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   closeButton: {
+    position: "absolute",
+    right: 20,
     backgroundColor: "#F5F2F9",
     width: 35,
     height: 35,

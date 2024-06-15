@@ -71,8 +71,8 @@ const OrderConfirmation = () => {
             <Text style={styles.value}>{orderId}</Text>
           </View>
           <View style={styles.orderDetails}>
-            <Text style={styles.label}>Date:</Text>
-            <Text style={styles.value}>{formatUTCDate(new Date())}</Text>
+            <Text style={styles.label}>Collect By:</Text>
+            <Text style={styles.value}>{formatUTCDate()}</Text>
           </View>
           <Text style={styles.itemLabel}>ITEM</Text>
           <View style={styles.orderDetails}>
@@ -89,9 +89,9 @@ const OrderConfirmation = () => {
           </View>
         </View>
         <Text style={styles.note}>
-          Please collect your order within 7 days. You can pay for your purchase
-          at the store counter. A confirmation email has been sent to your email
-          address.
+          Please collect your order within 7 days. Please only pay for your
+          purchase at the store when collecting the items. A confirmation email
+          has also been sent to your email address.
         </Text>
         <TouchableOpacity style={styles.button2} onPress={() => handlePress()}>
           <Text style={styles.buttonText2}>Done</Text>
@@ -214,7 +214,7 @@ const styles = StyleSheet.create({
     color: "#168F55",
   },
   note: {
-    fontSize: 12,
+    fontSize: 14,
     color: "#666",
     textAlign: "center",
     marginVertical: 20,
