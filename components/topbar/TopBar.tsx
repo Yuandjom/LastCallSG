@@ -8,8 +8,8 @@ import {
   StatusBar,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router";
 import MapModal from "./mapmodal/MapModal"; // Import the new MapModal component
+import SearchModal from "./searchmodal/SearchModal"; // Import the new SearchModal component
 import { Store } from "@/app/interfaces";
 
 interface TopBarProps {
@@ -17,26 +17,22 @@ interface TopBarProps {
 }
 
 const TopBar: React.FC<TopBarProps> = ({ stores }) => {
-  const router = useRouter();
-  const [modalVisible, setModalVisible] = useState(false);
+  const [mapModalVisible, setMapModalVisible] = useState(false);
+  const [searchModalVisible, setSearchModalVisible] = useState(false);
 
-  const toggleModal = () => {
-    setModalVisible(!modalVisible);
+  const toggleMapModal = () => {
+    setMapModalVisible(!mapModalVisible);
   };
 
-  const handlePress = () => {
-    console.log(JSON.stringify(stores));
-    router.push({
-      pathname: "/searchbar/Search", // Navigate to the SearchScreen
-      params: { stores: JSON.stringify(stores) }, // Pass the filtered stores as a parameter
-    });
+  const toggleSearchModal = () => {
+    setSearchModalVisible(!searchModalVisible);
   };
 
   return (
     <View>
       <View style={styles.topBar}>
         <TouchableOpacity
-          onPress={toggleModal}
+          onPress={toggleMapModal}
           style={styles.locationContainer}
         >
           <Ionicons name="location-outline" size={18} />
@@ -44,15 +40,21 @@ const TopBar: React.FC<TopBarProps> = ({ stores }) => {
           <Ionicons name="chevron-down" size={18} style={styles.chevronIcon} />
         </TouchableOpacity>
         <Text style={styles.locationSubText}>Current location</Text>
-        <TouchableOpacity onPress={handlePress} style={styles.infoIcon}>
+        <TouchableOpacity onPress={toggleSearchModal} style={styles.infoIcon}>
           <Ionicons name="search-outline" size={30} color="gray" />
         </TouchableOpacity>
       </View>
 
       <MapModal
-        modalVisible={modalVisible}
-        toggleModal={toggleModal}
+        modalVisible={mapModalVisible}
+        toggleModal={toggleMapModal}
         filteredStores={stores}
+      />
+
+      <SearchModal
+        modalVisible={searchModalVisible}
+        toggleModal={toggleSearchModal}
+        stores={stores}
       />
     </View>
   );
