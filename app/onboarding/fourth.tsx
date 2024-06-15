@@ -11,7 +11,7 @@ const OnboardingScreen3 = () => {
         <Text style={styles.headerText}>Key Features</Text>
         <TouchableOpacity
           style={styles.skipButton}
-          onPress={() => router.push("(tabs)")}
+          onPress={() => router.push("/onboarding/fifth")}
         >
           <Text style={styles.skipText}>Skip</Text>
         </TouchableOpacity>

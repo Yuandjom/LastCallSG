@@ -1,4 +1,10 @@
-import { Text, TouchableOpacity, View, StyleSheet, TouchableWithoutFeedback } from "react-native";
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  StyleSheet,
+  TouchableWithoutFeedback,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { truncateText } from "@/utils/truncateText";
 import { useEffect, useState } from "react";
@@ -22,16 +28,15 @@ const ItemQuantity: React.FC<MyModalProps> = ({
   item,
   store,
 }) => {
-  const formattedExpiryDate = item.expiryDate.toString().split("T")[0];
+  const formattedExpiryDate = item.expiryDate.toString().split("T")[0].slice(0,10);
   const [totalPrice, setTotalPrice] = useState(0);
   const [totalDiscount, setTotalDiscount] = useState(0);
-
   useEffect(() => {
-    const price = quantity * item.finalPrice;
-    const discount = quantity * item.finalPrice * item.discount;
+    const price = quantity * item.originalPrice;
+    const discount = quantity * item.originalPrice * item.discount;
     setTotalPrice(Number(price.toFixed(2)));
     setTotalDiscount(Number(discount.toFixed(2)));
-  }, [quantity, item.finalPrice, item.discount])
+  }, [quantity, item.finalPrice, item.discount]);
 
   return (
     <TouchableWithoutFeedback onPress={onClose}>
@@ -43,7 +48,9 @@ const ItemQuantity: React.FC<MyModalProps> = ({
             </TouchableOpacity>
             <View style={styles.detailAndQtyContainer}>
               <Text style={styles.itemName}>{truncateText(item.name, 20)}</Text>
-              <Text style={styles.itemTime}>Best before {formattedExpiryDate}</Text>
+              <Text style={styles.itemTime}>
+                Best before {formattedExpiryDate}
+              </Text>
               <View style={styles.seperator}></View>
               <Text style={styles.selectQuantity}>{"Select quantity"}</Text>
               <View style={styles.quantitySelector}>
@@ -80,14 +87,14 @@ const ItemQuantity: React.FC<MyModalProps> = ({
               </View>
               <View style={styles.discountContainer}>
                 <Text>Discount</Text>
-                <Text>- S${totalDiscount}</Text>
+                <Text>- S${((item.originalPrice - item.finalPrice) * quantity).toFixed(2) }</Text>
               </View>
               <View style={styles.seperator}></View>
               <View style={styles.confirmationContainer}>
                 <View style={styles.totalPriceContainer}>
                   <Text>Total</Text>
                   <Text style={styles.finalPrice}>
-                    S${(totalPrice - totalDiscount).toFixed(2)}
+                    S${(item.finalPrice * quantity).toFixed(2)}
                   </Text>
                 </View>
                 <TouchableOpacity
@@ -110,7 +117,6 @@ const ItemQuantity: React.FC<MyModalProps> = ({
     </TouchableWithoutFeedback>
   );
 };
-
 
 const styles = StyleSheet.create({
   minusButtonActivatedColor: {

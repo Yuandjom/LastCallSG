@@ -17,22 +17,29 @@ import ItemModal from "@/components/item/ItemModal";
 import { Store, StoreItem } from "@/app/interfaces";
 import TruncateWithShowMore from "@/utils/truncateWithShowMore";
 import { formatDate } from "@/utils/formatDate";
+import { useAuth } from "@/contexts/AuthContext";
 
 const ItemPage = () => {
   const params = useLocalSearchParams();
   const router = useRouter();
+  const { user } = useAuth();
   const [fadeAnim] = useState(new Animated.Value(1));
   const [modalVisible, setModalVisible] = useState(false);
   const [imageModalVisible, setImageModalVisible] = useState(false);
 
   const openModal = () => {
-    setModalVisible(true);
-    Animated.timing(fadeAnim, {
-      toValue: 0.5,
-      duration: 500,
-      useNativeDriver: true,
-    }).start();
+    if (!user) {
+      router.push("/register");
+    } else {
+      setModalVisible(true);
+      Animated.timing(fadeAnim, {
+        toValue: 0.5,
+        duration: 500,
+        useNativeDriver: true,
+      }).start();
+    }
   };
+
   const closeModal = () => {
     setModalVisible(false);
     Animated.timing(fadeAnim, {
@@ -56,7 +63,11 @@ const ItemPage = () => {
       };
   const store: Store = params.store ? JSON.parse(params.store as string) : null;
 
-  const formattedExpiryDate = formatDate(item.expiryDate);
+  const formattedExpiryDate = item.expiryDate
+    .toString()
+    .split("T")[0]
+    .slice(0, 10);
+
   return (
     <View style={styles.container}>
       <Animated.View style={[styles.overlay, { opacity: fadeAnim }]}>

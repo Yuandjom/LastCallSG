@@ -11,7 +11,7 @@ const OnboardingScreen2 = () => {
         <Text style={styles.headerText}>Key Features</Text>
         <TouchableOpacity
           style={styles.skipButton}
-          onPress={() => router.push("(tabs)")}
+          onPress={() => router.push("/onboarding/fifth")}
         >
           <Text style={styles.skipText}>Skip</Text>
         </TouchableOpacity>
@@ -64,7 +64,7 @@ const styles = StyleSheet.create({
     borderRadius: 15,
     paddingVertical: 5,
     paddingHorizontal: 15,
-    marginRight:5,
+    marginRight: 5,
   },
   skipText: {
     fontSize: 16,

@@ -88,7 +88,7 @@ export default function HomeScreen() {
           <ActivityIndicator size="large" color="gray" />
         </View>
       ) : (
-        <ScrollView
+        <ScrollView       
           style={styles.scrollView}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />

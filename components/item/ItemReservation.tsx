@@ -24,7 +24,7 @@ interface MyModalProps {
   setContact: React.Dispatch<React.SetStateAction<string>>;
   onClose: () => void;
   item: any;
-  store: any;
+  store: any;  
   backToItemQuantity: () => void;
   quantity: number;
 }
