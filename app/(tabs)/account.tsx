@@ -1,36 +1,26 @@
-import React from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-} from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { useRouter } from "expo-router"; // Import useRouter hook
-import { useAuth } from "../../contexts/AuthContext"; // Adjust the path as needed
+// app/Account.js
+import React from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router'; // Import useRouter hook
+import { useAuth } from '../../contexts/AuthContext'; // Adjust the path as needed
 
 const Account = () => {
   const router = useRouter(); // Get the router object
   const { user, logout } = useAuth();
 
   const buttonData = [
-    { title: "Payment method", icon: "card", section: "PAYMENT" },
-    { title: "Help center", icon: "help-circle", section: "INFORMATION" },
-    {
-      title: "Terms and Condition",
-      icon: "document-text",
-      section: "INFORMATION",
-    },
-    {
-      title: "About LastCall SG",
-      icon: "information-circle",
-      section: "INFORMATION",
-      onPress: () => router.push("/onboarding"), // Add onPress handler
-    },
+    { title: 'Payment Method', icon: 'card', section: 'PAYMENT', feature: 'Payment Method' },
+    { title: 'Help Center', icon: 'help-circle', section: 'INFORMATION', feature: 'Help Center' },
+    { title: 'Terms and Conditions', icon: 'document-text', section: 'INFORMATION', feature: 'Terms and Conditions' },
+    { title: 'About LastCall SG', icon: 'information-circle', section: 'INFORMATION', feature: 'About LastCall SG', onPress: () => router.push('/onboarding') }, // Add onPress handler for specific navigation
   ];
 
-  const sections = [...new Set(buttonData.map((button) => button.section))];
+  const sections = [...new Set(buttonData.map(button => button.section))];
+
+  const handleNavigate = (feature) => {
+    router.push({ pathname: '/comingsoon', params: { feature } });
+  };
 
   return (
     <View style={styles.container}>
@@ -40,9 +30,7 @@ const Account = () => {
       {user && (
         <View style={styles.profileHeader}>
           <Image
-            source={{
-              uri: "https://walaoeh.s3.ap-southeast-1.amazonaws.com/avatar.png",
-            }}
+            source={{ uri: 'https://walaoeh.s3.ap-southeast-1.amazonaws.com/avatar.png' }}
             style={styles.profileImage}
           />
           <View style={styles.profileInfo}>
@@ -53,10 +41,9 @@ const Account = () => {
       )}
       {!user && (
         <View style={styles.joinMerchant}>
-          <TouchableOpacity onPress={() => router.push("/register")}>
+          <TouchableOpacity onPress={() => router.push('/register')}>
             <Text style={styles.joinMerchantText}>
-              Are you a new user?{" "}
-              <Text style={styles.joinMerchantLink}>Join us!</Text>
+              Are you a new user? <Text style={styles.joinMerchantLink}>Join us!</Text>
             </Text>
           </TouchableOpacity>
         </View>
@@ -65,21 +52,16 @@ const Account = () => {
         <View key={index} style={styles.section}>
           <Text style={styles.sectionHeader}>{section}</Text>
           {buttonData
-            .filter((button) => button.section === section)
+            .filter(button => button.section === section)
             .map((button, index) => (
               <TouchableOpacity
                 key={index}
                 style={styles.button}
-                onPress={button.onPress} // Apply the onPress handler if it exists
+                onPress={() => button.onPress ? button.onPress() : handleNavigate(button.feature)} // Apply the onPress handler if it exists or navigate to the Coming Soon page
               >
-                <Ionicons name={button.icon as any} size={24} color="#000" />
+                <Ionicons name={button.icon as any}  size={24} color="#000" />
                 <Text style={styles.buttonText}>{button.title}</Text>
-                <Ionicons
-                  name="chevron-forward"
-                  size={24}
-                  color="#888"
-                  style={styles.chevron}
-                />
+                <Ionicons name="chevron-forward" size={24} color="#888" style={styles.chevron} />
               </TouchableOpacity>
             ))}
         </View>
@@ -92,8 +74,6 @@ const Account = () => {
     </View>
   );
 };
-
-export default Account;
 
 const styles = StyleSheet.create({
   container: {
@@ -142,7 +122,6 @@ const styles = StyleSheet.create({
   joinMerchant: {
     backgroundColor: "#fff",
     padding: 15,
-    marginTop: 10,
   },
   joinMerchantText: {
     textAlign: "left",
@@ -193,3 +172,5 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
+export default Account;

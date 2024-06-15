@@ -43,6 +43,7 @@ const sendEmail = (
     orderNo: orderId, // NEED CHANGE THIS IN THE FUTURE
     storeAddress,
     storeTitle,
+    collectionDate,
   };
 
   emailjs
@@ -140,13 +141,13 @@ const ItemReservation: React.FC<MyModalProps> = ({
       };
       setHasSubmitted(true);
 
-      // sendEmail(
-      //   email,
-      //   orderId,
-      //   store.storeTitle,
-      //   store.storeAddress,
-      //   collectionDate
-      // );
+      sendEmail(
+        email,
+        orderId,
+        store.storeTitle,
+        store.storeAddress,
+        collectionDate
+      );
 
       // Save the order to backend, if no logged in, we call hook to set this guest email locally only.
       if (!user) {

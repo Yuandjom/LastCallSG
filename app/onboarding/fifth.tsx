@@ -1,9 +1,10 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
-import { router, useRouter } from "expo-router";
+import { router, useRouter, useNavigation } from "expo-router";
 
 const OnboardingScreen3 = () => {
   const router = useRouter();
+  const navigation = useNavigation();
 
   return (
     <View style={styles.container}>
@@ -21,7 +22,12 @@ const OnboardingScreen3 = () => {
       </Text>
       <TouchableOpacity
         style={styles.continueButton}
-        onPress={() => router.push("(tabs)")}
+        onPress={() =>
+          navigation.reset({
+            index: 0,
+            routes: [{ name: "(tabs)" } as never], // your stack screen name
+          })
+        }
       >
         <Text style={styles.continueButtonText}>Get Started</Text>
       </TouchableOpacity>

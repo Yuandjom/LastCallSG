@@ -67,7 +67,7 @@ const Orders = () => {
         orders = data;
         if (user) {
           orders = data.filter(
-            (order: any) => order.username === user.username
+            (order: any) => order.email === user.email
           );
         } else if (guestEmail) {
           orders = data.filter((order: any) => order.email === guestEmail);
@@ -96,6 +96,7 @@ const Orders = () => {
         totalPrice: JSON.stringify(totalPrice),
         orderId: JSON.stringify(orderId),
         quantity: JSON.stringify(quantity),
+        order: JSON.stringify(order),
       },
     });
   };

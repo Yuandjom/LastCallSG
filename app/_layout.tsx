@@ -87,6 +87,10 @@ export default function RootLayout() {
                 options={{ headerShown: false }}
               />
               <Stack.Screen
+                name="comingsoon/index"
+                options={{ headerShown: false }}
+              />
+              <Stack.Screen
                 name="orderconfirmation/index"
                 options={{ headerShown: false }}
               />

@@ -24,31 +24,31 @@ const OrderDetails = () => {
   const params = useLocalSearchParams();
   const [qrCodeVisible, setQrCodeVisible] = useState(false);
 
-  useEffect(() => {
-    const handleAppStateChange = (nextAppState) => {
-      if (nextAppState === "active") {
-        setQrCodeVisible(false);
-        setTimeout(() => {
-          Toast.show({
-            type: "success",
-            text1: "Payment successful!",
-            text2: "We look forward to seeing you again.",
-          });
-        }, 2000);
+  // useEffect(() => {
+  //   const handleAppStateChange = (nextAppState) => {
+  //     if (nextAppState === "active") {
+  //       setQrCodeVisible(false);
+  //       setTimeout(() => {
+  //         Toast.show({
+  //           type: "success",
+  //           text1: "Payment successful!",
+  //           text2: "We look forward to seeing you again.",
+  //         });
+  //       }, 2000);
 
-        router.push("/");
-      }
-    };
+  //       router.push("/");
+  //     }
+  //   };
 
-    const subscription = AppState.addEventListener(
-      "change",
-      handleAppStateChange
-    );
+  //   const subscription = AppState.addEventListener(
+  //     "change",
+  //     handleAppStateChange
+  //   );
 
-    return () => {
-      subscription.remove();
-    };
-  }, []);
+  //   return () => {
+  //     subscription.remove();
+  //   };
+  // }, []);
 
   const showQrCodeModal = () => {
     setQrCodeVisible(true);
@@ -108,7 +108,7 @@ const OrderDetails = () => {
     ? JSON.parse(params.quantity as string)
     : 0;
   const orderId = params.orderId ? JSON.parse(params.orderId as string) : "0";
-
+  const order = params.order ? JSON.parse(params.order as string) : null;
   const openPaymentLink = () => {
     const url =
       "https://www.dbs.com.sg/personal/mobile/paylink/index.html?tranRef=Y6LAoByOW2";
@@ -120,6 +120,12 @@ const OrderDetails = () => {
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
+      <TouchableOpacity
+            onPress={() => router.back()}
+            style={styles.backButton}
+          >
+            <Ionicons name="arrow-back" size={25} color="black" />
+          </TouchableOpacity>
         <View style={styles.checkmarkContainer}>
           <Image
             source={{
@@ -134,10 +140,14 @@ const OrderDetails = () => {
           <View style={styles.logoContainer}>
             <Image
               style={styles.marketLogo}
-              source={{ uri: store.storeLogo } as any}
+              source={
+                { uri: store ? store.storeLogo : order.store.storeLogo } as any
+              }
             />
           </View>
-          <Text style={styles.marketName}>{store.storeTitle}</Text>
+          <Text style={styles.marketName}>
+            {store ? store.storeTitle : order.store.storeTitle}
+          </Text>
           <View style={styles.orderDetails}>
             <Text style={styles.label}>Order ID:</Text>
             <Text style={styles.value}>{truncateText(orderId, 30)}</Text>
@@ -168,7 +178,7 @@ const OrderDetails = () => {
         <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.navigateButton}
-            onPress={() => openGoogleMaps(store.storeAddress)}
+            onPress={() => openGoogleMaps(store? store.storeAddress : order.store.storeAddress)}
           >
             <Ionicons
               name="navigate-circle-outline"
@@ -233,6 +243,18 @@ const styles = StyleSheet.create({
   contentContainer: {
     marginTop: 20,
     alignItems: "center",
+  },
+  backButton: {
+    position: "absolute",
+    top: -40,
+    left: 0,
+    backgroundColor: "#F2F5F9",
+    width: 35,
+    height: 35,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1,
   },
   checkmarkContainer: {
     backgroundColor: "#d4edda",
