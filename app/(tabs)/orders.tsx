@@ -253,8 +253,6 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     marginBottom: 5,
     width : '100%',
-    borderWidth : 5,
-    borderColor: 'red'
   },
   itemName: {
     fontSize: 16,
