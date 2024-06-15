@@ -16,7 +16,7 @@ const ItemModal: React.FC<MyModalProps> = ({
   item,
   store,
 }) => {
-  const [quantity, setQuantity] = useState(0);
+  const [quantity, setQuantity] = useState(1);
   const [currentComponent, setComponent] = useState("A");
   const [userEmail, setEmail] = useState("");
   const [name, setName] = useState("");
