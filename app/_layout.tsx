@@ -83,6 +83,10 @@ export default function RootLayout() {
               name="interactive-map/index"
               options={{ headerShown: false }}
             />
+            <Stack.Screen
+              name="searchbar/Search"
+              options={{ headerShown: false }}
+            />
             <Stack.Screen name="+not-found" />
           </Stack>
         </ThemeProvider>

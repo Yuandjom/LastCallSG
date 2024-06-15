@@ -13,10 +13,10 @@ import MapModal from "./mapmodal/MapModal"; // Import the new MapModal component
 import { Store } from "@/app/interfaces";
 
 interface TopBarProps {
-  filteredStores: Store[];
+  stores: Store[];
 }
 
-const TopBar: React.FC<TopBarProps> = ({ filteredStores }) => {
+const TopBar: React.FC<TopBarProps> = ({ stores }) => {
   const router = useRouter();
   const [modalVisible, setModalVisible] = useState(false);
 
@@ -25,8 +25,10 @@ const TopBar: React.FC<TopBarProps> = ({ filteredStores }) => {
   };
 
   const handlePress = () => {
+    console.log(JSON.stringify(stores));
     router.push({
-      pathname: "/onboarding",
+      pathname: "/searchbar/Search", // Navigate to the SearchScreen
+      params: { stores: JSON.stringify(stores) }, // Pass the filtered stores as a parameter
     });
   };
 
@@ -43,14 +45,14 @@ const TopBar: React.FC<TopBarProps> = ({ filteredStores }) => {
         </TouchableOpacity>
         <Text style={styles.locationSubText}>Current location</Text>
         <TouchableOpacity onPress={handlePress} style={styles.infoIcon}>
-          <Ionicons name="information-circle-outline" size={30} color="gray" />
+          <Ionicons name="search-outline" size={30} color="gray" />
         </TouchableOpacity>
       </View>
 
       <MapModal
         modalVisible={modalVisible}
         toggleModal={toggleModal}
-        filteredStores={filteredStores}
+        filteredStores={stores}
       />
     </View>
   );

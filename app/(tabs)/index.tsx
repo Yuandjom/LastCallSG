@@ -42,7 +42,7 @@ export default function HomeScreen() {
         throw new Error("Failed to fetch stores");
       }
       const data = await response.json();
-      setStores(data.sort((a,b)=>b.id -a.id));
+      setStores(data.sort((a, b) => b.id - a.id));
       setFilteredStores(data);
     } catch (error: any) {
       setError(error.message);
@@ -51,7 +51,6 @@ export default function HomeScreen() {
       setInitialLoaded(true); // Mark initial load as complete
     }
   };
-
   const handleCategoryPress = (category: string) => {
     if (selectedCategory === category) {
       setSelectedCategory(null);
@@ -67,11 +66,11 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <StatusBar barStyle="dark-content" />
-      <TopBar filteredStores = {filteredStores}></TopBar>
-      <CategoryScrollView
+      <TopBar stores={stores}></TopBar>
+      {/* <CategoryScrollView
         selectedCategory={selectedCategory}
         onCategoryPress={handleCategoryPress}
-      />
+      /> */}
       <View style={styles.bottomBar}>
         <Image
           source={{
@@ -88,7 +87,7 @@ export default function HomeScreen() {
           <ActivityIndicator size="large" color="gray" />
         </View>
       ) : (
-        <ScrollView       
+        <ScrollView
           style={styles.scrollView}
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
