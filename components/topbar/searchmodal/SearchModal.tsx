@@ -7,9 +7,11 @@ import {
     Text,
     StyleSheet,
     TouchableOpacity,
+    TouchableWithoutFeedback,
     Keyboard,
 } from "react-native";
 import { Store } from "@/app/interfaces";
+import { Ionicons } from '@expo/vector-icons';
 
 interface SearchModalProps {
     modalVisible: boolean;
@@ -34,6 +36,12 @@ const SearchModal: React.FC<SearchModalProps> = ({
         if (searchQuery.trim() !== "") {
             onSearchSubmit(searchQuery);
         }
+        toggleModal();
+        Keyboard.dismiss();
+    };
+
+    const handleItemPress = (itemName: string) => {
+        onSearchSubmit(itemName);
         toggleModal();
         Keyboard.dismiss();
     };
@@ -70,41 +78,52 @@ const SearchModal: React.FC<SearchModalProps> = ({
             visible={modalVisible}
             onRequestClose={toggleModal}
         >
-            <View style={styles.modalContainer}>
-                <View style={styles.modalContent}>
-                    <TextInput
-                        style={styles.searchBar}
-                        placeholder="Search items..."
-                        placeholderTextColor="#888" // Adjust color as needed
-                        value={searchQuery}
-                        onChangeText={handleSearch}
-                        onSubmitEditing={handleSubmit}
-                    />
-                    <FlatList
-                        data={filteredResults}
-                        keyExtractor={(item) => item.id.toString()}
-                        renderItem={({ item }) => (
-                            <View style={styles.storeContainer}>
-                                <FlatList
-                                    data={item.items.filter((item) =>
-                                        item.name.toLowerCase().includes(searchQuery.toLowerCase())
-                                    )}
-                                    keyExtractor={(item) => item.name}
-                                    renderItem={({ item }) => (
-                                        <Text style={styles.storeName}>
-                                            {boldSearchQuery(item.name, searchQuery)}
-                                        </Text>
-                                    )}
-                                />
-                            </View>
-                        )}
-                        style={styles.resultsList}
-                    />
-                    <TouchableOpacity onPress={toggleModal} style={styles.closeButton}>
-                        <Text style={styles.closeButtonText}>Close</Text>
-                    </TouchableOpacity>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <View style={styles.modalContainer}>
+                    <View style={styles.modalContent}>
+                        <View style={styles.searchBarContainer}>
+                            <TextInput
+                                style={styles.searchBar}
+                                placeholder="Search items..."
+                                placeholderTextColor="#888"
+                                value={searchQuery}
+                                onChangeText={handleSearch}
+                                onSubmitEditing={handleSubmit}
+                            />
+                            {searchQuery.length > 0 && (
+                                <TouchableOpacity onPress={() => setSearchQuery('')} style={styles.clearButton}>
+                                    <Ionicons name="close-circle" size={20} color="#888" />
+                                </TouchableOpacity>
+                            )}
+                        </View>
+                        <FlatList
+                            data={filteredResults}
+                            keyExtractor={(item) => item.id.toString()}
+                            renderItem={({ item }) => (
+                                <View style={styles.storeContainer}>
+                                    <FlatList
+                                        data={item.items.filter((item) =>
+                                            item.name.toLowerCase().includes(searchQuery.toLowerCase())
+                                        )}
+                                        keyExtractor={(item) => item.name}
+                                        renderItem={({ item }) => (
+                                            <TouchableOpacity onPress={() => handleItemPress(item.name)}>
+                                                <Text style={styles.storeName}>
+                                                    {boldSearchQuery(item.name, searchQuery)}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        )}
+                                    />
+                                </View>
+                            )}
+                            style={styles.resultsList}
+                        />
+                        <TouchableOpacity onPress={toggleModal} style={styles.closeButton}>
+                            <Text style={styles.closeButtonText}>Close</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-            </View>
+            </TouchableWithoutFeedback>
         </Modal>
     );
 };
@@ -124,16 +143,24 @@ const styles = StyleSheet.create({
         padding: 16,
         alignItems: "center",
     },
-    searchBar: {
-        width: "100%",
-        height: 40,
-        borderColor: "#ccc",
+    searchBarContainer: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        width: '100%',
+        borderColor: '#ccc',
         borderWidth: 1,
         borderRadius: 8,
-        paddingHorizontal: 8,
         marginBottom: 16,
-        fontSize: 16, // Increase font size for better visibility
-        color: "#000", // Ensure text color is visible
+    },
+    searchBar: {
+        flex: 1,
+        height: 40,
+        paddingHorizontal: 8,
+        fontSize: 16,
+        color: "#000",
+    },
+    clearButton: {
+        paddingRight: 8,
     },
     resultsList: {
         flex: 1,
