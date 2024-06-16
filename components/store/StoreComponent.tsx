@@ -123,6 +123,11 @@ const styles = StyleSheet.create({
   storeContainer: {
     paddingHorizontal: 16,
     paddingVertical: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   },
   storeHeader: {
     flexDirection: "row",
@@ -176,6 +181,7 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
+
   },
   imageContainer: {
     position: "relative",
@@ -194,7 +200,7 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
   },
   discountText: {
-    fontSize: 12,
+    fontSize: 18,
     color: "white",
   },
   itemInfo: {
@@ -232,11 +238,12 @@ const styles = StyleSheet.create({
   },
   priceContainer: {
     flexDirection: "row",
-    justifyContent: "space-between",
+    justifyContent: "flex-end",
     alignItems: "center",
+    gap: 5
   },
   itemPrice: {
-    fontSize: 14,
+    fontSize: 18,
     color: "#56C071",
     fontWeight: "bold",
   },

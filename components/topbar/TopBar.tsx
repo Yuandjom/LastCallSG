@@ -45,7 +45,7 @@ const TopBar: React.FC<TopBarProps> = ({ stores, onSearchSubmit }) => {
               style={styles.chevronIcon}
             />
           </View>
-          <Text style={styles.locationSubText}>Find closest stores</Text>
+          <Text style={styles.locationSubText}>Find nearby stores</Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={toggleSearchModal} style={styles.infoIcon}>
           <Ionicons name="search-outline" size={30} color="gray" />

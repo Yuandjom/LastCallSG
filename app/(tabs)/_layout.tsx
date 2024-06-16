@@ -1,6 +1,7 @@
 // app/(tabs)/_layout.tsx
 import { Tabs } from 'expo-router';
 import React from 'react';
+import { StyleSheet } from 'react-native'
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
 import { Colors } from '@/constants/Colors';
@@ -12,6 +13,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
+        tabBarStyle: { padding:8 ,height: '10%'},
         tabBarActiveTintColor: Colors['dark'].black,
         headerShown: false,
       }}>
@@ -45,3 +47,4 @@ export default function TabLayout() {
     </Tabs>
   );
 }
+
