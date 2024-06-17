@@ -9,6 +9,8 @@ export interface StoreItem {
   imageURL: string; // URL as string
   expiryDate: Date;
   description: string;
+  weight: number;
+
 }
 
 export interface Store {
