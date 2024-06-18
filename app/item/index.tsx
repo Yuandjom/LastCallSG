@@ -10,6 +10,7 @@ import {
   Modal,
   Pressable,
   ScrollView,
+  ActivityIndicator
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -18,6 +19,11 @@ import { Store, StoreItem } from "@/app/interfaces";
 import TruncateWithShowMore from "@/utils/truncateWithShowMore";
 import { calculateTimeLeft } from "@/utils/formatDate";
 import { useAuth } from "@/contexts/AuthContext";
+import MapView, { Marker } from "react-native-maps";
+import * as Location from "expo-location";
+import Toast from "react-native-toast-message";
+
+
 
 const ItemPage = () => {
   const params = useLocalSearchParams();
@@ -26,6 +32,10 @@ const ItemPage = () => {
   const [fadeAnim] = useState(new Animated.Value(1));
   const [modalVisible, setModalVisible] = useState(false);
   const [imageModalVisible, setImageModalVisible] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [location, setLocation] = useState<any>(null);
+
+
 
   const openModal = () => {
     setModalVisible(true);
@@ -43,6 +53,44 @@ const ItemPage = () => {
       duration: 500,
       useNativeDriver: true,
     }).start();
+  };
+
+  const handleMapPress = async () => {
+    setLoading(true);
+    try {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        Toast.show({
+          type: "error",
+          text1: "Permission to access location was denied",
+          text2: "Please grant us location permission to proceed.",
+        });
+        setLoading(false);
+        return;
+      }
+
+      let location: any = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+      setLoading(false);
+
+      router.push({
+        pathname: "/interactive-map",
+        params: {
+          storeLocation: JSON.stringify({
+            latitude: store.storeLatitude,
+            longitude: store.storeLongitude,
+          }),
+          userLocation: JSON.stringify(location.coords),
+        },
+      });
+    } catch (error: any) {
+      Toast.show({
+        type: "error",
+        text1: "Error",
+        text2: error.message,
+      });
+      setLoading(false);
+    }
   };
 
   const item: StoreItem = params.item
@@ -129,8 +177,41 @@ const ItemPage = () => {
                 text={item.description == "None" ? "" : item.description}
                 maxLength={200}
               />
+
               </View>
-              <Text style={styles.descriptionHeader}>Pickup Location</Text>
+              <View style={styles.storeInfoContainer}>
+                <Text style={styles.storeInfoText}>Pickup Location</Text>
+
+                <Text style={styles.storeAddress}>
+                  {store.storeAddress} S({store.storePostalCode})
+                </Text>
+                <TouchableOpacity
+                  onPress={handleMapPress}
+                  style={styles.mapContainer}
+                >
+                  <MapView
+                    style={styles.map}
+                    initialRegion={{
+                      latitude: store.storeLatitude,
+                      longitude: store.storeLongitude,
+                      latitudeDelta: 0.0922,
+                      longitudeDelta: 0.0421,
+                    }}
+                  >
+                    <Marker
+                      coordinate={{ latitude: store.storeLatitude, longitude: store.storeLongitude }}
+                      title="Starbucks Coffee"
+                      description="3 Sin Ming Walk, Singapura 575575"
+                    />
+                  </MapView>
+                  {loading && (
+                    <View style={styles.loadingOverlay}>
+                      <ActivityIndicator size="large" color="#0000ff" />
+                      <Text style={styles.loadingText}>Loading...</Text>
+                </View>
+              )}
+            </TouchableOpacity>
+          </View>
 
             </View>
           </ScrollView>
@@ -169,6 +250,43 @@ const ItemPage = () => {
 };
 
 const styles = StyleSheet.create({
+  loadingText: {
+    marginTop: 10,
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#0000ff",
+  },
+  map: {
+    ...StyleSheet.absoluteFillObject,
+    borderRadius: 8,
+  },
+  mapContainer: {
+    position: "relative",
+    width: "100%",
+    height: 200,
+    borderRadius: 8,
+    marginTop: 16,
+  },
+  storeAddress: {
+    fontSize: 16,
+    color: "black",
+  },
+  storeInfoText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    marginBottom: 8,
+  },
+  storeInfoContainer: {
+    padding: 18,
+  },
+  loadingOverlay: {
+    ...StyleSheet.absoluteFillObject,
+    backgroundColor: "rgba(255, 255, 255, 0.7)",
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 8,
+  },
+
   weightText: {
     fontWeight: "bold",
     fontSize: 18,
@@ -279,6 +397,8 @@ const styles = StyleSheet.create({
   },
   itemPriceContainer: {
     justifyContent: 'flex-start',
+    alignItems: 'flex-end',
+    paddingRight: 8
   },
   itemQuantityContainer: {
     width: "60%",
@@ -290,7 +410,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     width: "100%",
-    padding: 2
+    padding: 10,
   },
   seperator: {
     height: 1,
@@ -306,7 +426,7 @@ const styles = StyleSheet.create({
   },
   descriptionHeader: {
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 18,
     margin: 10,
     paddingHorizontal: 10,
   },
@@ -314,10 +434,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   title: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
     marginTop: 10,
     gap: 4,
+
   },
   leftContainer: {
     backgroundColor: "#FBAF18",
