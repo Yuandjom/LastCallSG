@@ -293,8 +293,9 @@ const styles = StyleSheet.create({
     },
   priceDiscountContainer: {
     flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4
+    alignItems: 'flex-end',
+    gap: 4,
+    
   },
   overlay: {
     justifyContent: "flex-start",
@@ -457,6 +458,7 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: 4,
     height: "24%",
+    
   },
   discount: {
     fontSize: 12,
