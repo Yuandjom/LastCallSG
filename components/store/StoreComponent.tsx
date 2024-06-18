@@ -61,7 +61,7 @@ const StoreComponent: React.FC<StoreComponentProps> = ({ store }) => {
           <Ionicons name="chevron-forward" size={18} style={styles.arrowIcon} />
         </View>
       </TouchableOpacity>
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      <ScrollView contentContainerStyle={styles.scrollContainer}  horizontal showsHorizontalScrollIndicator={false}>
         {store.items.filter(item => item.quantity > 0).map((item, index) => {
           let itemLeftStyle: any;
           let itemLeftTextColor: any;
@@ -129,6 +129,11 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
+  scrollContainer:{
+    height: '100%',
+    flexGrow: 1,
+    alignItems: 'stretch',
+  },
   storeHeader: {
     flexDirection: "row",
     alignItems: "center",
@@ -181,7 +186,6 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
-
   },
   imageContainer: {
     position: "relative",
@@ -235,6 +239,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "bold",
     marginBottom: 4,
+    height: 33
   },
   priceContainer: {
     flexDirection: "row",
