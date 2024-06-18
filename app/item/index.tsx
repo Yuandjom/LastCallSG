@@ -10,7 +10,7 @@ import {
   Modal,
   Pressable,
   ScrollView,
-  ActivityIndicator
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
@@ -22,7 +22,7 @@ import { useAuth } from "@/contexts/AuthContext";
 import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import Toast from "react-native-toast-message";
-
+import { truncateText } from "@/utils/truncateText";
 
 
 const ItemPage = () => {
@@ -34,9 +34,15 @@ const ItemPage = () => {
   const [imageModalVisible, setImageModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState<any>(null);
-
-
-
+  const handleStorePress = () => {
+    router.push({
+      pathname: "/store",
+      params: {
+        items: JSON.stringify(store.items),
+        store: JSON.stringify(store),
+      },
+    });
+  };
   const openModal = () => {
     setModalVisible(true);
     Animated.timing(fadeAnim, {
@@ -104,7 +110,7 @@ const ItemPage = () => {
         imageURL: "",
         expiryDate: new Date(),
         description: "",
-        weight: 0
+        weight: 0,
       };
   const store: Store = params.store ? JSON.parse(params.store as string) : null;
 
@@ -129,41 +135,40 @@ const ItemPage = () => {
         <View style={styles.contentContainer}>
           <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
             <View>
-
               <View style={styles.productDetailsContainer}>
                 <View style={styles.itemQuantityContainer}>
                   <Text style={styles.title}>{item.name}</Text>
                   <Text style={styles.itemQty}>{`${item.quantity} pcs`}</Text>
                 </View>
 
-                <View style= {styles.priceDiscountContainer}>
-                
-                <View style={styles.discountContainer}>
-                <Text style={styles.discount}>{`-${
-                    item.discount * 100
-                  }%`}</Text>
+                <View style={styles.priceDiscountContainer}>
+                  <View style={styles.discountContainer}>
+                    <Text style={styles.discount}>{`-${
+                      item.discount * 100
+                    }%`}</Text>
+                  </View>
+                  <View style={styles.itemPriceContainer}>
+                    <Text
+                      style={styles.originalPrice}
+                    >{`was $${item.originalPrice.toFixed(2)}`}</Text>
+                    <Text style={styles.price}>{`S$${item.finalPrice.toFixed(
+                      2
+                    )}`}</Text>
+                  </View>
                 </View>
-                <View style={styles.itemPriceContainer}>
-                  <Text
-                    style={styles.originalPrice}
-                  >{`was $${item.originalPrice.toFixed(2)}`}</Text>
-                  <Text style={styles.price}>{`S$${item.finalPrice.toFixed(
-                    2
-                  )}`}</Text>
-                </View>
-                </View>
-                </View>
+              </View>
               <View style={styles.seperator}></View>
-              
+
               <Text style={styles.descriptionHeader}>Product</Text>
-              <View >
-              
+              <View>
                 <View style={styles.expiry_container}>
-                  <Text style={{color:"#B2BAC5",}}>Expiry</Text>
-                  <Text style={styles.expiry_date}>{calculateTimeLeft(formattedExpiryDate)}</Text>
+                  <Text style={{ color: "#B2BAC5" }}>Expiry</Text>
+                  <Text style={styles.expiry_date}>
+                    {calculateTimeLeft(formattedExpiryDate)}
+                  </Text>
                 </View>
                 <View style={styles.expiry_container}>
-                  <Text style={{color:"#B2BAC5",}}>Weight</Text>
+                  <Text style={{ color: "#B2BAC5" }}>Weight</Text>
                   <Text style={styles.weightText}>{`${item.weight} kg`}</Text>
                 </View>
               </View>
@@ -172,12 +177,11 @@ const ItemPage = () => {
                   <Text style={styles.descriptionHeader}>Description</Text>
                 ) : null}
               </View>
-              <View style={{paddingHorizontal: 6,}}>
-              <TruncateWithShowMore
-                text={item.description == "None" ? "" : item.description}
-                maxLength={200}
-              />
-
+              <View style={{ paddingHorizontal: 6 }}>
+                <TruncateWithShowMore
+                  text={item.description == "None" ? "" : item.description}
+                  maxLength={200}
+                />
               </View>
               <View style={styles.storeInfoContainer}>
                 <Text style={styles.storeInfoText}>Pickup Location</Text>
@@ -199,7 +203,10 @@ const ItemPage = () => {
                     }}
                   >
                     <Marker
-                      coordinate={{ latitude: store.storeLatitude, longitude: store.storeLongitude }}
+                      coordinate={{
+                        latitude: store.storeLatitude,
+                        longitude: store.storeLongitude,
+                      }}
                       title="Starbucks Coffee"
                       description="3 Sin Ming Walk, Singapura 575575"
                     />
@@ -208,11 +215,31 @@ const ItemPage = () => {
                     <View style={styles.loadingOverlay}>
                       <ActivityIndicator size="large" color="#0000ff" />
                       <Text style={styles.loadingText}>Loading...</Text>
-                </View>
-              )}
-            </TouchableOpacity>
-          </View>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              </View>
+              <TouchableOpacity
+                onPress={handleStorePress}
+                activeOpacity={0.6}
+                delayPressIn={100}
+              >
+                <View style={styles.storeHeader}>
+                  <Image
+                    source={{ uri: store.storeLogo as any }}
+                    style={styles.storeLogo}
+                  />
+                  <View style={styles.storeInfo}>
+                    <Text style={styles.storeTitle}>
+                      {truncateText(store.storeTitle, 20)}
+                    </Text>
+                    <Text style={styles.rating}>
+                      ⭐ {store.storeRating.toFixed(1)}
+                    </Text>
+                  </View>
 
+                </View>
+              </TouchableOpacity>
             </View>
           </ScrollView>
           <TouchableOpacity style={styles.button} onPress={openModal}>
@@ -250,6 +277,20 @@ const ItemPage = () => {
 };
 
 const styles = StyleSheet.create({
+  storeSubtitle: {
+    fontSize: 14,
+    color: "gray",
+  },
+  storeInfo: {
+    flex: 1,
+  },
+  storeHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 12,
+    marginTop: 8,
+    padding: 8
+  },
   loadingText: {
     marginTop: 10,
     fontSize: 16,
@@ -290,12 +331,11 @@ const styles = StyleSheet.create({
   weightText: {
     fontWeight: "bold",
     fontSize: 18,
-    },
+  },
   priceDiscountContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
+    flexDirection: "row",
+    alignItems: "flex-end",
     gap: 4,
-    
   },
   overlay: {
     justifyContent: "flex-start",
@@ -351,21 +391,18 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginTop: 8,
-    backgroundColor: "black", // Added gray background color
     borderRadius: 0,
     width: "100%",
-    opacity: 0.7,
   },
   storeLogo: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 60,
+    height: 60,
+    borderRadius:30,
     margin: 8,
   },
   storeTitle: {
-    fontSize: 14,
-    fontWeight: "700",
-    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
   },
   expiry_container: {
     width: "100%",
@@ -373,7 +410,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     alignItems: "center",
     paddingHorizontal: 20,
-    marginVertical: 4
+    marginVertical: 4,
   },
   expiry_left_container: {
     flexDirection: "row",
@@ -397,9 +434,9 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   itemPriceContainer: {
-    justifyContent: 'flex-start',
-    alignItems: 'flex-end',
-    paddingRight: 8
+    justifyContent: "flex-start",
+    alignItems: "flex-end",
+    paddingRight: 8,
   },
   itemQuantityContainer: {
     width: "60%",
@@ -423,7 +460,6 @@ const styles = StyleSheet.create({
   descriptionHeaderContainer: {
     width: "100%",
     alignSelf: "center",
-    
   },
   descriptionHeader: {
     fontWeight: "bold",
@@ -439,7 +475,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     marginTop: 10,
     gap: 4,
-
   },
   leftContainer: {
     backgroundColor: "#FBAF18",
@@ -458,7 +493,6 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     padding: 4,
     height: "24%",
-    
   },
   discount: {
     fontSize: 12,
@@ -469,7 +503,6 @@ const styles = StyleSheet.create({
   rating: {
     fontSize: 14,
     fontWeight: "600",
-    color: "white",
   },
   price: {
     marginTop: 4,
