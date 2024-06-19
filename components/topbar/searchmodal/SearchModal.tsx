@@ -98,10 +98,10 @@ const SearchModal: React.FC<SearchModalProps> = ({
 
   const filteredResults = searchQuery.trim()
     ? stores.filter((store) =>
-        store.items.some((item) =>
-          item.name.toLowerCase().includes(searchQuery.toLowerCase())
-        )
+      store.items.some((item) =>
+        item.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
+    )
     : [];
 
   return (
@@ -173,24 +173,24 @@ const SearchModal: React.FC<SearchModalProps> = ({
             <View style={styles.buttonContainer}>
               <TouchableOpacity
                 style={styles.searchButton}
-                onPress={handleSubmit}
+                onPress={toggleModal}
               >
                 <Ionicons
-                  name="search-outline"
+                  name="close-outline"
                   size={24}
                   color="rgba(22, 143, 85, 1)"
                   style={styles.buttonIcon}
                 />
-                <Text style={styles.searchButtonText}>Search</Text>
+                <Text style={styles.searchButtonText}>Close</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.payButton} onPress={toggleModal}>
+              <TouchableOpacity style={styles.payButton} onPress={handleSubmit}>
                 <Ionicons
-                  name="close-outline"
+                  name="search-outline"
                   size={24}
                   color="#fff"
                   style={styles.buttonIcon}
                 />
-                <Text style={styles.buttonText}>Close</Text>
+                <Text style={styles.buttonText}>Search</Text>
               </TouchableOpacity>
             </View>
           </View>
