@@ -98,6 +98,8 @@ const StorePage = () => {
             longitude: store.storeLongitude,
           }),
           userLocation: JSON.stringify(location.coords),
+          storeTitle: store.storeTitle,
+          storeAddress: store.storeAddress,
         },
       });
     } catch (error: any) {

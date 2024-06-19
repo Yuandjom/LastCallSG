@@ -87,6 +87,8 @@ const ItemPage = () => {
             longitude: store.storeLongitude,
           }),
           userLocation: JSON.stringify(location.coords),
+          storeTitle: JSON.stringify(store.storeTitle),
+          storeAddress: JSON.stringify(store.storeAddress),
         },
       });
     } catch (error: any) {
@@ -102,16 +104,16 @@ const ItemPage = () => {
   const item: StoreItem = params.item
     ? JSON.parse(params.item as string)
     : {
-        name: "",
-        finalPrice: 0,
-        originalPrice: 0,
-        discount: 0,
-        quantity: 0,
-        imageURL: "",
-        expiryDate: new Date(),
-        description: "",
-        weight: 0,
-      };
+      name: "",
+      finalPrice: 0,
+      originalPrice: 0,
+      discount: 0,
+      quantity: 0,
+      imageURL: "",
+      expiryDate: new Date(),
+      description: "",
+      weight: 0,
+    };
   const store: Store = params.store ? JSON.parse(params.store as string) : null;
 
   const formattedExpiryDate = item.expiryDate
@@ -143,9 +145,8 @@ const ItemPage = () => {
 
                 <View style={styles.priceDiscountContainer}>
                   <View style={styles.discountContainer}>
-                    <Text style={styles.discount}>{`-${
-                      item.discount * 100
-                    }%`}</Text>
+                    <Text style={styles.discount}>{`-${item.discount * 100
+                      }%`}</Text>
                   </View>
                   <View style={styles.itemPriceContainer}>
                     <Text
@@ -207,8 +208,8 @@ const ItemPage = () => {
                         latitude: store.storeLatitude,
                         longitude: store.storeLongitude,
                       }}
-                      title="Starbucks Coffee"
-                      description="3 Sin Ming Walk, Singapura 575575"
+                      title={store.storeTitle}
+                      description={store.storeAddress}
                     />
                   </MapView>
                   {loading && (
@@ -397,7 +398,7 @@ const styles = StyleSheet.create({
   storeLogo: {
     width: 60,
     height: 60,
-    borderRadius:30,
+    borderRadius: 30,
     margin: 8,
   },
   storeTitle: {

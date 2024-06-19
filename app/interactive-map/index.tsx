@@ -14,8 +14,14 @@ import { Ionicons } from "@expo/vector-icons";
 const InteractiveMapScreen = () => {
   const router = useRouter();
   const params = useLocalSearchParams();
-  const storeLocation = JSON.parse(params.storeLocation as string);
+  console.log(params);
   const userLocation = JSON.parse(params.userLocation as string);
+  const storeLocation = JSON.parse(params.storeLocation as string);
+  const storeTitle = JSON.parse(params.storeTitle as string);
+  const storeAddress = JSON.parse(params.storeAddress as string);
+  console.log(storeTitle, storeAddress, storeLocation, userLocation);
+  // console.log(storeLocation, userLocation)
+  // const testing = JSON.parse(params.)
 
   return (
     <View style={styles.container}>
@@ -39,8 +45,8 @@ const InteractiveMapScreen = () => {
       >
         <Marker
           coordinate={storeLocation}
-          title="Starbucks Coffee"
-          description="3 Sin Ming Walk, Singapura 575575"
+          title={storeTitle}
+          description={storeAddress}
         />
         <Marker
           coordinate={userLocation}
