@@ -33,7 +33,7 @@ const MapModal: React.FC<MapModalProps> = ({
         longitude: number
     ) => {
         const now = Date.now();
-        if (lastTapRef.current && now - lastTapRef.current < 1000) {
+        if (lastTapRef.current) {
             // Double tap detected
             if (Platform.OS === "ios") {
                 // Open in Google Maps app or browser on iOS
