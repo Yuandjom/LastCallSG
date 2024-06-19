@@ -80,7 +80,7 @@ export default function HomeScreen() {
           style={styles.bottomBarImage}
         />
         <Text style={styles.bottomBarText}>
-          👋 {100} KG of food waste prevented to date
+          {14.7} KG of food waste prevented to date
         </Text>
       </View>
       {loading && !initialLoaded ? (
