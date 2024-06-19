@@ -192,6 +192,7 @@ const ItemPage = () => {
                 </Text>
                 <TouchableOpacity
                   onPress={handleMapPress}
+                  disabled={true}
                   style={styles.mapContainer}
                 >
                   <MapView

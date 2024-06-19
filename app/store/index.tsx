@@ -98,8 +98,8 @@ const StorePage = () => {
             longitude: store.storeLongitude,
           }),
           userLocation: JSON.stringify(location.coords),
-          storeTitle: store.storeTitle,
-          storeAddress: store.storeAddress,
+          storeTitle: JSON.stringify(store.storeTitle),
+          storeAddress: JSON.stringify(store.storeAddress),
         },
       });
     } catch (error: any) {
@@ -250,8 +250,8 @@ const StorePage = () => {
               >
                 <Marker
                   coordinate={{ latitude: 1.351616, longitude: 103.837889 }}
-                  title="Starbucks Coffee"
-                  description="3 Sin Ming Walk, Singapura 575575"
+                  title={store.storeTitle}
+                  description={store.storeAddress}
                 />
               </MapView>
               {loading && (
