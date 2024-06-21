@@ -100,7 +100,7 @@ const StoreComponent: React.FC<StoreComponentProps> = ({ store, allStores }) => 
                   <View style={[styles.itemLeftContainer, itemLeftStyle]}>
                   </View>
                   <Text style={styles.itemName}>
-                    {truncateText(item.name, 30)}
+                    {truncateText(item.name, 25)}
                   </Text>
                   <View style={styles.priceContainer}>
                     <Text style={styles.itemWasPrice}>

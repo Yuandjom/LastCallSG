@@ -93,16 +93,16 @@ const ItemPage = () => {
   const item: StoreItem = params.item
     ? JSON.parse(params.item as string)
     : {
-        name: "",
-        finalPrice: 0,
-        originalPrice: 0,
-        discount: 0,
-        quantity: 0,
-        imageURL: "",
-        expiryDate: new Date(),
-        description: "",
-        weight: 0,
-      };
+      name: "",
+      finalPrice: 0,
+      originalPrice: 0,
+      discount: 0,
+      quantity: 0,
+      imageURL: "",
+      expiryDate: new Date(),
+      description: "",
+      weight: 0,
+    };
   const store: Store = params.store ? JSON.parse(params.store as string) : null;
 
   const formattedExpiryDate = item.expiryDate
@@ -113,7 +113,7 @@ const ItemPage = () => {
   return (
     <ScrollView
       style={styles.container}
-      contentContainerStyle={{ flexGrow: 1 }}
+      contentContainerStyle={{ flexGrow: 1, paddingBottom: 40 }}
     >
       <Animated.View style={[styles.overlay, { opacity: fadeAnim }]}>
         <TouchableOpacity onPress={() => setImageModalVisible(true)}>
@@ -140,9 +140,8 @@ const ItemPage = () => {
 
               <View style={styles.priceDiscountContainer}>
                 <View style={styles.discountContainer}>
-                  <Text style={styles.discount}>{`-${
-                    item.discount * 100
-                  }%`}</Text>
+                  <Text style={styles.discount}>{`-${item.discount * 100
+                    }%`}</Text>
                 </View>
                 <View style={styles.itemPriceContainer}>
                   <Text
