@@ -69,12 +69,14 @@ const SearchModal: React.FC<SearchModalProps> = ({
     } else {
       onSearchSubmit("");
     }
+    setSearchQuery(""); // Clear the search query
     toggleModal();
     Keyboard.dismiss();
   };
 
   const handleItemPress = (itemName: string) => {
     onSearchSubmit(itemName);
+    setSearchQuery(""); // Clear the search query
     toggleModal();
     Keyboard.dismiss();
   };

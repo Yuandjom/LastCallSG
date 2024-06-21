@@ -23,17 +23,20 @@ import MapView, { Marker } from "react-native-maps";
 import * as Location from "expo-location";
 import Toast from "react-native-toast-message";
 import { truncateText } from "@/utils/truncateText";
-
+import ImageViewer from "react-native-image-zoom-viewer";
 
 const ItemPage = () => {
   const params = useLocalSearchParams();
   const router = useRouter();
   const { user } = useAuth();
+  const userLocation = { latitude: 1.29508, longitude: 103.848953 }; // Dummy user location
+
   const [fadeAnim] = useState(new Animated.Value(1));
   const [modalVisible, setModalVisible] = useState(false);
   const [imageModalVisible, setImageModalVisible] = useState(false);
   const [loading, setLoading] = useState(false);
   const [location, setLocation] = useState<any>(null);
+
   const handleStorePress = () => {
     router.push({
       pathname: "/store",
@@ -43,6 +46,7 @@ const ItemPage = () => {
       },
     });
   };
+
   const openModal = () => {
     setModalVisible(true);
     Animated.timing(fadeAnim, {
@@ -62,22 +66,8 @@ const ItemPage = () => {
   };
 
   const handleMapPress = async () => {
-    setLoading(true);
     try {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        Toast.show({
-          type: "error",
-          text1: "Permission to access location was denied",
-          text2: "Please grant us location permission to proceed.",
-        });
-        setLoading(false);
-        return;
-      }
-
-      let location: any = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-      setLoading(false);
+      const userLocation = { latitude: 1.29508, longitude: 103.848953 }; // Dummy user location
 
       router.push({
         pathname: "/interactive-map",
@@ -86,7 +76,7 @@ const ItemPage = () => {
             latitude: store.storeLatitude,
             longitude: store.storeLongitude,
           }),
-          userLocation: JSON.stringify(location.coords),
+          userLocation: JSON.stringify(userLocation),
           storeTitle: JSON.stringify(store.storeTitle),
           storeAddress: JSON.stringify(store.storeAddress),
         },
@@ -97,23 +87,22 @@ const ItemPage = () => {
         text1: "Error",
         text2: error.message,
       });
-      setLoading(false);
     }
   };
 
   const item: StoreItem = params.item
     ? JSON.parse(params.item as string)
     : {
-      name: "",
-      finalPrice: 0,
-      originalPrice: 0,
-      discount: 0,
-      quantity: 0,
-      imageURL: "",
-      expiryDate: new Date(),
-      description: "",
-      weight: 0,
-    };
+        name: "",
+        finalPrice: 0,
+        originalPrice: 0,
+        discount: 0,
+        quantity: 0,
+        imageURL: "",
+        expiryDate: new Date(),
+        description: "",
+        weight: 0,
+      };
   const store: Store = params.store ? JSON.parse(params.store as string) : null;
 
   const formattedExpiryDate = item.expiryDate
@@ -122,10 +111,17 @@ const ItemPage = () => {
     .slice(0, 10);
 
   return (
-    <View style={styles.container}>
+    <ScrollView
+      style={styles.container}
+      contentContainerStyle={{ flexGrow: 1 }}
+    >
       <Animated.View style={[styles.overlay, { opacity: fadeAnim }]}>
         <TouchableOpacity onPress={() => setImageModalVisible(true)}>
-          <ImageBackground source={{ uri: item.imageURL }} style={styles.image}>
+          <ImageBackground
+            source={{ uri: item.imageURL }}
+            style={styles.image}
+            resizeMode="contain"
+          >
             <TouchableOpacity
               onPress={() => router.back()}
               style={styles.backButton}
@@ -135,115 +131,122 @@ const ItemPage = () => {
           </ImageBackground>
         </TouchableOpacity>
         <View style={styles.contentContainer}>
-          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+          <View>
+            <View style={styles.productDetailsContainer}>
+              <View style={styles.itemQuantityContainer}>
+                <Text style={styles.title}>{item.name}</Text>
+                <Text style={styles.itemQty}>{`${item.quantity} pcs`}</Text>
+              </View>
+
+              <View style={styles.priceDiscountContainer}>
+                <View style={styles.discountContainer}>
+                  <Text style={styles.discount}>{`-${
+                    item.discount * 100
+                  }%`}</Text>
+                </View>
+                <View style={styles.itemPriceContainer}>
+                  <Text
+                    style={styles.originalPrice}
+                  >{`was $${item.originalPrice.toFixed(2)}`}</Text>
+                  <Text style={styles.price}>{`S$${item.finalPrice.toFixed(
+                    2
+                  )}`}</Text>
+                </View>
+              </View>
+            </View>
+            <View style={styles.seperator}></View>
+
+            <Text style={styles.descriptionHeader}>Product</Text>
             <View>
-              <View style={styles.productDetailsContainer}>
-                <View style={styles.itemQuantityContainer}>
-                  <Text style={styles.title}>{item.name}</Text>
-                  <Text style={styles.itemQty}>{`${item.quantity} pcs`}</Text>
-                </View>
-
-                <View style={styles.priceDiscountContainer}>
-                  <View style={styles.discountContainer}>
-                    <Text style={styles.discount}>{`-${item.discount * 100
-                      }%`}</Text>
-                  </View>
-                  <View style={styles.itemPriceContainer}>
-                    <Text
-                      style={styles.originalPrice}
-                    >{`was $${item.originalPrice.toFixed(2)}`}</Text>
-                    <Text style={styles.price}>{`S$${item.finalPrice.toFixed(
-                      2
-                    )}`}</Text>
-                  </View>
-                </View>
-              </View>
-              <View style={styles.seperator}></View>
-
-              <Text style={styles.descriptionHeader}>Product</Text>
-              <View>
-                <View style={styles.expiry_container}>
-                  <Text style={{ color: "#B2BAC5" }}>Expiry</Text>
-                  <Text style={styles.expiry_date}>
-                    {calculateTimeLeft(formattedExpiryDate)}
-                  </Text>
-                </View>
-                <View style={styles.expiry_container}>
-                  <Text style={{ color: "#B2BAC5" }}>Weight</Text>
-                  <Text style={styles.weightText}>{`${item.weight} kg`}</Text>
-                </View>
-              </View>
-              <View style={styles.descriptionHeaderContainer}>
-                {item.description != "None" ? (
-                  <Text style={styles.descriptionHeader}>Description</Text>
-                ) : null}
-              </View>
-              <View style={{ paddingHorizontal: 6 }}>
-                <TruncateWithShowMore
-                  text={item.description == "None" ? "" : item.description}
-                  maxLength={200}
-                />
-              </View>
-              <View style={styles.storeInfoContainer}>
-                <Text style={styles.storeInfoText}>Pickup Location</Text>
-
-                <Text style={styles.storeAddress}>
-                  {store.storeAddress} S({store.storePostalCode})
+              <View style={styles.expiry_container}>
+                <Text style={{ color: "#B2BAC5" }}>Expiry</Text>
+                <Text style={styles.expiry_date}>
+                  {calculateTimeLeft(formattedExpiryDate)}
                 </Text>
-                <TouchableOpacity
-                  onPress={handleMapPress}
-                  disabled={true}
-                  style={styles.mapContainer}
+              </View>
+              <View style={styles.expiry_container}>
+                <Text style={{ color: "#B2BAC5" }}>Weight</Text>
+                <Text style={styles.weightText}>{`${item.weight} kg`}</Text>
+              </View>
+            </View>
+            <View style={styles.descriptionHeaderContainer}>
+              {item.description != "None" ? (
+                <Text style={styles.descriptionHeader}>Description</Text>
+              ) : null}
+            </View>
+            <View style={{ paddingHorizontal: 6 }}>
+              <TruncateWithShowMore
+                text={item.description == "None" ? "" : item.description}
+                maxLength={200}
+              />
+            </View>
+            <View style={styles.storeInfoContainer}>
+              <Text style={styles.storeInfoText}>Pickup Location</Text>
+
+              <Text style={styles.storeAddress}>
+                {store.storeAddress} S({store.storePostalCode})
+              </Text>
+              <TouchableOpacity
+                onPress={handleMapPress}
+                disabled={true}
+                style={styles.mapContainer}
+              >
+                <MapView
+                  style={styles.map}
+                  initialRegion={{
+                    latitude: store.storeLatitude,
+                    longitude: store.storeLongitude,
+                    latitudeDelta: 0.0922,
+                    longitudeDelta: 0.0421,
+                  }}
                 >
-                  <MapView
-                    style={styles.map}
-                    initialRegion={{
+                  <Marker
+                    coordinate={{
                       latitude: store.storeLatitude,
                       longitude: store.storeLongitude,
-                      latitudeDelta: 0.0922,
-                      longitudeDelta: 0.0421,
                     }}
-                  >
-                    <Marker
-                      coordinate={{
-                        latitude: store.storeLatitude,
-                        longitude: store.storeLongitude,
-                      }}
-                      title={store.storeTitle}
-                      description={store.storeAddress}
-                    />
-                  </MapView>
-                  {loading && (
-                    <View style={styles.loadingOverlay}>
-                      <ActivityIndicator size="large" color="#0000ff" />
-                      <Text style={styles.loadingText}>Loading...</Text>
-                    </View>
-                  )}
-                </TouchableOpacity>
-              </View>
-              <TouchableOpacity
-                onPress={handleStorePress}
-                activeOpacity={0.6}
-                delayPressIn={100}
-              >
-                <View style={styles.storeHeader}>
-                  <Image
-                    source={{ uri: store.storeLogo as any }}
-                    style={styles.storeLogo}
+                    title={store.storeTitle}
+                    description={store.storeAddress}
                   />
-                  <View style={styles.storeInfo}>
-                    <Text style={styles.storeTitle}>
-                      {truncateText(store.storeTitle, 20)}
-                    </Text>
-                    <Text style={styles.rating}>
-                      ⭐ {store.storeRating.toFixed(1)}
-                    </Text>
+                  <Marker
+                    coordinate={{
+                      latitude: userLocation.latitude,
+                      longitude: userLocation.longitude,
+                    }}
+                    title="Your Location"
+                    pinColor="blue"
+                    description="55 Armenian St, Singapore 179943"
+                  />
+                </MapView>
+                {loading && (
+                  <View style={styles.loadingOverlay}>
+                    <ActivityIndicator size="large" color="#0000ff" />
+                    <Text style={styles.loadingText}>Loading...</Text>
                   </View>
-
-                </View>
+                )}
               </TouchableOpacity>
             </View>
-          </ScrollView>
+            <TouchableOpacity
+              onPress={handleStorePress}
+              activeOpacity={0.6}
+              delayPressIn={100}
+            >
+              <View style={styles.storeHeader}>
+                <Image
+                  source={{ uri: store.storeLogo as any }}
+                  style={styles.storeLogo}
+                />
+                <View style={styles.storeInfo}>
+                  <Text style={styles.storeTitle}>
+                    {truncateText(store.storeTitle, 20)}
+                  </Text>
+                  <Text style={styles.rating}>
+                    ⭐ {store.storeRating.toFixed(1)}
+                  </Text>
+                </View>
+              </View>
+            </TouchableOpacity>
+          </View>
           <TouchableOpacity style={styles.button} onPress={openModal}>
             <Text style={styles.buttonText}>Purchase Now</Text>
           </TouchableOpacity>
@@ -262,19 +265,21 @@ const ItemPage = () => {
         animationType="fade"
         onRequestClose={() => setImageModalVisible(false)}
       >
-        <View style={styles.fullScreenContainer}>
-          <Pressable
-            style={styles.fullScreenButton}
-            onPress={() => setImageModalVisible(false)}
-          >
-            <Image
-              source={{ uri: item.imageURL }}
+        <Pressable
+          style={styles.fullScreenContainer}
+          onPress={() => setImageModalVisible(false)}
+        >
+          <View style={styles.imageContainer}>
+            <ImageViewer
+              imageUrls={[{ url: item.imageURL }]}
+              enableSwipeDown
+              onSwipeDown={() => setImageModalVisible(false)}
               style={styles.fullScreenImage}
             />
-          </Pressable>
-        </View>
+          </View>
+        </Pressable>
       </Modal>
-    </View>
+    </ScrollView>
   );
 };
 
@@ -290,8 +295,8 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     marginBottom: 12,
-    marginTop: 8,
-    padding: 8
+    padding: 8,
+    paddingTop: 0,
   },
   loadingText: {
     marginTop: 10,
@@ -346,8 +351,8 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    padding: 0,
     backgroundColor: "#fff",
+    paddingTop: 30,
   },
   contentContainer: {
     flex: 1,
@@ -358,7 +363,7 @@ const styles = StyleSheet.create({
     width: 35,
     height: 35,
     borderRadius: 20,
-    marginTop: 50,
+    marginTop: 35,
     marginLeft: 15,
     justifyContent: "center",
     alignItems: "center",
@@ -378,13 +383,9 @@ const styles = StyleSheet.create({
   },
   image: {
     width: "100%",
-    height: 400,
-    resizeMode: "cover",
-    justifyContent: "space-between",
+    aspectRatio: 1,
   },
-  imageOverlay: {
-    marginLeft: 0,
-  },
+
   left_and_discount_container: {
     flexDirection: "row",
     marginLeft: 8,
@@ -400,7 +401,9 @@ const styles = StyleSheet.create({
     width: 60,
     height: 60,
     borderRadius: 30,
-    margin: 8,
+    marginBottom: 8,
+    marginHorizontal: 8,
+    marginTop: 4,
   },
   storeTitle: {
     fontSize: 18,
@@ -443,6 +446,7 @@ const styles = StyleSheet.create({
   itemQuantityContainer: {
     width: "60%",
     margin: 10,
+    marginTop: 0,
     gap: 4,
   },
   productDetailsContainer: {
@@ -451,12 +455,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     padding: 10,
+    paddingTop: 0,
   },
   seperator: {
     height: 1,
     backgroundColor: "#EEEEEE",
     width: "90%",
-    marginVertical: 10,
+    marginTop: 0,
+    marginBottom: 10,
     alignSelf: "center",
   },
   descriptionHeaderContainer: {
@@ -546,16 +552,13 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  fullScreenButton: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    width: "100%", // Ensure it takes the full width
+  imageContainer: {
+    width: "100%",
+    height: "70%",
   },
   fullScreenImage: {
-    width: "100%", // Ensure the image takes the full width of the screen
-    height: "100%", // Ensure the image takes the full height of the screen
-    resizeMode: "contain", // Ensure the image maintains aspect ratio and fits within the view
+    width: "100%",
+    height: "100%",
   },
 });
 

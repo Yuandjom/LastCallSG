@@ -52,6 +52,7 @@ const InteractiveMapScreen = () => {
           coordinate={userLocation}
           title="Your Location"
           pinColor="blue"
+          description="55 Armenian St, Singapore 179943"
         />
       </MapView>
     </View>

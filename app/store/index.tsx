@@ -16,7 +16,6 @@ import {
 import { Ionicons, EvilIcons } from "@expo/vector-icons";
 import { useRouter, useLocalSearchParams } from "expo-router";
 import MapView, { Marker } from "react-native-maps";
-import * as Location from "expo-location";
 import { Store, StoreItem } from "@/app/interfaces";
 import Toast from "react-native-toast-message";
 
@@ -73,22 +72,8 @@ const StorePage = () => {
   };
 
   const handleMapPress = async () => {
-    setLoading(true);
     try {
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        Toast.show({
-          type: "error",
-          text1: "Permission to access location was denied",
-          text2: "Please grant us location permission to proceed.",
-        });
-        setLoading(false);
-        return;
-      }
-
-      let location: any = await Location.getCurrentPositionAsync({});
-      setLocation(location);
-      setLoading(false);
+      const userLocation = { latitude: 1.29508, longitude: 103.848953 }; // Dummy user location
 
       router.push({
         pathname: "/interactive-map",
@@ -97,7 +82,7 @@ const StorePage = () => {
             latitude: store.storeLatitude,
             longitude: store.storeLongitude,
           }),
-          userLocation: JSON.stringify(location.coords),
+          userLocation: JSON.stringify(userLocation),
           storeTitle: JSON.stringify(store.storeTitle),
           storeAddress: JSON.stringify(store.storeAddress),
         },
@@ -108,7 +93,6 @@ const StorePage = () => {
         text1: "Error",
         text2: error.message,
       });
-      setLoading(false);
     }
   };
 
@@ -222,7 +206,9 @@ const StorePage = () => {
                       <Text style={styles.productWasPrice}>
                         was {item.originalPrice}
                       </Text>
-                      <Text style={styles.productPrice}>{item.finalPrice}</Text>
+                      <Text style={styles.productPrice}>
+                        {item.finalPrice.toFixed(2)}
+                      </Text>
                     </View>
                   </View>
                 </TouchableOpacity>
@@ -236,7 +222,6 @@ const StorePage = () => {
               {store.storeAddress} S({store.storePostalCode})
             </Text>
             <TouchableOpacity
-              disabled={true}
               onPress={handleMapPress}
               style={styles.mapContainer}
             >
@@ -250,7 +235,10 @@ const StorePage = () => {
                 }}
               >
                 <Marker
-                  coordinate={{ latitude: store.storeLatitude, longitude: store.storeLongitude }}
+                  coordinate={{
+                    latitude: store.storeLatitude,
+                    longitude: store.storeLongitude,
+                  }}
                   title={store.storeTitle}
                   description={store.storeAddress}
                 />
@@ -395,6 +383,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     marginBottom: 16,
     padding: 8,
+    paddingBottom:6,
     borderRadius: 8,
     borderWidth: 1,
     borderColor: "#e0e0e0",

@@ -48,7 +48,7 @@ const ItemQuantity: React.FC<MyModalProps> = ({
           <View style={styles.modalOverlay}>
             <View style={styles.detailAndQtyContainer}>
               <View style={styles.headerContainer}>
-                <View>
+                <View style = {styles.headerTextContainer}>
                   <Text style={styles.itemName}>
                     {truncateText(item.name, 25)}
                   </Text>
@@ -226,6 +226,7 @@ const styles = StyleSheet.create({
   closeButton: {
     position: "absolute",
     right: 20,
+    bottom: 20,
     backgroundColor: "#F5F2F9",
     width: 35,
     height: 35,

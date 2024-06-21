@@ -15,17 +15,18 @@ import { truncateText } from "@/utils/truncateText";
 
 interface StoreComponentProps {
   store: Store;
+  allStores: Store[];
 }
 
-const StoreComponent: React.FC<StoreComponentProps> = ({ store }) => {
+const StoreComponent: React.FC<StoreComponentProps> = ({ store, allStores }) => {
   const router = useRouter();
 
   const handleStorePress = () => {
     router.push({
       pathname: "/store",
       params: {
-        items: JSON.stringify(store.items),
-        store: JSON.stringify(store),
+        items: JSON.stringify(allStores.find(s => s.storeTitle === store.storeTitle)?.items || store.items),
+        store: JSON.stringify(allStores.find(s => s.storeTitle === store.storeTitle) || store),
       },
     });
   };

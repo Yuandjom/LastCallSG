@@ -21,7 +21,7 @@ const TruncateWithShowMore: React.FC<TruncateWithShowMoreProps> = ({ text, maxLe
     <Text style = {styles.text}>
       {showMore ? text : `${text.substring(0, maxLength)}...`}
       <TouchableOpacity onPress={handleShowMore}>
-        <Text style={styles.showMoreText}>{showMore ? ' Show Less' : ' Show More'}</Text>
+        <Text style={styles.showMoreText}>{showMore ? ' Show Less' : 'Show More'}</Text>
       </TouchableOpacity>
     </Text>
   );
@@ -31,7 +31,7 @@ const styles = StyleSheet.create({
   showMoreText: {
     color: '#0C5231',
     textDecorationLine: 'underline',
-    marginTop:2,
+    marginTop:6,
   },
   text: {
     fontSize: 14,

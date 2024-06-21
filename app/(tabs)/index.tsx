@@ -116,7 +116,7 @@ export default function HomeScreen() {
           }
         >
           {filteredStores.map((store: Store, index: number) => (
-            <StoreComponent key={index} store={store} />
+            <StoreComponent key={index} store={store} allStores = {stores}/>
           ))}
         </ScrollView>
       )}
