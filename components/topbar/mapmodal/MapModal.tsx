@@ -24,7 +24,7 @@ const MapModal: React.FC<MapModalProps> = ({
     toggleModal,
     filteredStores,
 }) => {
-    const userLocation = { latitude: 1.296568, longitude: 103.852119 }; // Dummy user location
+    const userLocation = { latitude: 1.29508, longitude: 103.848953 }; // Dummy user location
     const lastTapRef = useRef(null); // Reference to store last tap time
 
     const handleMarkerPress = (
