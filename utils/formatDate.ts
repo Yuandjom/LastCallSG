@@ -36,11 +36,11 @@ export const calculateTimeLeft = (dateString) => {
 
   let result = "";
   if (totalMonthsLeft > 0) {
-    result += `Within ${totalMonthsLeft} month${
+    result += `${totalMonthsLeft} month${
       totalMonthsLeft !== 1 ? "s" : ""
     } `;
   }
-  result += `Within ${daysLeft} day${daysLeft !== 1 ? "s" : ""}`;
+  result += `${daysLeft} day${daysLeft !== 1 ? "s" : ""}`;
 
-  return result;
+  return `Within `+result;
 };
