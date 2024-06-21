@@ -40,7 +40,7 @@ export const calculateTimeLeft = (dateString) => {
       totalMonthsLeft !== 1 ? "s" : ""
     } `;
   }
-  result += `${daysLeft} day${daysLeft !== 1 ? "s" : ""}`;
+  result += `Within ${daysLeft} day${daysLeft !== 1 ? "s" : ""}`;
 
   return result;
 };
