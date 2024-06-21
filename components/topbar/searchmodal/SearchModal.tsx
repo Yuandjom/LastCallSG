@@ -146,7 +146,7 @@ const SearchModal: React.FC<SearchModalProps> = ({
             </View>
             <FlatList
               data={filteredResults}
-              keyExtractor={(item) => item.id.toString()}
+              keyExtractor={(item, index) => `${index}`}  // Ensure unique key for each store
               renderItem={({ item }) => (
                 <View style={styles.storeContainer}>
                   <FlatList
@@ -155,7 +155,7 @@ const SearchModal: React.FC<SearchModalProps> = ({
                         .toLowerCase()
                         .includes(searchQuery.toLowerCase())
                     )}
-                    keyExtractor={(item) => item.name}
+                    keyExtractor={(item, index) => `${item.name}-${item.finalPrice}-${index}`}  // Ensure unique key for each item
                     renderItem={({ item }) => (
                       <TouchableOpacity
                         onPress={() => handleItemPress(item.name)}
