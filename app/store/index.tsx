@@ -236,20 +236,21 @@ const StorePage = () => {
               {store.storeAddress} S({store.storePostalCode})
             </Text>
             <TouchableOpacity
+              disabled={true}
               onPress={handleMapPress}
               style={styles.mapContainer}
             >
               <MapView
                 style={styles.map}
                 initialRegion={{
-                  latitude: 1.351616,
-                  longitude: 103.837889,
+                  latitude: store.storeLatitude,
+                  longitude: store.storeLongitude,
                   latitudeDelta: 0.0922,
                   longitudeDelta: 0.0421,
                 }}
               >
                 <Marker
-                  coordinate={{ latitude: 1.351616, longitude: 103.837889 }}
+                  coordinate={{ latitude: store.storeLatitude, longitude: store.storeLongitude }}
                   title={store.storeTitle}
                   description={store.storeAddress}
                 />
