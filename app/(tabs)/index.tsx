@@ -80,7 +80,7 @@ export default function HomeScreen() {
           style={styles.bottomBarImage}
         />
         <Text style={styles.bottomBarText}>
-          {14.7} KG of food waste prevented to date
+          {17.4} KG of food waste prevented to date
         </Text>
       </View>
       {loading && !initialLoaded ? (
@@ -116,7 +116,7 @@ export default function HomeScreen() {
           }
         >
           {filteredStores.map((store: Store, index: number) => (
-            <StoreComponent key={index} store={store} allStores = {stores}/>
+            <StoreComponent key={index} store={store} allStores={stores} />
           ))}
         </ScrollView>
       )}
