@@ -2,14 +2,15 @@ import openpyxl
 import os
 import boto3
 
+
 SPREADSHEETNAME = 'Phillips market item info'
 SPREADSHEETFILE = r"C:\Users\cheej\Desktop\SEND_HELP\scripts\BFG .xlsx"
 
 STORE_ID = 4
 DYNAMODB_TABLE = "LastCallSG"
 
-aws_access_key_id = 'AKIAVAY2Y2RRT2TPC7MC'
-aws_secret_access_key = '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'
+aws_access_key_id = AWS_ACCESS_KEY_ID
+aws_secret_access_key = AWS_SECRET_ACCESS_KEY
 
 region_name = "ap-southeast-1"
 
