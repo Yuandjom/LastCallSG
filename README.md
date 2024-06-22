@@ -100,6 +100,18 @@ Run npx expo start in the terminal.
         </thead>
         <tbody>
             <tr>
+                <td><a href='https://github.com/' title='jonathan'> <img src='https://github.com/' height='50' width='50'/></a></td>
+                <td>Jonathan How</td>
+                <td>Nanyang Technological University (NTU)</td>
+                <td>Product, Strategy</td>
+            </tr>
+            <tr>
+                <td><a href='https://github.com/' title='david'> <img src='https://github.com/' height='50' width='50'/></a></td>
+                <td>David Lee</td>
+                <td>Nanyang Technological University (NTU)</td>
+                <td>Data, Operations</td>
+            </tr>
+            <tr>
                 <td><a href='https://github.com/weikangg' title='weikangg'> <img src='https://github.com/weikangg.png' height='50' width='50'/></a></td>
                 <td>Wei Kang</td>
                 <td>Nanyang Technological University (NTU)</td>
@@ -114,7 +126,7 @@ Run npx expo start in the terminal.
             <tr>
                 <td><a href='https://github.com/jerrrren' title='jeren'> <img src='https://github.com/jerrrren' height='50' width='50'/></a></td>
                 <td>Chee Jer En</td>
-                <td>Nanyang Technological University (NTU)</td>
+                <td>National University of Singapore (NUS)</td>
                 <td>Frontend, Backend</td>
             </tr>
         </tbody>
