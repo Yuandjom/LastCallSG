@@ -70,7 +70,7 @@ Run npx expo start in the terminal.
   <h3>Frontend</h3>
   <p>
     <a href="https://skillicons.dev">
-      <img src="https://skillicons.dev/icons?i=js,react" />
+      <img src="https://skillicons.dev/icons?i=ts,react" />
     </a>
   </p>
   <h3>Backend</h3>
