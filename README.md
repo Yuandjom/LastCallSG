@@ -53,6 +53,8 @@ npx expo start
 
 ![image](https://github.com/Yuandjom/LastCall-SG/assets/95838788/af3aa559-c157-4cc1-a1a1-502570cf8b5c)
 
+![video](https://github.com/Yuandjom/LastCall-SG/assets/95838788/abc9bd13-01e0-4d19-ab3b-b85115faf4f0)
+
 <h2 align="center" id = "impact"> 🙂:	Our Impact</h2>
 
 ![image](https://github.com/Yuandjom/LastCall-SG/assets/95838788/86be232f-c3f1-402f-99e1-91deb6dba3ee)
