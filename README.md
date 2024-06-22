@@ -37,8 +37,7 @@ Join us in our mission to be the go-to platform for reducing food waste, one dis
 >Setup
 
 1. Open terminal in VS Code / Command Line.
-2. cd to Ascendo folder.
-3. Run the following commands:
+2. Run the following commands:
 ```
 npm i
 npx expo start
