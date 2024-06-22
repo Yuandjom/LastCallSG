@@ -53,7 +53,9 @@ npx expo start
 
 ![image](https://github.com/Yuandjom/LastCall-SG/assets/95838788/af3aa559-c157-4cc1-a1a1-502570cf8b5c)
 
-![video](https://github.com/Yuandjom/LastCall-SG/assets/95838788/abc9bd13-01e0-4d19-ab3b-b85115faf4f0)
+<video src="https://github.com/Yuandjom/LastCall-SG/assets/95838788/abc9bd13-01e0-4d19-ab3b-b85115faf4f0" controls="controls" style="max-width: 730px;">
+  Your browser does not support the video tag.
+</video>
 
 <h2 align="center" id = "impact"> 🙂:	Our Impact</h2>
 
