@@ -1,50 +1,134 @@
-# Welcome to your Expo app 👋
+<h1 align="center"> 🌴 LastCallSG</h1>
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+<p align="center">
+  <img src="https://github.com/Yuandjom/LastCall-SG/assets/95838788/7a925f01-ec06-4467-8c4f-831afedb1742" alt="Logo"/>
+</p>
 
-## Get started
+At LastCallSG, we're a passionate team of young changemakers driven to combat food waste through innovative tech solutions. Our mission is to create a sustainable ecosystem where small actions by online grocery retailer collectively make a significant impact in reducing food waste and promoting environmental sustainability.
 
-1. Install dependencies
+Join us in our mission to be the go-to platform for reducing food waste, one discounted item at a time. Every portion saved means less waste going into the landfill. Together, we can create a more sustainable future for generations to come.
 
-   ```bash
-   npm install
-   ```
+<h2 align = "center"> :moneybag:	Value Proposition </h2>
 
-2. Start the app
+![image](https://github.com/Yuandjom/LastCall-SG/assets/95838788/38eea745-31c4-4aca-9e6c-ef80a6f98e67)
 
-   ```bash
-    npx expo start
-   ```
+<h2 align = "center"> :open_book: Table Of Contents </h2>
 
-In the output, you'll find options to open the app in a
+- [Prerequisites](#prerequisites) <br/>
+- [Setup](#setup) <br/>
+- [Key Features](#key-features) <br/>
+- [FAQ](#faq) <br/>
+- [Tech Stack](#tech-stack) <br/>
+- [Contributors](#contributors) <br/>
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+<h2 align="center" id = "prerequisites"> :axe:	Prerequisites</h2>
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+#### Internet Connectivity Required
+> Prerequsite software
+* Visual Studio Code
+  + https://code.visualstudio.com/
+* Node
+  + https://nodejs.org/en/
+* Clone this project
+        
 
-## Get a fresh project
+<h2 align="center" id = "setup"> :hammer_and_wrench:	Setup</h2>
 
-When you're ready, run:
+>Setup
 
-```bash
-npm run reset-project
+1. Open terminal in VS Code / Command Line.
+2. Run the following commands:
+```
+npm i
+npx expo start
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+<h2 align="center" id = "key-features"> :old_key:	Our Problem & Solution</h2>
 
-## Learn more
+#### Problem
 
-To learn more about developing your project with Expo, look at the following resources:
+![image](https://github.com/Yuandjom/LastCall-SG/assets/95838788/037f9d3c-1dde-4a8b-aee4-2ea00c731fa8)
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+#### Solution
 
-## Join the community
+![image](https://github.com/Yuandjom/LastCall-SG/assets/95838788/af3aa559-c157-4cc1-a1a1-502570cf8b5c)
 
-Join our community of developers creating universal apps.
+<video src="https://github.com/Yuandjom/LastCall-SG/assets/95838788/abc9bd13-01e0-4d19-ab3b-b85115faf4f0" controls="controls" style="max-width: 730px;">
+  Your browser does not support the video tag.
+</video>
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+<h2 align="center" id = "impact"> 🙂:	Our Impact</h2>
+
+![image](https://github.com/Yuandjom/LastCall-SG/assets/95838788/86be232f-c3f1-402f-99e1-91deb6dba3ee)
+
+<h2 align="center" id = "faq" > :question: FAQ</h2>
+
+> <strong>1. How do I start the production server?</strong>
+```
+Run npx expo start in the terminal.
+```
+
+<h2 align="center" id = "tech-stack"> 🛠 Tech Stack:</h2>
+
+<div align="center">
+  <h3>Frontend</h3>
+  <p>
+    <a href="https://skillicons.dev">
+      <img src="https://skillicons.dev/icons?i=ts,react" />
+    </a>
+  </p>
+  <h3>Backend</h3>
+  <p>
+    <a href="https://skillicons.dev">
+      <img src="https://skillicons.dev/icons?i=dynamodb,aws" />
+    </a>
+  </p>
+  <br />
+</div>
+
+<h2 align="center" id = "contributors"> :family_man_man_boy_boy: Contributors:</h2>
+
+<div align="center">
+    <table>
+        <thead>
+            <tr>
+                <th>Profile</th>
+                <th>Name</th>
+                <th>School</th>
+                <th>Responsibilities</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><a href='https://github.com/' title='jonathan'> <img src='https://github.com/' height='50' width='50'/></a></td>
+                <td>Jonathan How</td>
+                <td>Nanyang Technological University (NTU)</td>
+                <td>Product, Strategy</td>
+            </tr>
+            <tr>
+                <td><a href='https://github.com/' title='david'> <img src='https://github.com/' height='50' width='50'/></a></td>
+                <td>David Lee</td>
+                <td>Nanyang Technological University (NTU)</td>
+                <td>Data, Operations</td>
+            </tr>
+            <tr>
+                <td><a href='https://github.com/weikangg' title='weikangg'> <img src='https://github.com/weikangg.png' height='50' width='50'/></a></td>
+                <td>Wei Kang</td>
+                <td>Nanyang Technological University (NTU)</td>
+                <td>Frontend, Backend</td>
+            </tr>
+            <tr>
+                <td><a href='https://github.com/yuandjom' title='john'> <img src='https://github.com/yuandjom.png' height='50' width='50'/></a></td>
+                <td>John Lim</td>
+                <td>Nanyang Technological University (NTU)</td>
+                <td>Frontend, Backend</td>
+            </tr>
+            <tr>
+                <td><a href='https://github.com/jerrrren' title='jeren'> <img src='https://github.com/jerrrren' height='50' width='50'/></a></td>
+                <td>Chee Jer En</td>
+                <td>National University of Singapore (NUS)</td>
+                <td>Frontend, Backend</td>
+            </tr>
+        </tbody>
+    </table>
+</div>
