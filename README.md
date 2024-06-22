@@ -1,7 +1,7 @@
-<h1 align="center"> 🌴: Ascendo</h1>
+<h1 align="center"> 🌴 LastCallSG</h1>
 
 <p align="center">
-  <img src="![image](https://github.com/Yuandjom/LastCall-SG/assets/95838788/7a925f01-ec06-4467-8c4f-831afedb1742)" alt="Logo"/>
+  <img src="https://github.com/Yuandjom/LastCall-SG/assets/95838788/7a925f01-ec06-4467-8c4f-831afedb1742" alt="Logo"/>
 </p>
 
 At LastCallSG, we're a passionate team of young changemakers driven to combat food waste through innovative tech solutions. Our mission is to create a sustainable ecosystem where small actions by online grocery retailer collectively make a significant impact in reducing food waste and promoting environmental sustainability.
