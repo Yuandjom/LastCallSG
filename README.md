@@ -124,7 +124,7 @@ Run npx expo start in the terminal.
                 <td>Frontend, Backend</td>
             </tr>
             <tr>
-                <td><a href='https://github.com/jerrrren' title='jeren'> <img src='https://github.com/jerrrren' height='50' width='50'/></a></td>
+                <td><a href='https://github.com/jerrrren' title='jeren'> <img src='https://github.com/jerrrren.png' height='50' width='50'/></a></td>
                 <td>Chee Jer En</td>
                 <td>National University of Singapore (NUS)</td>
                 <td>Frontend, Backend</td>
