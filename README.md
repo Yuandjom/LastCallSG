@@ -100,13 +100,13 @@ Run npx expo start in the terminal.
         </thead>
         <tbody>
             <tr>
-                <td><a href='https://github.com/' title='jonathan'> <img src='https://github.com/' height='50' width='50'/></a></td>
+                <td><a href='https://github.com/breadboyskin' title='jonathan'> <img src='https://github.com/breadboyskin.png' height='50' width='50'/></a></td>
                 <td>Jonathan How</td>
                 <td>Nanyang Technological University (NTU)</td>
                 <td>Product, Strategy</td>
             </tr>
             <tr>
-                <td><a href='https://github.com/' title='david'> <img src='https://github.com/' height='50' width='50'/></a></td>
+                <td><a href='https://github.com/daringdolphin' title='david'> <img src='https://github.com/daringdolphin.png' height='50' width='50'/></a></td>
                 <td>David Lee</td>
                 <td>Nanyang Technological University (NTU)</td>
                 <td>Data, Operations</td>
